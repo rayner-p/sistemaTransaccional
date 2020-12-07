@@ -142,4 +142,6 @@ public class ventanaBuscarEmpleado {
 		editorPane_1_7.setBounds(112, 31, 152, 16);
 		panel.add(editorPane_1_7);
 	}
+	
+	
 }
