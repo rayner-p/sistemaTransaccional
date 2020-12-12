@@ -1,57 +1,58 @@
 package ec.ups.edu.appdis.g1.sistemaTransaccional.datos;
 
 import java.sql.Connection;
+
 import java.sql.Date;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.persistence.Entity;
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
 
 import ec.ups.edu.appdis.g1.sistemaTransaccional.modelo.Empleado;
-
+@Stateless
 public class EmpleadoDao {
 	@Inject
 	private Connection con;
+	
+	@Inject
+	private EntityManager em;
+
+	
+	
 	
 	public  EmpleadoDao() {
 		// TODO Auto-generated constructor stub
 	}
 	public boolean insert (Empleado empleado) throws SQLException {
-		String sql = "INSERT INTO cliente (dni, email, nombre, tipoDocumento)"
-				+ "VALUES (?,?,?,?)";
-		PreparedStatement ps = con.prepareStatement(sql);
-		
-		ps.setString(1, empleado.getCedula());
-		ps.setString(2, empleado.getNombres());
-		ps.setString(3, empleado.getApellidos());
-		ps.setDate(4, (Date) empleado.getFechaNacimiento());
-		ps.setString(5, empleado.getDireccion());
-		ps.setString(6, empleado.getCorreo());
-		ps.setString(7, empleado.getTelefono());
-		ps.setString(8, empleado.getRol());
-		ps.executeUpdate();
-		ps.close();
-		System.out.print("Empleado Creado");
-		return true;
-		
-	}
-	public boolean update (Empleado client, String dni) throws SQLException {
-		
+		em.persist(empleado);
 		return true;
 	}
-	
-	public Empleado read(int codigo) throws SQLException {
-		
-		return null;
+	public Empleado read(String cedula) {
+		Empleado empleado = new Empleado();
+		empleado = em.find(Empleado.class, cedula);
+		return empleado;
 	}
-	public boolean delete (String cedula) throws SQLException {
-		String sql = "DELETE FROM Cliente"
-                + " WHERE cliente_cedula= " + "'" + cedula + "'";
-		PreparedStatement ps = con.prepareStatement(sql);
-		ps.executeUpdate();
-		ps.close();
+	public boolean update (Empleado empleado) {
+		em.merge(empleado);
 		return true;
-
+	}
+	public boolean delete (String cedula) {
+		Empleado emple = this.read(cedula);
+		em.remove(emple);
+		return true;
+	}
+	public List<Empleado> getEmpleados(){
+		String jpql = "SELECT c FROM Empleado c";
+		Query q = em.createQuery(jpql, Empleado.class);
+		List<Empleado> listado = q.getResultList();
+		return listado;
+	}
 }
 
-}
+

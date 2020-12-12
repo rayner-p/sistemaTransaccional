@@ -19,11 +19,11 @@ public class VentanaEmpleado {
 	private JFrame frame;
 	private JTextField txtTipoDocumento;
 	private JTextField txtNombre;
+	private JTextField txtApellidos;
+	private JTextField txtFechaNacimiento;
+	private JTextField txtDireccion;
 	private JTextField txtCorreo;
-	private JTextField textField;
-	private JTextField textField_1;
-	private JTextField textField_2;
-	private JTextField textField_3;
+	private JTextField txtTelefono;
 
 	/**
 	 * Launch the application.
@@ -57,6 +57,7 @@ public class VentanaEmpleado {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		JPanel panel = new JPanel();
+		panel.setBackground(new Color(153, 204, 153));
 		frame.getContentPane().add(panel, BorderLayout.CENTER);
 		panel.setLayout(null);
 		
@@ -82,19 +83,10 @@ public class VentanaEmpleado {
 		txtNombre.setBounds(179, 96, 182, 26);
 		panel.add(txtNombre);
 		
-		txtCorreo = new JTextField();
-		txtCorreo.setColumns(10);
-		txtCorreo.setBounds(179, 142, 182, 26);
-		panel.add(txtCorreo);
-		
-		JButton btnLimpiar = new JButton("LIMPIAR");
-		btnLimpiar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
-		btnLimpiar.setBackground(Color.ORANGE);
-		btnLimpiar.setBounds(167, 419, 116, 29);
-		panel.add(btnLimpiar);
+		txtApellidos = new JTextField();
+		txtApellidos.setColumns(10);
+		txtApellidos.setBounds(179, 142, 182, 26);
+		panel.add(txtApellidos);
 		
 		JButton btnGuardar = new JButton("REGISTRAR");
 		btnGuardar.setBackground(Color.ORANGE);
@@ -106,6 +98,7 @@ public class VentanaEmpleado {
 		panel.add(textPane);
 		
 		JLabel lblCrearUsuarioAdministrativo = new JLabel("Crear Usuario Administrativo");
+		lblCrearUsuarioAdministrativo.setEnabled(false);
 		lblCrearUsuarioAdministrativo.setBounds(138, 6, 182, 16);
 		panel.add(lblCrearUsuarioAdministrativo);
 		
@@ -113,43 +106,44 @@ public class VentanaEmpleado {
 		lblFechaDeNacimiento.setBounds(16, 192, 154, 16);
 		panel.add(lblFechaDeNacimiento);
 		
-		textField = new JTextField();
-		textField.setColumns(10);
-		textField.setBounds(179, 187, 182, 26);
-		panel.add(textField);
+		txtFechaNacimiento = new JTextField();
+		txtFechaNacimiento.setColumns(10);
+		txtFechaNacimiento.setBounds(179, 187, 182, 26);
+		panel.add(txtFechaNacimiento);
 		
 		JLabel lblDireccin = new JLabel("Dirección");
 		lblDireccin.setBounds(16, 237, 154, 16);
 		panel.add(lblDireccin);
 		
-		textField_1 = new JTextField();
-		textField_1.setColumns(10);
-		textField_1.setBounds(179, 232, 182, 26);
-		panel.add(textField_1);
+		txtDireccion = new JTextField();
+		txtDireccion.setColumns(10);
+		txtDireccion.setBounds(179, 232, 182, 26);
+		panel.add(txtDireccion);
 		
 		JLabel lblCorreo_1 = new JLabel("Correo");
 		lblCorreo_1.setBounds(16, 276, 154, 16);
 		panel.add(lblCorreo_1);
 		
-		textField_2 = new JTextField();
-		textField_2.setColumns(10);
-		textField_2.setBounds(179, 271, 182, 26);
-		panel.add(textField_2);
+		txtCorreo = new JTextField();
+		txtCorreo.setColumns(10);
+		txtCorreo.setBounds(179, 271, 182, 26);
+		panel.add(txtCorreo);
 		
 		JLabel lblCorreo_1_1 = new JLabel("Teléfono");
 		lblCorreo_1_1.setBounds(16, 319, 154, 16);
 		panel.add(lblCorreo_1_1);
 		
-		textField_3 = new JTextField();
-		textField_3.setColumns(10);
-		textField_3.setBounds(179, 314, 182, 26);
-		panel.add(textField_3);
+		txtTelefono = new JTextField();
+		txtTelefono.setColumns(10);
+		txtTelefono.setBounds(179, 314, 182, 26);
+		panel.add(txtTelefono);
 		
 		JLabel lblCorreo_1_2 = new JLabel("Rol");
 		lblCorreo_1_2.setBounds(16, 356, 154, 16);
 		panel.add(lblCorreo_1_2);
 		
 		JComboBox cmbRol = new JComboBox();
+		cmbRol.setBackground(new Color(192, 192, 192));
 		cmbRol.setBounds(179, 352, 172, 27);
 		panel.add(cmbRol);
 	}
