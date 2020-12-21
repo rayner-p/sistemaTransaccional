@@ -1,0 +1,176 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:h="http://java.sun.com/jsf/html">
+
+<h:head>
+	<title>Crear Empleado</title>
+</h:head>
+
+<h:body>
+	<ui:composition template="template/templateAdmin.xhtml">
+		<ui:define name="title"> Crear Empleado</ui:define>
+		<ui:param name="nombre" value="#{loginBean.empleado.nombres}" />
+		<ui:define name="content">
+			<div class="row">
+				<div class="col-lg-12">
+					<div class="panel panel-default">
+
+						<div class="panel-body">
+
+							<p:growl id="message" showDetail="true" class="ui-growl"
+								life="4000" />
+							<div class="row">
+								<div class="col-lg-6">
+
+									<h:form role="form"
+										onkeypress="if (event.keyCode == 13) { return false; }">
+
+										<div class="form-group">
+											<label>Cedula</label>
+											<h:inputText value="#{empleadoBean.newEmpleado.cedula}"
+												
+												maxlength="10" class="form-control"
+												validatorMessage="Your name can have only numbers">
+												<f:ajax event="blur" render="valueError" />
+
+											</h:inputText>
+											<h:outputText id="valueError"
+												value="#{empleadoBean.valCedula()}" style="color: red;" />
+										</div>
+										<div class="form-group">
+											<label> Nombres </label>
+											<h:inputText id="nombre"
+												value="#{empleadoBean.newEmpleado.nombres}" type="text"
+												placeholder="Joe Down"
+												class="form-control form-control-line" required="true"
+												validatorMessage="Ingresar minimo dos nombres" label=" ">
+												<f:validateLength maximun="100" />
+												<f:validateRegex pattern="[a-zA-Z0-9]+[a-zA-Z ]+" />
+											</h:inputText>
+											<h:message for="nombre" style="color:red" />
+										</div>
+										<div class="form-group">
+											<label> Apellidos </label>
+											<h:inputText id="apellido"
+												value="#{empleadoBean.newEmpleado.apellidos}" type="text"
+												placeholder="Joe Down"
+												class="form-control form-control-line" required="true"
+												validatorMessage="Ingresar minimo dos Apellidos" label=" ">
+												<f:validateLength maximun="100" />
+												<f:validateRegex pattern="[a-zA-Z]+[a-zA-Z ]+" />
+											</h:inputText>
+											<h:message for="apellido" style="color:red" />
+										</div>
+										<div class="form-group">
+											<label id="fechaNacimiento" placeholder="yyyy/mm/dd">Fecha
+												Nacimiento</label>
+											<h:inputText
+												value="#{empleadoBean.newEmpleado.fechaNacimiento}"
+												id= "fecha"
+												placeholder="2000/04/12"
+												validatorMessage="Ingresar la fecha en formato yyyy/mm/dd" label=" ">
+												<f:convertDateTime pattern="yyyy/MM/dd" />
+												<f:validateLength maximun="100" />
+											</h:inputText>
+											<h:message for="fecha" style="color:red" />
+										</div>
+										<div class="form-group">
+											<label>Ingrese Direccion</label>
+											<h:inputText id="direccion"
+												value="#{empleadoBean.newEmpleado.direccion}" type="text"
+												placeholder="Joe Down"
+												class="form-control form-control-line" required="true"
+												validatorMessage="Ingresar una Direccion" label=" ">
+												<f:validateLength maximun="100" />
+												<f:validateRegex pattern="[a-zA-Z0-9]+[a-zA-Z ]+" />
+											</h:inputText>
+											<h:message for="direccion" style="color:red" />
+										</div>
+										<div class="form-group">
+											<label>Ingrese Telefono</label>
+											<h:inputText id="tel"
+												value="#{empleadoBean.newEmpleado.telefono}" type="text"
+												placeholder="Joe Down"
+												class="form-control form-control-line" required="true"
+												validatorMessage="Ingresar solo números" label=" ">
+												<f:validateLength maximun="10" />
+												<f:validateRegex pattern="[0-9]+" />
+											</h:inputText>
+											<h:message for="tel" style="color:red" />
+										</div>
+										<div class="form-group">
+											<label>Ingrese Correo</label>
+											<h:inputText id="corr"
+												value="#{empleadoBean.newEmpleado.correo}" type="text"
+												placeholder="email@gmail.com"
+												class="form-control form-control-line" required="true"
+												validatorMessage="Ingresar correo valido" label=" ">
+												<f:validateRegex
+													pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" />
+											</h:inputText>
+											<h:message for="corr" style="color:red" />
+
+										</div>
+										<div class="form-group">
+											<label class="col-sm-12">Rol</label>
+											<div class="col-sm-12">
+
+												<h:selectOneMenu id="combo" required="true" label=" " value="#{empleadoBean.tipoEmpleado}">
+													<f:selectItem itemValue="Administrador"
+														itemLabel="Administrador" />
+													<f:selectItem itemValue="Cajero" itemLabel="Cajero" />
+													<f:selectItem itemValue="Asistente Captaciones"
+														itemLabel="Asistente Captacione" />
+
+												</h:selectOneMenu>
+											</div>
+										</div>
+													<br> </br>
+										<div>
+											<br> </br>
+											 <button type="submit" name="REGISTRAR"
+												value="REGISTRAR"
+												action="#{empleadoBean.doRegistrarEmpleado()}"
+												class="btn btn-success btn-lg"
+												style="width: 200px; height: 50px; color: orange"> </button>
+											<p:confirm header="Confirmacion"
+												message="¿Desea guardar el Empleado"
+												icon="pi pi-exclamation-triangle" />
+
+
+											<p:confirmDialog global="true" showEffect="fade"
+												hideEffect="fade">
+												<p:commandButton value="SI" type="button"
+													styleClass="ui-confirmdialog-yes" icon="pi pi-check" />
+												<p:commandButton value="NO" type="button"
+													styleClass="ui-confirmdialog-no" icon="pi pi-times" />
+											</p:confirmDialog>
+											<br> </br>
+											<div class="form-group">
+												<label>Usuario</label>
+												<h:inputText id="usuario"
+													value="#{empleadoBean.obtenerUsuario()}" type="text"
+													placeholder="" disabled="#{!bean.permissionToWrite}"
+													class="form-control form-control-line" required="true" />
+					
+											</div>
+											<br> </br>
+ 
+										</div>
+									</h:form>
+
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+
+</h:body>
+
+</html>

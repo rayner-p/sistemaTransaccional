@@ -4,7 +4,10 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 @Entity
 @Table(name="parametrizar")
@@ -15,7 +18,12 @@ public class Parametrizar implements Serializable{
 	private String minimo;
 	@Column(length=4)
 	private String maximo;
-	@Column(length=4)
+	@OneToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="cedula_empleado")
+	private Empleado empleado;
+	
+
+	@Column(name = "tasa_interes")
 	private double tasaInteres;
 	
 	public String getMinimo() {
@@ -35,6 +43,12 @@ public class Parametrizar implements Serializable{
 	}
 	public void setTasaInteres(int tasaInteres) {
 		this.tasaInteres = tasaInteres;
+	}
+	public Empleado getEmpleado() {
+		return empleado;
+	}
+	public void setEmpleado(Empleado empleado) {
+		this.empleado = empleado;
 	}
 	
 	

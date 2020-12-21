@@ -1,0 +1,138 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>USUARIOS ADMINISTRATIVOS</h:head>
+<body>
+	<ui:composition template="template/templateAdmin.xhtml">
+		<ui:define name="title"> Buscar Empleado</ui:define>
+		<ui:param name="nombre" value="#{loginBean.empleado.nombres}" />
+		<ui:define name="content">
+		<h:form role="form">
+				<div class="row">
+					<div class="col-lg-12">
+						<div class="panel panel-default">
+
+							<div class="panel-body">
+
+								<p:growl id="message" showDetail="true" class="ui-growl"
+									life="4000" />
+
+								<div class="form-group">
+									
+										<label>Cedula</label>
+										<h:inputText id="cedula"
+											value="#{empleadoBean.newEmpleado.cedula}" maxlength="10"
+											class="form-control">
+											
+											<f:ajax event="blur" render="valueError" />
+										</h:inputText>
+										<h:outputText id="valueError"
+											value="#{empleadoBean.valCedula()}" style="color: green;" />
+
+										<div class="col-sm-8">
+											<h:commandButton action="#{empleadoBean.doBuscarEmpleado()}"
+												value="BUSCAR" style="color: black; backgroundcolor: orage"
+												class="btn btn-default" />
+										</div>
+
+									</div>
+									<br/>
+									<br/>
+									<br/>
+									<div class="form-group">
+										<label> Nombres </label>
+										<h:inputText id="nombre"
+											value="#{empleadoBean.newEmpleado.nombres}" type="text"
+											class="form-control form-control-line" required="true"
+											disabled="#{!bean.permissionToWrite}">
+
+										</h:inputText>
+
+									</div>
+									<div class="form-group">
+										<label> Apellidos </label>
+										<h:inputText id="apellido"
+											value="#{empleadoBean.newEmpleado.apellidos}" type="text"
+											class="form-control form-control-line" required="true"
+											disabled="#{!bean.permissionToWrite}">
+
+										</h:inputText>
+
+									</div>
+									<div class="form-group">
+										<label id="fechaNacimiento" placeholder="yyyy/mm/dd">Fecha
+											Nacimiento</label>
+										<h:inputText
+											value="#{empleadoBean.newEmpleado.fechaNacimiento}"
+											disabled="#{!bean.permissionToWrite}">
+											<f:convertDateTime pattern="yyyy/MM/dd" />
+											<f:validateLength maximun="100"
+												 />
+										</h:inputText>
+									</div>
+									<div class="form-group">
+										<label>Ingrese Direccion</label>
+										<h:inputText id="direccion"
+											value="#{empleadoBean.newEmpleado.direccion}" type="text"
+											placeholder="Joe Down" class="form-control form-control-line"
+											required="true" disabled="#{!bean.permissionToWrite}">
+											<f:validateLength maximun="100" />
+											<f:validateRegex pattern="[a-zA-Z0-9]+[a-zA-Z ]+" />
+										</h:inputText>
+
+									</div>
+									<div class="form-group">
+										<label>Ingrese Telefono</label>
+										<h:inputText id="tel"
+											value="#{empleadoBean.newEmpleado.telefono}" type="text"
+											placeholder="Joe Down" class="form-control form-control-line"
+											required="true" disabled="#{!bean.permissionToWrite}">
+											<f:validateLength maximun="10" />
+											<f:validateRegex pattern="[0-9]+" />
+										</h:inputText>
+
+									</div>
+									<div class="form-group">
+										<label>Ingrese Correo</label>
+										<h:inputText id="corr"
+											value="#{empleadoBean.newEmpleado.correo}" type="text"
+											class="form-control form-control-line" required="true"
+											disabled="#{!bean.permissionToWrite}">
+										</h:inputText>
+
+
+									</div>
+									<br />
+									<div class="form-group">
+										<label class="col-sm-12">Rol</label>
+										<div class="col-sm-12">
+
+											<h:selectOneMenu id="combo" required="true" label=" "
+												value="#{empleadoBean.newEmpleado.rol}"
+												disabled="#{!bean.permissionToWrite}">
+												<f:selectItem itemValue="Administrador"
+													itemLabel="Administrador" />
+												<f:selectItem itemValue="Cajero" itemLabel="Cajero" />
+												<f:selectItem itemValue="Asistente Captaciones"
+													itemLabel="Asistente Captacione" />
+
+											</h:selectOneMenu>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				
+			</h:form>
+
+
+
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

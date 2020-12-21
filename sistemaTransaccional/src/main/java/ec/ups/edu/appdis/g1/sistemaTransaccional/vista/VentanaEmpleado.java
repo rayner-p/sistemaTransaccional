@@ -24,6 +24,8 @@ public class VentanaEmpleado {
 	private JTextField txtDireccion;
 	private JTextField txtCorreo;
 	private JTextField txtTelefono;
+	private JTextField txtUsuario;
+	private JTextField txtContrasenia;
 
 	/**
 	 * Launch the application.
@@ -53,7 +55,7 @@ public class VentanaEmpleado {
 	 */
 	private void initialize() {
 		frame = new JFrame();
-		frame.setBounds(100, 100, 450, 470);
+		frame.setBounds(100, 100, 450, 515);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		JPanel panel = new JPanel();
@@ -90,7 +92,7 @@ public class VentanaEmpleado {
 		
 		JButton btnGuardar = new JButton("REGISTRAR");
 		btnGuardar.setBackground(Color.ORANGE);
-		btnGuardar.setBounds(299, 419, 145, 29);
+		btnGuardar.setBounds(299, 464, 145, 29);
 		panel.add(btnGuardar);
 		
 		JTextPane textPane = new JTextPane();
@@ -146,5 +148,27 @@ public class VentanaEmpleado {
 		cmbRol.setBackground(new Color(192, 192, 192));
 		cmbRol.setBounds(179, 352, 172, 27);
 		panel.add(cmbRol);
+		
+		JLabel lblUsuario = new JLabel("Usuario");
+		lblUsuario.setBounds(16, 395, 307, 16);
+		panel.add(lblUsuario);
+		
+		JLabel lblContrasenia = new JLabel("Contraseña");
+		lblContrasenia.setBounds(16, 436, 307, 16);
+		panel.add(lblContrasenia);
+		
+		txtUsuario = new JTextField();
+		txtUsuario.setEnabled(false);
+		txtUsuario.setEditable(false);
+		txtUsuario.setBounds(179, 390, 144, 26);
+		panel.add(txtUsuario);
+		txtUsuario.setColumns(10);
+		
+		txtContrasenia = new JTextField();
+		txtContrasenia.setEnabled(false);
+		txtContrasenia.setEditable(false);
+		txtContrasenia.setColumns(10);
+		txtContrasenia.setBounds(179, 431, 144, 26);
+		panel.add(txtContrasenia);
 	}
 }

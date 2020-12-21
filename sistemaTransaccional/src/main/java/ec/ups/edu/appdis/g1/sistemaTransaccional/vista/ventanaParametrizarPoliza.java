@@ -13,6 +13,7 @@ import javax.swing.JRadioButton;
 import java.awt.Color;
 import javax.swing.JButton;
 import javax.swing.JTextField;
+import javax.swing.JTable;
 
 public class ventanaParametrizarPoliza {
 
@@ -20,6 +21,7 @@ public class ventanaParametrizarPoliza {
 	private JTextField textField;
 	private JTextField textField_1;
 	private JTextField tasaInteres;
+	private JTable table;
 
 	/**
 	 * Launch the application.
@@ -66,10 +68,6 @@ public class ventanaParametrizarPoliza {
 		lblTasaDeInteres.setBounds(33, 149, 123, 16);
 		panel.add(lblTasaDeInteres);
 		
-		JTabbedPane tblDatos = new JTabbedPane(JTabbedPane.TOP);
-		tblDatos.setBounds(61, 191, 337, 160);
-		panel.add(tblDatos);
-		
 		JLabel lblTiempo_1 = new JLabel("TIEMPO DIAS");
 		lblTiempo_1.setBounds(33, 77, 94, 16);
 		panel.add(lblTiempo_1);
@@ -101,5 +99,9 @@ public class ventanaParametrizarPoliza {
 		tasaInteres.setColumns(10);
 		tasaInteres.setBounds(166, 144, 53, 26);
 		panel.add(tasaInteres);
+		
+		table = new JTable();
+		table.setBounds(111, 228, 235, 104);
+		panel.add(table);
 	}
 }
