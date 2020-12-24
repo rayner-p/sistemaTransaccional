@@ -1,11 +1,63 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:h="http://java.sun.com/jsf/html"> 
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
 
-<h:head></h:head> 
-<body> 
+<h:head>USUARIOS ADMINISTRATIVOS</h:head>
+<body>
+	<ui:composition template="template/templateAdmin.xhtml">
+		<ui:define name="title">Parametrizar</ui:define>
+		<ui:param name="nombre" value="#{loginBean.empleado.nombres}" />
+		<ui:define name="content">
+			<h:form role="form">
 
-</body> 
+				<h:panelGrid columns="8">
+
+					<h:outputLabel value="Rango minimo (Dias)" for="fechainicio" />
+					<h:inputText class="form-control" type="text" id="fechainicio"
+						value="#{parametrizarBean.newParametros.minimo}"
+						style="width:100px;" />
+
+					<h:outputLabel value="Rango maximo (Dias)" for="fechaFin" />
+					<h:inputText class="form-control" type="text" id="fechaFin"
+						value="#{parametrizarBean.newParametros.maximo}"
+						style="width:100px;" />
+
+					<h:outputLabel value="Tasa interes" for="tasaInt" />
+					<h:inputText class="form-control" type="text" id="tasaInt"
+						value="#{parametrizarBean.tasa}" style="width:100px;" />
+
+
+				</h:panelGrid>
+				<br></br>
+				<h:panelGrid columns="6">
+					<h:commandButton value="PARAMETRIZAR"
+						action="#{parametrizarBean.registrarParametros()}"
+						style="width:240px" />
+				</h:panelGrid>
+				<h:dataTable value="#{parametrizarBean.listaP}"
+					var="cuentaT" class="table" editable="false">
+
+					<h:column headerText="Cuenta">
+						<h:outputText value="#{cuentaT.maximo}" />
+					</h:column>
+
+					<h:column headerText="Saldo">
+
+						<h:outputText value="#{cuentaT.minimo}" />
+					</h:column>
+
+				</h:dataTable>
+
+
+
+
+			</h:form>
+
+
+		</ui:define>
+	</ui:composition>
+</body>
 </html>

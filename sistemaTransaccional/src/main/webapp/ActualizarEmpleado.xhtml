@@ -4,7 +4,6 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:p="http://primefaces.org/ui">
-
 <h:head>USUARIOS ADMINISTRATIVOS</h:head>
 <body>
 	<ui:composition template="template/templateAdmin.xhtml">
@@ -31,10 +30,12 @@
 									</h:inputText>
 									<h:outputText id="valueError"
 										value="#{empleadoBean.valCedula()}" style="color: green;" />
-									<div class="col-sm-2">
-										<h:commandButton action="#{empleadoBean.doBuscarEmpleado()}"
-											value="BUSCAR" style="color: black; backgroundcolor: orage"
+									<div class="col-sm-2" style="text-align: left;">
+										<h:commandButton action="#{clienteBean.doBuscoCliente()}"
+											value="BUSCAR"
+											style="width: 200px; height: 50px; background-color: orange; color: black;"
 											class="btn btn-default" />
+
 									</div>
 
 								</div>
@@ -44,7 +45,6 @@
 									<h:inputText id="nombre"
 										value="#{empleadoBean.newEmpleado.nombres}" type="text"
 										class="form-control form-control-line">
-
 									</h:inputText>
 
 								</div>
@@ -81,7 +81,7 @@
 									<h:inputText id="direccion"
 										value="#{empleadoBean.newEmpleado.direccion}" type="text"
 										placeholder="Joe Down" class="form-control form-control-line">
-										
+
 									</h:inputText>
 
 								</div>
@@ -108,15 +108,14 @@
 										</h:selectOneMenu>
 									</div>
 								</div>
-
-								
 								<div class="col-sm-2">
-										 <button type="submit" name="ACTUALIZAR"
-												value="#{empleadoBean.doActualizacion()}"
-												class="btn btn-success btn-lg"
-												style="width: 200px; height: 50px; color: orange"> </button>
+									<h:commandButton action="#{empleadoBean.doActualizacion()}"
+										value="ACTUALIZAR"
+										style="width: 200px; height: 50px; background-color: orange; color: black;"
+										class="btn btn-default" />
+									
 								</div>
-								
+
 
 							</div>
 						</div>

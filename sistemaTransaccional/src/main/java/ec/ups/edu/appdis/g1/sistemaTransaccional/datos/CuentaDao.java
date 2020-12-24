@@ -55,7 +55,7 @@ public class CuentaDao {
 	 * @return Lista de cuentas de ahorros que estan registradas en la base de datos
 	 */
 	public List<Cuenta> obtenerCuenta() {
-		String jpql = "SELECT c FROM CuentaDeAhorro c ";
+		String jpql = "SELECT c FROM Cuenta c ";
 
 		Query q = em.createQuery(jpql, Cuenta.class);
 		return q.getResultList();

@@ -23,12 +23,22 @@ public class ParametrizarDao {
 		
 		
 	}
+	
+	/** 
+	 * Metodo que permite insertar una Parametrizacióm de las pólizas dentro de la base de datos por emdio de JPA
+	 * @param   parametros  parametros que se va a usar  los servicios
+	 * @return true  devuelve verdadero en caso de que el Empleado exista.
+	 */
 	public boolean insertar(Parametrizar parametros) throws SQLException {
 		em.persist(parametros);
 		return true;
 		
 	}
-	
+	/** 
+	 * Metodo que permite obtener los Parametros que se crearon anteriormente
+	 * 
+	 * @return listado Una lista con todos los parametros ingresado
+	 */
 	public List<Parametrizar> obtenerParametros (){
 		String jpql = "SELECT c FROM Parametrizar c";
 		Query q = em.createQuery(jpql, Empleado.class);

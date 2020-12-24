@@ -47,7 +47,7 @@
 										<label> Nombres </label>
 										<h:inputText id="nombre"
 											value="#{empleadoBean.newEmpleado.nombres}" type="text"
-											class="form-control form-control-line" required="true"
+											class="form-control form-control-line" 
 											disabled="#{!bean.permissionToWrite}">
 
 										</h:inputText>
@@ -57,7 +57,7 @@
 										<label> Apellidos </label>
 										<h:inputText id="apellido"
 											value="#{empleadoBean.newEmpleado.apellidos}" type="text"
-											class="form-control form-control-line" required="true"
+											class="form-control form-control-line" 
 											disabled="#{!bean.permissionToWrite}">
 
 										</h:inputText>
@@ -108,17 +108,17 @@
 									</div>
 									<br />
 									<div class="form-group">
-										<label class="col-sm-12">Rol</label>
+										<label class="col-sm-12">Estado Civil</label>
 										<div class="col-sm-12">
 
 											<h:selectOneMenu id="combo" required="true" label=" "
 												value="#{empleadoBean.newEmpleado.rol}"
 												disabled="#{!bean.permissionToWrite}">
-												<f:selectItem itemValue="Administrador"
-													itemLabel="Administrador" />
-												<f:selectItem itemValue="Cajero" itemLabel="Cajero" />
-												<f:selectItem itemValue="Asistente Captaciones"
-													itemLabel="Asistente Captacione" />
+												<f:selectItem itemValue="Soltero/a" itemLabel="Soltero/a" />
+													<f:selectItem itemValue="Casado/a" itemLabel="Casado/a" />
+													<f:selectItem itemValue="Divorciado/a"
+														itemLabel="Divorciado/a" />
+													<f:selectItem itemValue="Viudo/a" itemLabel="Viudo/a)" />
 
 											</h:selectOneMenu>
 										</div>

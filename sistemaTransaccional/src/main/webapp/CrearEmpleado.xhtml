@@ -131,21 +131,22 @@
 													<br> </br>
 										<div>
 											<br> </br>
-											 <button type="submit" name="REGISTRAR"
-												value="REGISTRAR"
-												action="#{empleadoBean.doRegistrarEmpleado()}"
-												class="btn btn-success btn-lg"
-												style="width: 200px; height: 50px; color: orange"> </button>
+											<h:commandButton action="#{empleadoBean.doRegistrarEmpleado()}" 
+											class="btn btn-success btn-lg" 
+											value="REGISTRAR"
+											style="width: 200px; height: 50px; background-color: orange; color: black;"
+											 />
+										 
 											<p:confirm header="Confirmacion"
 												message="¿Desea guardar el Empleado"
 												icon="pi pi-exclamation-triangle" />
-
+									
 
 											<p:confirmDialog global="true" showEffect="fade"
 												hideEffect="fade">
-												<p:commandButton value="SI" type="button"
+												<h:commandButton value="SI" type="button"
 													styleClass="ui-confirmdialog-yes" icon="pi pi-check" />
-												<p:commandButton value="NO" type="button"
+												<h:commandButton value="NO" type="button"
 													styleClass="ui-confirmdialog-no" icon="pi pi-times" />
 											</p:confirmDialog>
 											<br> </br>

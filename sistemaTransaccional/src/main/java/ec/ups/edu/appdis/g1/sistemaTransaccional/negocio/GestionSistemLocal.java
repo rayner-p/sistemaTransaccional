@@ -51,6 +51,10 @@ public interface GestionSistemLocal {
 	public void guardarSesionCliente(SesionCliente sesionCliente);
 	public void actaulizarCliente(Cliente cliente) throws Exception;
 	public List<Cliente> getClienteT();
+	public Cuenta buscarCuentaD(String cedulaCliente);
+	public void guardarCuentaDeAhorros(Cuenta c);
+	public List<Parametrizar> obtenerParametros ();
+	public Cliente usuarioCliente(String usuario, String contra) throws Exception;
 
 
 

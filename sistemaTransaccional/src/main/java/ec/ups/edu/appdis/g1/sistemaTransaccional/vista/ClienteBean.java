@@ -1,5 +1,6 @@
 package ec.ups.edu.appdis.g1.sistemaTransaccional.vista;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -12,6 +13,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import ec.ups.edu.appdis.g1.sistemaTransaccional.modelo.Cliente;
+import ec.ups.edu.appdis.g1.sistemaTransaccional.modelo.Cuenta;
 import ec.ups.edu.appdis.g1.sistemaTransaccional.modelo.Empleado;
 import ec.ups.edu.appdis.g1.sistemaTransaccional.modelo.SesionCliente;
 import ec.ups.edu.appdis.g1.sistemaTransaccional.negocio.GestionSistemLocal;
@@ -27,11 +29,22 @@ public class ClienteBean implements Serializable {
 	private boolean ced;
 	private Cliente newCliente;
 	private List<SesionCliente> lstSesionesCliente;
+	private List<Cuenta> cuentaCLientes;
 	private String cedu;
 	private String usuario;
 	private String contrasenia;
 	private String tipoEstado;
 	private int tiempo;
+	private List<String> cuentasK;
+	private Cuenta c;
+
+	public List<String> getCuentasK() {
+		return cuentasK;
+	}
+
+	public void setCuentasK(List<String> cuentasK) {
+		this.cuentasK = cuentasK;
+	}
 
 	public int getTiempo() {
 		return tiempo;
@@ -47,6 +60,14 @@ public class ClienteBean implements Serializable {
 
 	public void setTipoEstado(String tipoEstado) {
 		this.tipoEstado = tipoEstado;
+	}
+
+	public List<Cuenta> getCuentaCLientes() {
+		return cuentaCLientes;
+	}
+
+	public void setCuentaCLientes(List<Cuenta> cuentaCLientes) {
+		this.cuentaCLientes = cuentaCLientes;
 	}
 
 	@Inject
@@ -132,9 +153,9 @@ public class ClienteBean implements Serializable {
 	}
 
 	/**
-	 * Metodo para guardar datos del Empleado
+	 * Metodo para generar usuarios aleatorios  del cliente
 	 * 
-	 * @return La paguina con la lista de los Empleados registrados
+	 * @return usuario el nombre con elq ue se debe logear el cliente
 	 */
 
 	public String obtenerUsuario() {
@@ -144,6 +165,11 @@ public class ClienteBean implements Serializable {
 		System.out.println("Se ha generado un nombre de usuario al azar");
 		return usuario;
 	}
+	/**
+	 * Metodo para generar usuarios aleatorios  del cliente
+	 * 
+	 * @return usuario el nombre con elq ue se debe logear el cliente
+	 */
 
 	public String generarContrasena() {
 		contrasenia = on.generarContrasenia();
@@ -153,6 +179,11 @@ public class ClienteBean implements Serializable {
 		return contrasenia;
 
 	}
+	/**
+	 * Metodo para registrar el correo cuando se cree el cliente 
+	 * 
+	 * 
+	 */
 
 	public String registrarCorreo() {
 		System.out.println("entras al correo?   " + "" + usuario + contrasenia);
@@ -189,16 +220,20 @@ public class ClienteBean implements Serializable {
 		return null;
 
 	}
-
+	/**
+	 * Metodo para registrar el correo cuando se cree el cliente 
+	 * 
+	 * 
+	 */
 	public String doRegistraCliente() {
 
 		System.out.println(this.newCliente.getCedula() + "   " + this.newCliente.getNombres() + tipoEstado);
-		
+
 		try {
-			 if (tipoEstado.equalsIgnoreCase("Soltero/o")) {
-				 System.out.println(tipoEstado);
+			if (tipoEstado.equalsIgnoreCase("Soltero/o")) {
+				System.out.println(tipoEstado);
 				System.out.println("ENTRA AL IF PARA CREAR CLIENTE");
-				//newCliente.setTiempoResidencia(tiempo);
+				// newCliente.setTiempoResidencia(tiempo);
 				newCliente.setEstadoCivil("Soltero(a)");
 				obtenerUsuario();
 				generarContrasena();
@@ -215,7 +250,7 @@ public class ClienteBean implements Serializable {
 				}
 			} else if (tipoEstado.equalsIgnoreCase("Casado/a")) {
 				System.out.println("ENTRA AL IF PARA CREAR CLIENTE");
-			//newCliente.setTiempoResidencia(tiempo);
+				// newCliente.setTiempoResidencia(tiempo);
 				newCliente.setEstadoCivil("Casado(a)");
 				obtenerUsuario();
 				generarContrasena();
@@ -230,10 +265,9 @@ public class ClienteBean implements Serializable {
 					System.out.println("error guardar Cliente con correo");
 					e.printStackTrace();
 				}
-			} 
-			else if (tipoEstado.equalsIgnoreCase("Divorciado/a")) {
+			} else if (tipoEstado.equalsIgnoreCase("Divorciado/a")) {
 				System.out.println("ENTRA AL IF PARA CREAR CLIENTE");
-				//newCliente.setTiempoResidencia(tiempo);
+				// newCliente.setTiempoResidencia(tiempo);
 				newCliente.setEstadoCivil("Divorciado(a)");
 				obtenerUsuario();
 				generarContrasena();
@@ -247,10 +281,9 @@ public class ClienteBean implements Serializable {
 					System.out.println("error guardar Cliente con correo");
 					e.printStackTrace();
 				}
-			}
-			else if (tipoEstado.equalsIgnoreCase("Viudo/a")) {
+			} else if (tipoEstado.equalsIgnoreCase("Viudo/a")) {
 				System.out.println("ENTRA AL IF PARA CREAR CLIENTE");
-			//	newCliente.setTiempoResidencia(tiempo);
+				// newCliente.setTiempoResidencia(tiempo);
 				newCliente.setEstadoCivil("Viudo(a)");
 				obtenerUsuario();
 				generarContrasena();
@@ -264,7 +297,7 @@ public class ClienteBean implements Serializable {
 					System.out.println("error guardar Cliente con correo");
 					e.printStackTrace();
 				}
-			} 
+			}
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -284,9 +317,9 @@ public class ClienteBean implements Serializable {
 		// FacesContext.getCurrentInstance().addMessage(null, message);
 	}
 
-	public String doBuscarEmpleado() {
+	public String doBuscoCliente() {
 		try {
-			System.out.println("ENTRAS A BUSCAR DATOS?");
+			System.out.println("ENTRAS A BUSCAR DATOS CLIENTES?");
 			Cliente emple = on.buscarCliente(newCliente.getCedula());
 			System.out.println("ESTOS SON DATOS RECOGIDOS DEL USUARIO" + emple);
 			newCliente.setNombres(emple.getNombres());
@@ -302,6 +335,14 @@ public class ClienteBean implements Serializable {
 			newCliente.setTiempoResidencia(emple.getTiempoResidencia());
 			newCliente.setEstadoCivil(emple.getEstadoCivil());
 			newCliente.setReferenciaDomicilio(emple.getReferenciaDomicilio());
+			newCliente.setCuentaCliente(emple.getCuentaCliente());
+			cuentasK = new ArrayList<String>();
+			for (int i = 0; i < emple.getCuentaCliente().size(); i++) {
+				System.out.println(emple.getCuentaCliente().get(i).getNumeroCuenta());
+				cuentasK.add(emple.getCuentaCliente().get(i).getNumeroCuenta());
+				System.out.println("CUENTAS TOTAL " + cuentasK);
+			}
+			System.out.println("CUENTA CLIENTES BUSQEUDA" + emple.getCuentaCliente().get(0));
 
 			// usuarioAntiguo = emple.getUsuario();
 			// contrasenaAntigua = emple.getContrasenia();
@@ -328,6 +369,20 @@ public class ClienteBean implements Serializable {
 			System.out.println("retornas?");
 			FacesContext contex = FacesContext.getCurrentInstance();
 			contex.getExternalContext().redirect("Admin.xhtml");
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public String doIniciarSesiónCliente() {
+		try {
+			on.IniciarSesion(newCliente.getUsuario(), newCliente.getContrasenia());
+			System.out.println("retornas?");
+			FacesContext contex = FacesContext.getCurrentInstance();
+			contex.getExternalContext().redirect("templateCliente.xhtml");
 
 		} catch (Exception e) {
 
@@ -389,6 +444,25 @@ public class ClienteBean implements Serializable {
 			}
 		}
 		return " ";
+	}
+
+	/**
+	 * Metodo que permite asignar un valor al atributo buscarCuentaDeAhorro de la
+	 * clase
+	 * 
+	 * @param buscarCuentaDeAhorro Variable asignada al atributo
+	 *                             buscarCuentaDeAhorro de la clase
+	 */
+	public void setBuscarCuentaDeAhorro(Cuenta buscarCuentaDeAhorro) {
+		// c = on.buscarCuentaD(newCliente.getCuentaCliente());
+	}
+
+	public Cuenta getC() {
+		return c;
+	}
+
+	public void setC(Cuenta c) {
+		this.c = c;
 	}
 
 }

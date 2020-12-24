@@ -30,15 +30,30 @@ public class EmpleadoDao {
 	public  EmpleadoDao() {
 		// TODO Auto-generated constructor stub
 	}
+	/** 
+	 * Metodo que permite insertar un Empleado dentro de la base de datos por emdio de JPA
+	 * @param   cliente  Cliente que se va a usar  los servicios
+	 * @return true  devuelve verdadero en caso de que el Empleado exista.
+	 */
 	public boolean insert (Empleado empleado) throws SQLException {
 		em.persist(empleado);
 		return true;
 	}
+	/** 
+	 * Metodo que permite buscar  un Empleado a traves de la base por medio de JPA
+	 * @param   cedula varianle que se ingresa para la consulta
+	 * @return empleado Cliente cuya cedula es igual a la que se ingresa
+	 */
 	public Empleado read(String cedula) {
 		Empleado empleado = new Empleado();
 		empleado = em.find(Empleado.class, cedula);
 		return empleado;
 	}
+	/** 
+	 * Metodo que permite obtener una lista de Empleado a tra ves de JPA
+	 * 2
+	 * @return listado  lista de todos los Empleado que tiene la base;
+	 */
 	public boolean update (Empleado empleado) {
 		em.merge(empleado);
 		return true;
@@ -48,6 +63,11 @@ public class EmpleadoDao {
 		em.remove(emple);
 		return true;
 	}
+	/** 
+	 * Metodo que permite actualizar Empleado
+	 * @param  cliente Empleado cuyos datos se quiere actualizr
+	 * @return true si se realiza la actualziacion devuelve cerdadero
+	 */
 	public List<Empleado> getEmpleados(){
 		String jpql = "SELECT c FROM Empleado c";
 		Query q = em.createQuery(jpql, Empleado.class);

@@ -21,11 +21,21 @@ public class TransaccionDao {
 	public TransaccionDao() {
 		// TODO Auto-generated constructor stub
 	}
+	/** 
+	 * Metodo que permite insertar una transaccion dentro de la base de datos por emdio de JPA
+	 * @param   transaccion  transaccion que se va a usar  los servicios
+	 * @return true  devuelve verdadero en caso de que el cliente exista.
+	 */
 	public boolean insertarTransaccion(Transaccion transaccion) {
 		em.persist(transaccion);
 		return true;
 		
 	}
+	/** 
+	 * Metodo que permite listar todas las  transacciones dentro de la base
+	 * 
+	 * @return listado si se realiza la actualziacion devuelve la lista con todos los datos existentes
+	 */
 	public List<Transaccion> obtenerTransaccion (){
 		String jpql = "SELECT c FROM Parametrizar c";
 		Query q = em.createQuery(jpql, Empleado.class);

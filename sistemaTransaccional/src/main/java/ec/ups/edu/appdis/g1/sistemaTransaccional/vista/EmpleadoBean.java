@@ -30,6 +30,8 @@ public class EmpleadoBean implements Serializable {
 	private String cedu;
 	private String usuario;
 	private String contrasenia;
+	@Inject
+	private LoginBean loginB;
 
 
 	@Inject
@@ -179,9 +181,12 @@ public class EmpleadoBean implements Serializable {
 		CompletableFuture.runAsync(() -> {
 			try {
 
-				System.out.println("VALE EL CORREO?");
-				on.enviarCorreo(destinatario, asunto, cuerpo);
-				System.out.println("SE ha enviado un correo a: " + "\n" + "" + newEmpleado.getCorreo() + "");
+				
+					System.out.println("VALE EL CORREO?");
+					on.enviarCorreo(destinatario, asunto, cuerpo);
+					System.out.println("SE ha enviado un correo a: " + "\n" + "" + newEmpleado.getCorreo() + "");
+			
+				
 
 			} catch (Exception e) {
 				System.out.println("Error al enviar correo con contrasenia");
@@ -203,11 +208,19 @@ public class EmpleadoBean implements Serializable {
 				generarContrasena();
 
 				try {
-					on.registarEmpleado(newEmpleado);
+					
 
-					addMessage("Confirmacion", "Empleado Guardado");
-					registrarCorreo();
-					addMessage("Confirmacion", "Correo Enviado");
+					if(newEmpleado.getCedula().isEmpty() && newEmpleado.getNombres().isEmpty() 
+							&& newEmpleado.getApellidos().isEmpty() && newEmpleado.getCorreo().isEmpty()
+							&& newEmpleado.getRol().isEmpty()) {
+							System.out.println("Ingrese los datos priemero");
+							on.registarEmpleado(newEmpleado);
+					}else {
+						addMessage("Confirmacion", "Empleado Guardado");
+						registrarCorreo();
+						addMessage("Confirmacion", "Correo Enviado");
+					}
+					
 				} catch (Exception e) {
 					System.out.println("error guardar empleado con correo");
 					e.printStackTrace();
@@ -218,11 +231,16 @@ public class EmpleadoBean implements Serializable {
 				generarContrasena();
 
 				try {
-					on.registarEmpleado(newEmpleado);
-
-					addMessage("Confirmacion", "Empleado Guardado");
-					registrarCorreo();
-					addMessage("Confirmacion", "Correo Enviado");
+					if(newEmpleado.getCedula().isEmpty() && newEmpleado.getNombres().isEmpty() 
+							&& newEmpleado.getApellidos().isEmpty() && newEmpleado.getCorreo().isEmpty()
+							&& newEmpleado.getRol().isEmpty()) {
+							System.out.println("Ingrese los datos priemero");
+							on.registarEmpleado(newEmpleado);
+					}else {
+						addMessage("Confirmacion", "Empleado Guardado");
+						registrarCorreo();
+						addMessage("Confirmacion", "Correo Enviado");
+					}
 				} catch (Exception e) {
 					System.out.println("error guardar empleado con correo");
 					e.printStackTrace();
@@ -232,11 +250,16 @@ public class EmpleadoBean implements Serializable {
 				obtenerUsuario();
 				generarContrasena();
 				try {
-					on.registarEmpleado(newEmpleado);
-
-					addMessage("Confirmacion", "Empleado Guardado");
-					registrarCorreo();
-					addMessage("Confirmacion", "Correo Enviado");
+					if(newEmpleado.getCedula().isEmpty() && newEmpleado.getNombres().isEmpty() 
+							&& newEmpleado.getApellidos().isEmpty() && newEmpleado.getCorreo().isEmpty()
+							&& newEmpleado.getRol().isEmpty()) {
+							System.out.println("Ingrese los datos priemero");
+							on.registarEmpleado(newEmpleado);
+					}else {
+						addMessage("Confirmacion", "Empleado Guardado");
+						registrarCorreo();
+						addMessage("Confirmacion", "Correo Enviado");
+					}
 				} catch (Exception e) {
 					System.out.println("error guardar empleado con correo");
 					e.printStackTrace();
@@ -285,19 +308,7 @@ public class EmpleadoBean implements Serializable {
 		return null;
 	}
 
-	public String doIniciarSesiónEmpleado() {
-		try {
-			on.IniciarSesion(newEmpleado.getUsuario(), newEmpleado.getContrasenia());
-			System.out.println("retornas?");
-			FacesContext contex = FacesContext.getCurrentInstance();
-			contex.getExternalContext().redirect("Admin.xhtml");
-
-		} catch (Exception e) {
-
-			e.printStackTrace();
-		}
-		return null;
-	}
+	
 	public String doEliminar() {
 		try {
 			System.out.println("cedula eliminar"+newEmpleado.getCedula());

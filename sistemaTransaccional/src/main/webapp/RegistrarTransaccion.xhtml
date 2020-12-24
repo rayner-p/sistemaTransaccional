@@ -1,0 +1,201 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:h="http://java.sun.com/jsf/html">
+
+
+<h:head>USUARIOS ADMINISTRATIVOS</h:head>
+<body>
+	<ui:composition template="template/templateAdmin.xhtml">
+		<ui:define name="title"> Apertura Cuenta Cliente</ui:define>
+		<ui:param name="nombre" value="#{loginBean.empleado.nombres}" />
+		<ui:define name="content">
+			<h:form role="form">
+				<div class="row">
+					<div class="col-lg-12">
+						<div class="panel panel-default">
+
+							<div class="panel-body">
+
+								<p:growl id="message" showDetail="true" class="ui-growl"
+									life="4000" />
+
+								<div class="form-group">
+
+									<label>Cedula</label>
+									<h:inputText id="cedula"
+										value="#{clienteBean.newCliente.cedula}" maxlength="10"
+										class="form-control">
+										<f:ajax event="blur" render="valueError" />
+									</h:inputText>
+									<h:outputText id="valueError"
+										value="#{clienteBean.valCedula()}" style="color: green;" />
+									<div class="col-sm-2">
+										<h:commandButton action="#{clienteBean.doBuscoCliente()}"
+											value="BUSCAR" style="color: black; backgroundcolor: orage"
+											class="btn btn-default" />
+									</div>
+
+								</div>
+								<br /> <br /> <br />
+								<div class="form-group">
+									<label> Nombres </label>
+									<h:inputText id="nombre"
+										value="#{clienteBean.newCliente.nombres}" type="text"
+										class="form-control form-control-line"
+										disabled="#{!bean.permissionToWrite}">
+
+									</h:inputText>
+
+								</div>
+								<div class="form-group">
+									<label> Apellidos </label>
+									<h:inputText id="apellido"
+										value="#{clienteBean.newCliente.apellidos}" type="text"
+										class="form-control form-control-line"
+										disabled="#{!bean.permissionToWrite}">
+
+									</h:inputText>
+
+								</div>
+
+								<div class="form-group">
+									<label> Direccion</label>
+									<h:inputText id="direccion"
+										disabled="#{!bean.permissionToWrite}"
+										value="#{clienteBean.newCliente.direccion}" type="text"
+										placeholder="Joe Down" class="form-control form-control-line">
+									</h:inputText>
+
+								</div>
+
+								<div class="form-group">
+									<label> Celular</label>
+									<h:inputText id="celu" disabled="#{!bean.permissionToWrite}"
+										value="#{clienteBean.newCliente.celular}" type="text"
+										placeholder="Joe Down" class="form-control form-control-line">
+									</h:inputText>
+
+								</div>
+								<div class="form-group">
+									<label>Correo</label>
+									<h:inputText id="corr" disabled="#{!bean.permissionToWrite}"
+										value="#{clienteBean.newCliente.correo}" type="text"
+										placeholder="email@gmail.com"
+										class="form-control form-control-line">
+
+									</h:inputText>
+
+								</div>
+
+								<h:dataTable value="#{clienteBean.newCliente.cuentaCliente}"
+									var="cuentaT" class="table" editable="false">
+
+									<h:column headerText="Cuenta">
+										<h:outputText value="#{cuentaT.numeroCuenta}" />
+									</h:column>
+
+									<h:column headerText="Saldo">
+
+										<h:outputText value="#{cuentaT.saldo}" />
+									</h:column>
+
+								</h:dataTable>
+
+								<h:outputLabel for="@next" value="Seleccione Cuenta" />
+								<h:selectOneMenu id="lazy" value="#{clienteBean.cuentasK}"
+									dynamic="true" style="width:125px">
+									<f:selectItem itemLabel="Escoga una" itemValue="" />
+									<f:selectItems value="#{clienteBean.cuentasK}" />
+								</h:selectOneMenu>
+
+
+
+
+
+							</div>
+
+
+						</div>
+
+						<br /> <br /> <br />
+
+						<div class="col-sm-12" style="text-align: center">
+							<label class="col-sm-12">Tipo Transacción</label>
+							<div class="col-sm-12">
+								<h:selectOneMenu id="comboT" required="true" label=" "
+									value="#{cuentaBean.tipoTransacción}">
+									<f:selectItem itemValue="Retiro" itemLabel="Retiro" />
+									<f:selectItem itemValue="Deposito" itemLabel="Deposito" />
+								</h:selectOneMenu>
+							</div>
+
+						</div>
+
+
+						<br /> <br /> <br />
+						<div>
+							<div>
+								<label>Fecha-Hora</label>
+								<h:inputText id="fecha" disabled="#{!bean.permissionToWrite}"
+									value="#{cuentaBean.fechaActual}" type="text"
+									class="form-control form-control-line">
+
+								</h:inputText>
+								<div></div>
+								<div>
+									<br /> <br /> <label>Sucursal</label>
+									<h:inputText id="sucursal"
+										value="#{clienteBean.newCliente.ciudad}"
+										disabled="#{!bean.permissionToWrite}" type="text"
+										class="form-control form-control-line">
+
+									</h:inputText>
+
+								</div>
+								<br />
+								<div>
+									<br /> <br /> <label>Monto Transacción</label>
+									<h:inputText id="monto"
+										value="#{cuentaBean.newTransaccion.monto}" type="text"
+										class="form-control form-control-line">
+										<f:ajax event="blur" render="errorMonto" />
+									</h:inputText>
+									<h:outputText id="errorMonto"
+										value="#{cuentaBean.validarTransaccion()}" style="color: red;" />
+								</div>
+								<br /> <br />
+								<div>
+									<br /> <br /> <label>Empleado</label>
+									<h:inputText id="empleado"
+										disabled="#{!bean.permissionToWrite}"
+										value="#{loginBean.empleado.nombres}" type="text"
+										class="form-control form-control-line">
+
+									</h:inputText>
+								</div>
+							</div>
+							<br /> <br />
+							<div class="col-sm-2">
+								<h:commandButton action="#{cuentaBean.doRegistroTransaccion()}"
+									
+									class="btn btn-success btn-lg"
+									style="width: 200px; height: 50px; color: black; text-align: left; background-color:
+									orange);" />
+								
+
+							</div>
+						</div>
+					</div>
+				</div>
+
+			</h:form>
+
+
+
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

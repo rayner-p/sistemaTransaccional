@@ -1,0 +1,189 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>USUARIOS ADMINISTRATIVOS</h:head>
+<body>
+	<ui:composition template="template/templateAdmin.xhtml">
+		<ui:define name="title"> Apertura Cuenta Cliente</ui:define>
+		<ui:param name="nombre" value="#{loginBean.empleado.nombres}" />
+		<ui:define name="content">
+			<h:form role="form">
+				<div class="row">
+					<div class="col-lg-12">
+						<div class="panel panel-default">
+
+							<div class="panel-body">
+
+								<p:growl id="message" showDetail="true" class="ui-growl"
+									life="4000" />
+
+								<div class="form-group">
+
+									<label>Cedula</label>
+									<h:inputText id="cedula"
+										value="#{clienteBean.newCliente.cedula}" maxlength="10"
+										class="form-control">
+										<f:ajax event="blur" render="valueError" />
+									</h:inputText>
+									<h:outputText id="valueError"
+										value="#{clienteBean.valCedula()}" style="color: green;" />
+									<div class="col-sm-2">
+										<h:commandButton action="#{clienteBean.doBuscoCliente()}"
+											value="BUSCAR" style="color: black; backgroundcolor: orage"
+											class="btn btn-default" />
+									</div>
+
+								</div>
+								<br /> <br /> <br />
+								<div class="form-group">
+									<label> Nombres </label>
+									<h:inputText id="nombre"
+										value="#{clienteBean.newCliente.nombres}" type="text"
+										class="form-control form-control-line"
+										disabled="#{!bean.permissionToWrite}">
+
+									</h:inputText>
+
+								</div>
+								<div class="form-group">
+									<label> Apellidos </label>
+									<h:inputText id="apellido"
+										value="#{clienteBean.newCliente.apellidos}" type="text"
+										class="form-control form-control-line"
+										disabled="#{!bean.permissionToWrite}">
+
+									</h:inputText>
+
+								</div>
+
+								<div class="form-group">
+									<label> Direccion</label>
+									<h:inputText id="direccion"
+										disabled="#{!bean.permissionToWrite}"
+										value="#{clienteBean.newCliente.direccion}" type="text"
+										placeholder="Joe Down" class="form-control form-control-line"
+										validatorMessage="Ingresar una Direccion" label=" ">
+										<f:validateLength maximun="100" />
+										<f:validateRegex pattern="[a-zA-Z0-9]+ [a-zA-Z ]+" />
+									</h:inputText>
+									<h:message for="direccion" style="color:red" />
+								</div>
+								<!--<div class="form-group">
+											<label>Tiempo de residencia</label>
+											<h:inputText id="residencia"
+												value="#{clienteBean.newCliente.tiempoResidencia}"
+												type="text" placeholder="5"
+												class="form-control form-control-line" required="true"
+												validatorMessage="Ingresar sólo el numero del anio"
+												label=" ">
+												<f:convertNumber integerOnly="true" />
+												<f:validateLength maximun="10" />
+												<f:validateRegex pattern="[0-9]+" />
+											</h:inputText>
+											<h:message for="residencia" style="color:red" />
+										</div>  -->
+
+								<div class="form-group">
+									<label> Telefono</label>
+									<h:inputText id="tel2" disabled="#{!bean.permissionToWrite}"
+										value="#{clienteBean.newCliente.telefono}" type="text"
+										placeholder="Joe Down" class="form-control form-control-line"
+										validatorMessage="Ingresar Numero" label=" ">
+										<f:validateLength maximun="10" />
+										<f:validateRegex pattern="[0-9]+" />
+									</h:inputText>
+									<h:message for="tel2" style="color:red" />
+								</div>
+								<div class="form-group">
+									<label> Celular</label>
+									<h:inputText id="celu" disabled="#{!bean.permissionToWrite}"
+										value="#{clienteBean.newCliente.celular}" type="text"
+										placeholder="Joe Down" class="form-control form-control-line"
+										validatorMessage="Ingresar Numero" label=" ">
+										<f:validateLength maximun="10" />
+										<f:validateRegex pattern="[0-9]+" />
+									</h:inputText>
+									<h:message for="celu" style="color:red" />
+								</div>
+								<div class="form-group">
+									<label>Correo</label>
+									<h:inputText id="corr" disabled="#{!bean.permissionToWrite}"
+										value="#{clienteBean.newCliente.correo}" type="text"
+										placeholder="email@gmail.com"
+										class="form-control form-control-line"
+										validatorMessage="Ingresar correo valido" label=" ">
+										<f:validateRegex
+											pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" />
+									</h:inputText>
+									<h:message for="corr" style="color:red" />
+
+								</div>
+
+							</div>
+							<br /> <br />
+							<div class="col-sm-12">
+								<label class="col-sm-12">Tipo Cuenta</label>
+								<div class="col-sm-12">
+									<h:selectOneMenu id="combo" required="true" label=" "
+										value="#{cuentaBean.tipoCuenta}">
+										<f:selectItem itemValue="Ahorro" itemLabel="Ahorro" />
+										<f:selectItem itemValue="Credito" itemLabel="Credito" />
+									</h:selectOneMenu>
+								</div>
+							</div>
+							<div>
+								<br /> <br />
+								<div>
+									<label>Numero Cuenta</label>
+									<h:inputText id="cuenta" disabled="#{!bean.permissionToWrite}"
+										value="#{cuentaBean.generarCuenta()}" type="text"
+										class="form-control form-control-line">
+									</h:inputText>
+
+								</div>
+
+								<div>
+									<label>Fecha Apertura</label>
+									<h:inputText id="fecha" disabled="#{!bean.permissionToWrite}"
+										value="#{cuentaBean.fechaActual}" type="text"
+										class="form-control form-control-line">
+
+									</h:inputText>
+
+								</div>
+								<br /> <br /> <label>Saldo Cuenta</label>
+								<h:inputText id="saldo" value="#{cuentaBean.newCuenta.saldo}"
+									type="text" class="form-control form-control-line">
+									<f:ajax event="blur" render="errorSaldo" />
+								</h:inputText>
+								<h:outputText id="errorSaldo"
+									value="#{cuentaBean.validarIngreso()}" style="color: red;" />
+							</div>
+							<br /> <br />
+
+
+							<div class="col-sm-2" style="text-align: left;">
+
+								<button type="submit" name="REGISTRAR"
+									action="#{cuentaBean.doAperturaCuenta()}"
+									class="btn btn-success btn-lg"
+									style="width: 200px; height: 50px; color: black; background-color: orange;"></button>
+
+							</div>
+						</div>
+					</div>
+				</div>
+
+
+			</h:form>
+
+
+
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

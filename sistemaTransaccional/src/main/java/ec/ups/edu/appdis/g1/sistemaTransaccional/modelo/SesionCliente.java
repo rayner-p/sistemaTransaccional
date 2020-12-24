@@ -3,7 +3,9 @@ package ec.ups.edu.appdis.g1.sistemaTransaccional.modelo;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -31,10 +33,10 @@ public class SesionCliente implements Serializable{
 	private String estado;
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date fechaSesion; 
-	@OneToOne
+	@OneToOne(fetch = FetchType.EAGER, cascade = {CascadeType.ALL })
 	@JoinColumn(name="cedula_cliente")
 	private Cliente cliente; 
-	@OneToOne
+	@OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.ALL })
 	@JoinColumn(name="cedula_empleado")
 	private Empleado empleado; 
 	

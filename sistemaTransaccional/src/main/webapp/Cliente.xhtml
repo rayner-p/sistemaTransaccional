@@ -1,0 +1,121 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html">
+
+<h:head>
+	<style>
+.cabecera {
+	background-color: #00aae4;
+}
+</style>
+</h:head>
+<h:body>
+	<ui:composition template="template/templateCliente.xhtml">
+		<ui:define name="title"> Listados CLIENTES </ui:define>
+		<ui:param name="nombre" value="#{loginBean.usuario}" />
+		<ui:define name="content">
+			<h:form>
+				<div class="row">
+					<div class="col-lg-12">
+						<div class="panel panel-default">
+
+							<div class="panel-body">
+								<div class="row">
+									<div class="col-lg-6">
+										<h:form role="form">
+											<div class="form-group">
+												<label>Nombre:&nbsp; &nbsp;</label>
+												<h:outputText value="#{loginBean.cliente.nombres}" />
+											</div>
+											<div class="form-group">
+												<label> Apellido:&nbsp; &nbsp;</label>
+												<h:outputText value="#{loginBean.cliente.apellidos}" />
+											</div>
+											<div class="form-group">
+												<label>Cedula:&nbsp; &nbsp;</label>
+												<h:outputText value="#{loginBean.cliente.cedula}" />
+											</div>
+
+											<div class="form-group">
+												<label>Telefono:&nbsp; &nbsp;</label>
+												<h:outputText value="#{loginBean.cliente.celular}" />
+											</div>
+											<div class="form-group">
+												<label>Direccion:&nbsp; &nbsp;</label>
+												<h:outputText value="#{loginBean.cliente.direccion}" />
+											</div>
+											<div class="form-group">
+												<label>Correo Electronico:&nbsp; &nbsp;</label>
+												<h:outputText value="#{loginBean.cliente.correo}" />
+											</div>
+											<div class="row">
+												<div class="col-lg-12">
+													<h1 class="page-header">Historial de Accesos</h1>
+													<div class="panel-body">
+														<div class="table-responsive">
+
+															<h:dataTable value="#{clienteBean.cargarSesiones()}"
+																var="sesion" class="table" editable="false">
+
+																<h:column headerText="Fecha Hora">
+																	<h:outputText value="#{sesion.fechaSesion}" />
+																</h:column>
+
+																<h:column headerText="Estado">
+
+																	<h:outputText value="#{sesion.estado}" />
+																</h:column>
+
+
+															</h:dataTable>
+
+
+														</div>
+													</div>
+
+												</div>
+												<!-- /.col-lg-12 -->
+											</div>
+
+											<div>
+												<h1 class="page-header">Cuentas</h1>
+
+												<h:dataTable value="#{loginBean.cliente.cuentaCliente}"
+													var="cuentaT" class="table" editable="false">
+
+													<h:column headerText="Cuenta">
+														<h:outputText value="#{cuentaT.numeroCuenta}" />
+													</h:column>
+
+													<h:column headerText="Saldo">
+
+														<h:outputText value="#{cuentaT.saldo}" />
+													</h:column>
+													
+													<h:column headerText="Tipo Cuenta">
+
+														<h:outputText value="#{cuentaT.tipoCuenta}" />
+													</h:column>
+													
+
+												</h:dataTable>
+
+
+
+											</div>
+										</h:form>
+
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</h:form>
+
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>
