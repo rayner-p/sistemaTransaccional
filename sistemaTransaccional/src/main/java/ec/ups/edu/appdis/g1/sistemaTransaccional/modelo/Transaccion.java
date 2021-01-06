@@ -34,6 +34,11 @@ public class Transaccion {
 	@JoinColumn(name = "empleado_fk")
 	private Empleado empleado;
 	
+	@OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.ALL })
+	@JoinColumn(name = "cliente_fk")
+	private Cliente cliente;
+	
+	private double saldoT;
 	private String transaccion_fk;
 
 	
@@ -139,7 +144,21 @@ public class Transaccion {
 	public void setEmpleado(Empleado empleado) {
 		this.empleado = empleado;
 	}
+	
+	
 
+	public Cliente getCliente() {
+		return cliente;
+	}
+	public void setCliente(Cliente cliente) {
+		this.cliente = cliente;
+	}
+	public double getSaldoT() {
+		return saldoT;
+	}
+	public void setSaldoT(double saldoT) {
+		this.saldoT = saldoT;
+	}
 	@Override
 	public String toString() {
 		return "Transaccion [codigoTransaccion=" + codigoTransaccion + ", fechaHora=" + fechaHora + ", sucursal="

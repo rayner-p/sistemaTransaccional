@@ -32,12 +32,20 @@ public class TransaccionDao {
 		
 	}
 	/** 
+	 * Metodo que permite actualizar una Transferencia Local en la base de datos
+	 * @param t Transferencia Local que se va a actualizar en la base
+	 */
+	public void update(Transaccion t) {
+		em.merge(t);
+	}
+	
+	/** 
 	 * Metodo que permite listar todas las  transacciones dentro de la base
 	 * 
 	 * @return listado si se realiza la actualziacion devuelve la lista con todos los datos existentes
 	 */
 	public List<Transaccion> obtenerTransaccion (){
-		String jpql = "SELECT c FROM Parametrizar c";
+		String jpql = "SELECT c FROM Transaccion c";
 		Query q = em.createQuery(jpql, Empleado.class);
 		List<Transaccion> listado = q.getResultList();
 		return listado;

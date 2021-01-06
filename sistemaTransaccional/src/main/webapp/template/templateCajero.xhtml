@@ -11,11 +11,12 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
 	<meta name="description" content="" />
 	<meta name="author" content="" />
-	<title><ui:insert name="title" />Menu</title>
+	<title><ui:insert name="title" /></title>
 
-
-	<!-- <f:event type="preRenderView"
-		listener="#{verificarSesionBean.verificarSessionAdmin()}" /> -->
+	<!-- Bootstrap Core CSS 
+	<f:event type="preRenderView"
+		listener="#{verificarSesionBean.verificarSessionAdmin()}" />
+	-->
 	<link href="template/css/bootstrap.min.css" rel="stylesheet" />
 	<link href="template/css/metisMenu.min.css" rel="stylesheet" />
 	<link href="template/css/startmin.css" rel="stylesheet" />
@@ -30,54 +31,56 @@
 		<!-- Navigation -->
 		<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
 			<div class="navbar-header">
-				<a class="navbar-brand" href=""> Inicio Cajero</a>
+				<a class="navbar-brand" href="">Menu Cajero</a>
+				<div>
+					<ul class="nav navbar-right navbar-top-links">
+						<li style="color: orange;">Bienvenido(a)
+							#{loginBean.empleado.nombres}</li>
+
+					</ul>
+				</div>
 			</div>
-
-			<button type="button" class="navbar-toggle" data-toggle="collapse"
-				data-target=".navbar-collapse">
-				<span class="sr-only">Toggle navigation</span> <span
-					class="icon-bar"></span> <span class="icon-bar"></span> <span
-					class="icon-bar"></span>
-			</button>
-			<ul class="nav navbar-right navbar-top-links">
-				<li class="dropdown"><a class="dropdown-toggle"
-					data-toggle="dropdown" href=""> <i class="fa fa-user fa-fw">
-					</i> "Bienvenido(a)" "#{loginBean.empleado.nombres}"
-				</a>
-				</li>
-			</ul>
-			<p:dropButton look= "sdasdasdH "
-							value="sdasdasdH">
-				<p:navLink value="Action" href="#">logi</p:navLink>
-				<p:navLink value="Another action" href="#"></p:navLink>
-			</p:dropButton>
-			<!-- /.navbar-top-links -->
-
-			
-			<!-- /.navbar-static-side -->
-		</nav>
-		<div class="nav navbar-right navbar-top-links" role="navigation">
-				<div class="sidebar-nav navbar-collapse">
+			<div class="nav navbar-right navbar-top-links" role="navigation">
+				<div class="sidebar-nav ">
 					<ul class="nav" id="side-menu">
-
-						<li><a href="CrearCliente.xhtml"><i
-								class="fa fa-dashboard fa-fw"></i>Registrar Cliente</a></li>
-						<li><a href="AperturaCuenta.xhtml"><i
-								class="fa fa-dashboard fa-fw"></i> Apertura de Cuenta</a></li>
-						<li><a href="RegistrarTransaccion.xhtml"><i
-								class="fa fa-dashboard fa-fw"></i> Realizar Transacción</a></li>
+						<li style="color: black; text-align: center; color:orange;"><i
+							class="fa fa-users fa-fw "
+							></i> <span class="fa arrow"></span>
+							<ul class="nav nav-second-level" style="color: highlight;">
+								<li><a href="../CrearCliente.xhtml"> <i
+										class="fa fa-users fa-fw" />Registar Cliente
+								</a></li>
+								<li><a href="../AperturaCuenta.xhtml"> <i
+										class="fa fa-user fa-fw" />Apertura Cuenta
+								</a></li>
+								<li><a href="../RegistrarTransaccion.xhtml"> <i
+										class="fa fa-user fa-fw" />Realizar Transacción
+								</a></li>						
+								
+							</ul> <!-- /.nav-second-level --></li>
 					</ul>
 				</div>
 				<!-- /.sidebar-collapse -->
 			</div>
 
+			<!-- /.navbar-top-links -->
+
+
+			<!-- /.navbar-static-side -->
+		</nav>
+		<br /> <br />
+
 		<div id="page-wrapper">
 			<div class="container-fluid">
 				<div class="row">
-					<div class="col-lg-12">
+					<div class="col-lg-2" style="background-color: rgb(142, 208, 129);">
 						<h1 class="page-header">
+							<br /> <br />
+
+
 							<ui:insert name="title" />
 						</h1>
+						<br /> <br /> <br /> <br /> <br />
 						<ui:insert name="content" />
 					</div>
 					<!-- /.col-lg-12 -->
@@ -89,6 +92,7 @@
 		<!-- /#page-wrapper -->
 
 	</div>
+
 	<!-- /#wrapper -->
 
 	<!-- Bootstrap Core JavaScript -->

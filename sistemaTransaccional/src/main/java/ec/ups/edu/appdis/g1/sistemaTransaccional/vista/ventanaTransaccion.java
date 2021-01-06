@@ -6,10 +6,15 @@ import javax.swing.JFrame;
 import java.awt.Color;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
+
+import ec.ups.edu.appdis.g1.sistemaTransaccional.servicios.ClienteServicioSOAP;
+
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class ventanaTransaccion {
 
@@ -25,7 +30,8 @@ public class ventanaTransaccion {
 	private JTextField textField_9;
 	private JTextField textField_10;
 	private JTextField textField_11;
-
+	private JTextField textField;
+	private ClienteServicioSOAP soAp;
 	/**
 	 * Launch the application.
 	 */
@@ -68,6 +74,11 @@ public class ventanaTransaccion {
 		txtCedula.setColumns(10);
 		
 		JButton btnBuscar = new JButton("BUSCAR");
+		btnBuscar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+			}
+		});
 		btnBuscar.setBackground(new Color(255, 153, 51));
 		btnBuscar.setBounds(381, 6, 117, 29);
 		frmTransaccion.getContentPane().add(btnBuscar);
@@ -136,12 +147,6 @@ public class ventanaTransaccion {
 		lblSaldoCuenta.setBounds(131, 274, 101, 16);
 		frmTransaccion.getContentPane().add(lblSaldoCuenta);
 		
-		txtSaldo = new JTextField();
-		txtSaldo.setEditable(false);
-		txtSaldo.setColumns(10);
-		txtSaldo.setBounds(244, 269, 130, 26);
-		frmTransaccion.getContentPane().add(txtSaldo);
-		
 		JPanel panel = new JPanel();
 		panel.setBackground(new Color(153, 204, 204));
 		panel.setBounds(22, 308, 516, 187);
@@ -153,6 +158,7 @@ public class ventanaTransaccion {
 		panel.add(lblNewLabel);
 		
 		textField_8 = new JTextField();
+		textField_8.setEnabled(false);
 		textField_8.setEditable(false);
 		textField_8.setColumns(10);
 		textField_8.setBounds(132, 6, 109, 26);
@@ -161,11 +167,6 @@ public class ventanaTransaccion {
 		JLabel lblSucursal = new JLabel("Sucursal");
 		lblSucursal.setBounds(269, 11, 93, 16);
 		panel.add(lblSucursal);
-		
-		JComboBox comboBox = new JComboBox();
-		comboBox.setModel(new DefaultComboBoxModel(new String[] {"CUENCA", "QUITO", "MACHALA"}));
-		comboBox.setBounds(346, 7, 122, 27);
-		panel.add(comboBox);
 		
 		JLabel lblMonto = new JLabel("Monto");
 		lblMonto.setBounds(6, 49, 93, 16);
@@ -217,10 +218,28 @@ public class ventanaTransaccion {
 		lblCodigoTransaccion.setBounds(442, 165, 61, 16);
 		panel.add(lblCodigoTransaccion);
 		
+		txtSaldo = new JTextField();
+		txtSaldo.setEnabled(false);
+		txtSaldo.setBounds(338, 6, 130, 26);
+		panel.add(txtSaldo);
+		txtSaldo.setEditable(false);
+		txtSaldo.setColumns(10);
+		
 		JButton btnRealizarTransaccion = new JButton("REALIZAR TRANSACCION");
+		btnRealizarTransaccion.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+			}
+		});
 		btnRealizarTransaccion.setBackground(new Color(255, 153, 51));
 		btnRealizarTransaccion.setBounds(319, 515, 219, 29);
 		frmTransaccion.getContentPane().add(btnRealizarTransaccion);
+		
+		textField = new JTextField();
+		textField.setEditable(false);
+		textField.setColumns(10);
+		textField.setBounds(254, 274, 130, 26);
+		frmTransaccion.getContentPane().add(textField);
 		frmTransaccion.setBounds(100, 100, 560, 565);
 		frmTransaccion.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}

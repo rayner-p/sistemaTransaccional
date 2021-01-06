@@ -55,7 +55,7 @@ public interface GestionSistemLocal {
 	public void guardarCuentaDeAhorros(Cuenta c);
 	public List<Parametrizar> obtenerParametros ();
 	public Cliente usuarioCliente(String usuario, String contra) throws Exception;
-
+	
 
 
 

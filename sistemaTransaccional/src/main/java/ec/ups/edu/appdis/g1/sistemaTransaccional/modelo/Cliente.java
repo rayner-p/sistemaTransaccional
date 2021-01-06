@@ -53,11 +53,11 @@ public class Cliente  implements Serializable{
 	@Column(length=40)
 	private String contrasenia;
 	
-	@OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL })
+	@OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL })
 	@JoinColumn(name="cuenta_fk")	
 	private List<Cuenta> cuentaCliente;
 	
-	@OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL })
+	@OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL })
 	@JoinColumn(name="transaccion_fk")	
 	private List<Transaccion> transaccionCliente;
 	

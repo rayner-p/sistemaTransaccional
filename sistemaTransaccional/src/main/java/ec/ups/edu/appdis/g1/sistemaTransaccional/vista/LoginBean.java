@@ -206,7 +206,7 @@ public class LoginBean implements Serializable {
 					FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("empleado", emp);
 					FacesContext contex = FacesContext.getCurrentInstance();
 
-					contex.getExternalContext().redirect("templateCajero.xhtml");
+					contex.getExternalContext().redirect("Cajero.xhtml");
 
 				} catch (Exception e) {
 				}
