@@ -1,0 +1,217 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:h="http://java.sun.com/jsf/html">
+
+
+<h:head>Transferencia</h:head>
+
+<body>
+	<script>
+// When the user clicks on div, open the popup
+	function myFunction() {
+  var popup = document.getElementById("myPopup");
+  popup.classList.toggle("show");
+
+}
+</script>
+
+	<ui:composition template="template/templateCajero.xhtml">
+		<ui:define name="title"> Transferencias Locales</ui:define>
+		<ui:param name="nombreC" value="#{loginBean.cliente.nombres}" />
+		<ui:define name="content">
+			<h:form role="form">
+				<div class="row">
+					<div class="col-lg-12">
+						<div class="panel panel-default">
+
+							<div class="panel-body">
+
+								<p:growl id="message" showDetail="true" class="ui-growl"
+									life="4000" />
+
+								<div class="form-group">
+									<h:form role="form">
+										<div class="form-group">
+											<label>Nombre:&nbsp; &nbsp;</label>
+											<h:outputText value="#{loginBean.cliente.nombres}" />
+										</div>
+										<div class="form-group">
+											<label> Apellido:&nbsp; &nbsp;</label>
+											<h:outputText value="#{loginBean.cliente.apellidos}" />
+										</div>
+										<div class="form-group">
+											<label> Cuenta:&nbsp; &nbsp;</label>
+											<!--  <h:outputText value="#{loginBean.cliente.cuentaCliente}" /> -->
+
+											<h:dataTable value="#{loginBean.cliente.cuentaCliente}"
+												var="cuentaT" class="table" editable="false"
+												style="display: none">
+
+												<h:column headerText="Cuenta">
+													<h:outputText value="#{cuentaT.numeroCuenta}" />
+												</h:column>
+
+												<h:column headerText="Saldo">
+
+													<h:outputText value="#{cuentaT.saldo}" />
+												</h:column>
+											</h:dataTable>
+											<h:selectOneMenu id="cuentaL"
+												value="#{transferenciaBean.input}" dynamic="true"
+												style="width:125px">
+												<f:selectItem itemLabel="Escoga una"
+													noSelectionOption="true" />
+												<f:selectItems value="#{transferenciaBean.cuentasK}" />
+
+												<f:ajax execute="cuentaL" render="textbox" process="@this" />
+											</h:selectOneMenu>
+											<h:inputText id="textbox" value="#{transferenciaBean.input}" />
+
+
+										</div>
+
+										<div class="form-group">
+											<label>Correo Electronico:&nbsp; &nbsp;</label>
+											<h:outputText value="#{loginBean.cliente.correo}" />
+										</div>
+										<div class="form-group">
+											<label>Saldo:&nbsp; &nbsp;</label>
+											<h:outputText id="saldo"
+												value="#{transferenciaBean.obtenerItem()}" />
+											<!-- 	<h:selectOneMenu id="saldoL"
+												value="#{transferenciaBean.input}" dynamic="true"
+												style="width:125px">
+												<f:selectItem itemLabel="Escoga una"
+													noSelectionOption="true" />
+												<f:selectItems value="#{transferenciaBean.cuentasK}" />
+												<f:ajax execute="saldoL" render="textboxS" />
+											</h:selectOneMenu>
+											<h:inputText id="textboxS" value="#{transferenciaBean.input}" /> -->
+
+										</div>
+									</h:form>
+									<div>
+
+										<h:dataTable value="#{transferenciaBean.cuentasF}"
+											var="cuentaF" class="table" editable="false">
+											<h:column headerText="Cuenta">
+												<h:outputText value="#{cuentaF.numeroCuenta}" />
+											</h:column>
+											<h:column headerText="Tipo">
+												<h:outputText value="#{cuentaF.tipoCuenta}" />
+											</h:column>
+											<h:column headerText="Saldo">
+												<h:outputText value="#{cuentaF.saldo}" />
+											</h:column>
+										</h:dataTable>
+									</div>
+									<div class="popup" onclick="myFunction()">
+										Añadir Cliente <span class="popuptext" id="myPopup"> <label>
+												NUMERO DE CUENTA </label> <h:inputText id="numeroCuenta"
+												value="#{transaccionBean.cliente.nombres}" type="text"
+												class="form-control form-control-line"
+												disabled="#{transferenciaBean.newCuenta.numeroCuenta}">
+
+											</h:inputText> <label> IDENTIFICACION </label> <h:inputText
+												id="identificacion"
+												value="#{transferenciaBean.clienteB.cedu}" type="text"
+												class="form-control form-control-line" disabled="">
+
+											</h:inputText> <label> NOMBRES </label> <h:inputText id="nombres"
+												value="#{transferenciaBean.clienteB.newCliente.nombres}"
+												type="text" class="form-control form-control-line"
+												disabled="">
+
+											</h:inputText> <label> APELLIDOS </label> <h:inputText id="apellidos"
+												value="#{transferenciaBean.clienteB.newCliente.apellidos}"
+												type="text" class="form-control form-control-line"
+												disabled="#{!bean.permissionToWrite}">
+
+											</h:inputText> <label> CORREO </label> <h:inputText id="correos"
+												value="#{transferenciaBean.clienteB.newCliente.correo}"
+												type="text" class="form-control form-control-line"
+												disabled="#{!bean.permissionToWrite}">
+
+											</h:inputText> <h:commandButton
+												action="#{transaccionBean.doRegistroTransaccion()}"
+												class="btn btn-success btn-lg" value="ACEPTAR"
+												style="width: 250px; height: 50px; color: black; text-align: left; background-color:
+									blue);" />
+											<h:commandButton
+												action="#{transaccionBean.doRegistroTransaccion()}"
+												class="btn btn-success btn-lg" value="CANCELAR"
+												style="width: 250px; height: 50px; color: black; text-align: left; background-color:
+									blue);" />
+										</span>
+									</div>
+								</div>
+								<br /> <br /> <br />
+								<div class="form-group">
+									<label> Correo </label>
+									<h:inputText id="correo"
+										value="#{transaccionBean.cliente.nombres}" type="text"
+										class="form-control form-control-line"
+										disabled="#{!bean.permissionToWrite}">
+									</h:inputText>
+
+								</div>
+								<div class="form-group">
+									<label> Monto Transferencia </label>
+									<h:inputText id="apellido"
+										value="#{transaccionBean.cliente.apellidos}" type="text"
+										class="form-control form-control-line"
+										disabled="#{!bean.permissionToWrite}">
+									</h:inputText>
+								</div>
+
+								<div class="form-group">
+									<label>Concepto</label>
+									<h:inputText id="direccion"
+										disabled="#{!bean.permissionToWrite}"
+										value="#{transaccionBean.cliente.direccion}" type="text"
+										placeholder="Joe Down" class="form-control form-control-line">
+									</h:inputText>
+
+								</div>
+
+								<div class="form-group">
+									<label>Tarifa Servicio</label>
+									<h:inputText id="celu" disabled="#{!bean.permissionToWrite}"
+										value="#{transaccionBean.cliente.celular}" type="text"
+										placeholder="Joe Down" class="form-control form-control-line">
+									</h:inputText>
+
+								</div>
+							</div>
+							<br /> <br />
+							<div class="col-sm-2">
+								<h:commandButton
+									action="#{transaccionBean.doRegistroTransaccion()}"
+									class="btn btn-success btn-lg" value="ACEPTAR"
+									style="width: 250px; height: 50px; color: black; text-align: left; background-color:
+									blue);" />
+							</div>
+							<div class="col-sm-2">
+								<h:commandButton
+									action="#{transaccionBean.doRegistroTransaccion()}"
+									class="btn btn-success btn-lg" value="CANCELAR"
+									style="width: 250px; height: 50px; color: black; text-align: left; background-color:
+									blue);" />
+
+
+							</div>
+						</div>
+					</div>
+				</div>
+
+			</h:form>
+
+
+
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

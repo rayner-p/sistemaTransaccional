@@ -32,12 +32,14 @@ import ec.ups.edu.appdis.g1.sistemaTransaccional.datos.ParametrizarDao;
 import ec.ups.edu.appdis.g1.sistemaTransaccional.datos.PolizaDao;
 import ec.ups.edu.appdis.g1.sistemaTransaccional.datos.SesionClienteDAO;
 import ec.ups.edu.appdis.g1.sistemaTransaccional.datos.TransaccionDao;
+import ec.ups.edu.appdis.g1.sistemaTransaccional.datos.TransferencialLocalDAO;
 import ec.ups.edu.appdis.g1.sistemaTransaccional.modelo.Cliente;
 import ec.ups.edu.appdis.g1.sistemaTransaccional.modelo.Cuenta;
 import ec.ups.edu.appdis.g1.sistemaTransaccional.modelo.Empleado;
 import ec.ups.edu.appdis.g1.sistemaTransaccional.modelo.Parametrizar;
 import ec.ups.edu.appdis.g1.sistemaTransaccional.modelo.Poliza;
 import ec.ups.edu.appdis.g1.sistemaTransaccional.modelo.SesionCliente;
+import ec.ups.edu.appdis.g1.sistemaTransaccional.modelo.TranferenciaLocal;
 import ec.ups.edu.appdis.g1.sistemaTransaccional.modelo.Transaccion;
 
 @Stateless
@@ -56,6 +58,8 @@ public class sistemaTransaccionaON implements GestionSistemRemoto, GestionSistem
 	private CuentaDao daoCuenta;
 	@Inject
 	private SesionClienteDAO daoSesion;
+	@Inject
+	private TransferencialLocalDAO daoTransferenciaR;
 
 	private String contraN;
 	private String usuarioN;
@@ -625,7 +629,7 @@ public class sistemaTransaccionaON implements GestionSistemRemoto, GestionSistem
 		try {
 
 			if (daoEmpleado.obtenerClienteUsuarioContraseña(usuario, contraseña) != null) {
-				System.out.println("datos que se menten para comparar    " + usuario + "" + contraseña);
+				System.out.println("datos que se meten para comparar    " + usuario + "" + contraseña);
 
 			} else {
 				System.err.println("No hay datos ");
@@ -656,13 +660,11 @@ public class sistemaTransaccionaON implements GestionSistemRemoto, GestionSistem
 			throw new Exception("Credenciales Incorrectas");
 		}
 		return null;
-
 	}
-
 	/**
-	 * Metodo para obtener un Empleado
+	 * Metodo para obtener un Cliente
 	 * 
-	 * @param usuario El parametro usuario me permite obtener un Empleado que
+	 * @param usuario El parametro usuario me permite obtener un Cliente que
 	 *                contenga el usuario pasado como parametro
 	 * @param contra  El parametro contra permite obtener un Empleado que contenga
 	 *                el usuario pasado como parametro
@@ -694,7 +696,13 @@ public class sistemaTransaccionaON implements GestionSistemRemoto, GestionSistem
 		DateFormat hourdateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 		return hourdateFormat.format(fecha);
 	}
-
+	/**
+	 * Metodo que permite llevar un registro de los intentos de acceso del cliente al 
+	 * sistema transacciomnal
+	 * 
+	 * @param SesionCliente datos del cliente
+	
+	 */
 	public void guardarSesionCliente(SesionCliente sesionCliente) {
 		Cliente cli = sesionCliente.getCliente();
 		System.out.println("esto es lo que se obtiene de la sesion ->" + cli);
@@ -747,7 +755,13 @@ public class sistemaTransaccionaON implements GestionSistemRemoto, GestionSistem
 		daoSesion.insert(sesionCliente);
 
 	}
-
+	/**
+	 * Metodo que permite llevar un registro de los intentos de acceso de los empleados al 
+	 * sistema transacciomnal
+	 * 
+	 * @param SesionCliente datos del cliente
+	
+	 */
 	public void guardarSesionEmpleado(SesionCliente sesionCliente) {
 		Empleado cli = sesionCliente.getEmpleado();
 		String destinatario = cli.getCorreo();
@@ -856,20 +870,10 @@ public class sistemaTransaccionaON implements GestionSistemRemoto, GestionSistem
 
 	}
 
-	/**
-	 * Metodo que permite buscar una cuenta de ahorros
-	 * 
-	 * @param numeroCuentaDeAhorro Numero de la cuenta de ahorros que se desea
-	 *                             buscar
-	 * @return Cuenta de ahorros que se obtiende de la busqueda
-	 */
-	public Cuenta listarCuenta(String numeroCuentaDeAhorro) {
-		Cuenta cuentaDeAhorro = daoCuenta.read(numeroCuentaDeAhorro);
-		return cuentaDeAhorro;
-	}
+
 
 	/**
-	 * Metodo que me permite buscar una cuenta de ahorros
+	 * Metodo que me permite obtener una cuenta de ahorros que pertenezca a un cliente
 	 * 
 	 * @param cedulaCliente Cedula del cliente de la cuenta de ahorros
 	 * @return Cuenta de ahorro obtenida de la busqueda
@@ -924,6 +928,98 @@ public class sistemaTransaccionaON implements GestionSistemRemoto, GestionSistem
 		}
 		return null;
 
+	}
+
+
+	public void agregarCuentaTransferecia(TranferenciaLocal transferencia) throws Exception {
+		Cuenta c = new Cuenta();
+		if (daoCliente.read(c.getNumeroCuenta()) == null) {
+			throw new Exception("No existe usuario con esa cédula");
+		}
+		else {
+			System.out.println("Transferencia");
+			daoTransferenciaR.insert(transferencia);
+		}
+		
+	}
+	//metodo que sirve para actualizar los datos del cliente
+	public TranferenciaLocal obtenerClienteCuenta(String numeroCuenta) {
+		if(daoTransferenciaR.obtenerClienteCuenta(numeroCuenta)== null){
+			System.out.println("No existe cliente con ese número de cuenta");
+
+		}else {
+			System.out.println("existe usuario");
+		}
+		return null;
+	}
+
+
+	/**
+	 * Metodo que permite obtener las transferencias locales de un cliente
+	 * 
+	 * 
+	 *                    
+	 * @return Lista de transferencias de un cliemte
+	 */
+	/*public List<TranferenciaLocal> getTransfereciaLocals() {
+		try {
+			return daoTransferenciaR.getTransfereciaLocals();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}*/
+	public List<Cuenta> getTransfereciasOrigenes(String cuenta) {
+		try {
+			List<Cuenta> resultados= (List<Cuenta>) daoTransferenciaR.getTransfereciaLocals(cuenta);
+			return resultados;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public List<TranferenciaLocal> getTransfereciaLocals() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	public Cuenta obtenerSaldoClienteCuenta(String numeroCuenta) {
+		Cuenta valor = new Cuenta();
+		try {
+			valor = daoCuenta.obtenerSaldoClienteCuenta(numeroCuenta);
+		} catch (SQLException e) {
+			System.err.println("ERROR EN EL ON AL OBTENER SALDO CUENTA");
+			e.printStackTrace();
+		}
+		return valor;
+	}
+
+	
+	public String actaulizarCuentaCliente(String numeroCuenta, double valor) {
+		if (numeroCuenta == null) {
+			System.out.println("No hay datos en la cuenta");
+		} else {
+			System.out.println("qOBTIENES s "+""+numeroCuenta+""+valor);
+			daoCuenta.actaulizarCuentaCliente(numeroCuenta, valor);
+			System.out.println("se actualizan cuenta");
+		}
+		return null;
+	}
+
+	
+	public Cuenta obtenerCuentaPorNumero(String numerCuenta) {
+		Cuenta cuentB = new Cuenta();
+		if (numerCuenta == null) {
+			System.out.println("No hay datos en la cuenta");
+		} else {
+			
+			cuentB = daoCuenta.obtenerCuentaPorNumero(numerCuenta);
+			System.out.println("vale obtener cuenta por num");
+		}
+		return cuentB;
 	}
 
 }

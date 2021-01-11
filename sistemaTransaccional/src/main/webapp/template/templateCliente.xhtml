@@ -42,16 +42,17 @@
 			</button>
 
 			<ul class="nav navbar-right navbar-top-links">
-				<li class="dropdown" style="color: orange;"><a class="dropdown-toggle"
-					data-toggle="dropdown" href="#"> <i class="fa fa-user fa-fw"></i>
-						Bienvenido(a) #{loginBean.cliente.nombres} <b class="caret"></b>
+				<li class="dropdown" style="color: orange;"><a
+					class="dropdown-toggle" data-toggle="dropdown" href="#"> <i
+						class="fa fa-user fa-fw"></i> Bienvenido(a)
+						#{loginBean.cliente.nombres} <b class="caret"></b>
 				</a>
-					<ul class="dropdown-menu dropdown-user"  style="color: black; text-align: center;">
+					<ul class="dropdown-menu dropdown-user"
+						style="color: black; text-align: center;">
 						<li><a href="AccesosInicioCliente.xhtml"><i
 								class="fa fa-user fa-fw"></i> Perfil de Cliente</a></li>
 						<li class="divider"></li>
-						<li>
-						<h:commandButton icon="fa fa-fw fa-sign-out"
+						<li><h:commandButton icon="fa fa-fw fa-sign-out"
 								style="color: black;  text-align: center; background-color: orange;"
 								action="#{loginClientesBean.logout()}" value="Cerrar Sesión"
 								styleClass="red-button" /></li>
@@ -68,6 +69,8 @@
 								class="fa  fa-wpforms fa-fw"></i>Consultar Accesos</a></li>
 						<li><a href="SolicitudCredito.xhtml"><i
 								class="fa  fa-wpforms fa-fw"></i>Resumen Pólizas</a></li>
+						<li><a href="RegistrarTransferenciaLocal.xhtml"><i
+								class="fa  fa-wpforms fa-fw"></i>Transferencia</a></li>
 					</ul>
 				</div>
 				<!-- /.sidebar-collapse -->

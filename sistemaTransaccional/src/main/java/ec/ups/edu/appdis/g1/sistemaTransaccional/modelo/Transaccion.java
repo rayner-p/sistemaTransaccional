@@ -10,6 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -30,16 +31,13 @@ public class Transaccion {
 	@Column(name = "tipo_transaccion")
 	private String tipoTransaccion;
 	
-	@OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.ALL })
-	@JoinColumn(name = "empleado_fk")
 	private Empleado empleado;
+
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "cuenta_trans")
+	private Cuenta cuenta;
 	
-	@OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.ALL })
-	@JoinColumn(name = "cliente_fk")
-	private Cliente cliente;
-	
-	private double saldoT;
-	private String transaccion_fk;
+	private String transaccion_fk;  //no tocar
 
 	
 	/** 
@@ -147,23 +145,18 @@ public class Transaccion {
 	
 	
 
-	public Cliente getCliente() {
-		return cliente;
+	public Cuenta getCuenta() {
+		return cuenta;
 	}
-	public void setCliente(Cliente cliente) {
-		this.cliente = cliente;
-	}
-	public double getSaldoT() {
-		return saldoT;
-	}
-	public void setSaldoT(double saldoT) {
-		this.saldoT = saldoT;
+	public void setCuenta(Cuenta cuenta) {
+		this.cuenta = cuenta;
 	}
 	@Override
 	public String toString() {
 		return "Transaccion [codigoTransaccion=" + codigoTransaccion + ", fechaHora=" + fechaHora + ", sucursal="
 				+ sucursal + ", monto=" + monto + ", tipoTransaccion=" + tipoTransaccion + ", empleado=" + empleado
-				+ "]";
+				+ ", cuenta=" + cuenta + ", transaccion_fk=" + transaccion_fk + "]";
 	}
 	
+
 }
