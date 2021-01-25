@@ -223,7 +223,7 @@ public class LoginBean implements Serializable {
 				try {
 					FacesContext contex = FacesContext.getCurrentInstance();
 					FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("empleado", emp);
-					contex.getExternalContext().redirect("templateAsistentePoliza.xhtml");
+					contex.getExternalContext().redirect("Asistente.xhtml");
 
 				} catch (Exception e) {
 				}

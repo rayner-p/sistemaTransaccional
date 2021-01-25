@@ -12,9 +12,6 @@
 	<meta name="description" content=""/>
 	<meta name="author" content=""/>
 	<title><ui:insert name="title" /></title>
-	<f:event type="preRenderView"
-		listener="#{verificarSesionBean.verificarSessionAdmin()}" />
-
 	<!-- Bootstrap Core CSS -->
 	<link href="template/css/bootstrap.min.css" rel="stylesheet"/>
 	<link href="template/css/metisMenu.min.css" rel="stylesheet"/>
@@ -56,10 +53,10 @@
 			<div class="navbar-default sidebar" role="navigation">
 				<div class="sidebar-nav navbar-collapse">
 					<ul class="nav" id="side-menu">
-						<li><a href=""><i class="fa fa-dashboard fa-fw"></i>
+						<li><a href="../RegistrarPoliza.xhtml"><i class="fa fa-dashboard fa-fw"></i>
 								Crear Póliza</a></li>
 						<li><a href=""><i class="fa   fa-pie-chart fa-fw"></i>
-								Aprobar Póliza</a></li>
+								Solicitudes Póliza</a></li>
 					</ul>
 				</div>
 				<!-- /.sidebar-collapse -->

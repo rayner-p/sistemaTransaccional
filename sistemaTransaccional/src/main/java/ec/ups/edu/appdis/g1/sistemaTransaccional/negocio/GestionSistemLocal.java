@@ -1,5 +1,7 @@
 package ec.ups.edu.appdis.g1.sistemaTransaccional.negocio;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
@@ -11,7 +13,9 @@ import ec.ups.edu.appdis.g1.sistemaTransaccional.modelo.Cuenta;
 import ec.ups.edu.appdis.g1.sistemaTransaccional.modelo.Empleado;
 import ec.ups.edu.appdis.g1.sistemaTransaccional.modelo.Parametrizar;
 import ec.ups.edu.appdis.g1.sistemaTransaccional.modelo.Poliza;
+import ec.ups.edu.appdis.g1.sistemaTransaccional.modelo.PolizaPOJO;
 import ec.ups.edu.appdis.g1.sistemaTransaccional.modelo.SesionCliente;
+import ec.ups.edu.appdis.g1.sistemaTransaccional.modelo.TranferenciaLocal;
 import ec.ups.edu.appdis.g1.sistemaTransaccional.modelo.Transaccion;
 
 @Local
@@ -24,7 +28,6 @@ public interface GestionSistemLocal {
 	public List<Empleado> getEmpleadosT();
 	public void insertar(Parametrizar parametros) throws SQLException;
 	public void insertarPoliza(Poliza poliza)throws SQLException ;
-	public List<Poliza> obtenerPolizas();
 	public void insertarTransaccion(Transaccion transaccion);
 	public List<Transaccion> obtenerTransaccion ();
 	public String generarNombreUsuario(String cedula, String nombre, String apellido);
@@ -55,10 +58,20 @@ public interface GestionSistemLocal {
 	public void guardarCuentaDeAhorros(Cuenta c);
 	public List<Parametrizar> obtenerParametros ();
 	public Cliente usuarioCliente(String usuario, String contra) throws Exception;
-	
+	public void agregarCuentaTransferecia(TranferenciaLocal transferencia) throws Exception;
+	public TranferenciaLocal obtenerClienteCuenta(String numeroCuenta);
+	public List<TranferenciaLocal> getTransfereciaLocals();
+	public List<Cuenta> getTransfereciasOrigenes(String cuenta);
+	public Cuenta obtenerSaldoClienteCuenta(String numeroCuenta);
+	public String actaulizarCuentaCliente(String numeroCuenta, double valor);
+	public Cuenta obtenerCuentaPorNumero(String numerCuenta);
+	public void crearPoliza(Poliza poli);
+	public Parametrizar obtenerParametrosporDia (int maximo);
+	public byte[] convertirArchivos(InputStream in) throws IOException ;
+	public List<Poliza> obtenerPolizas();
+	public String actualizarPoliza(String numeroCuenta);
 
-
-
+	public Cliente obtenerDatosPorCedula (String cedula) throws Exception ;
 
 
 }

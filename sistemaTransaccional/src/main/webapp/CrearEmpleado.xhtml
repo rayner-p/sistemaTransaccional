@@ -31,7 +31,6 @@
 										<div class="form-group">
 											<label>Cedula</label>
 											<h:inputText value="#{empleadoBean.newEmpleado.cedula}"
-												
 												maxlength="10" class="form-control"
 												validatorMessage="Your name can have only numbers">
 												<f:ajax event="blur" render="valueError" />
@@ -69,9 +68,9 @@
 												Nacimiento</label>
 											<h:inputText
 												value="#{empleadoBean.newEmpleado.fechaNacimiento}"
-												id= "fecha"
-												placeholder="2000/04/12"
-												validatorMessage="Ingresar la fecha en formato yyyy/mm/dd" label=" ">
+												id="fecha" placeholder="2000/04/12"
+												validatorMessage="Ingresar la fecha en formato yyyy/mm/dd"
+												label=" ">
 												<f:convertDateTime pattern="yyyy/MM/dd" />
 												<f:validateLength maximun="100" />
 											</h:inputText>
@@ -118,7 +117,8 @@
 											<label class="col-sm-12">Rol</label>
 											<div class="col-sm-12">
 
-												<h:selectOneMenu id="combo" required="true" label=" " value="#{empleadoBean.tipoEmpleado}">
+												<h:selectOneMenu id="combo" required="true" label=" "
+													value="#{empleadoBean.tipoEmpleado}">
 													<f:selectItem itemValue="Administrador"
 														itemLabel="Administrador" />
 													<f:selectItem itemValue="Cajero" itemLabel="Cajero" />
@@ -128,27 +128,15 @@
 												</h:selectOneMenu>
 											</div>
 										</div>
-													<br> </br>
+										<br> </br>
 										<div>
 											<br> </br>
-											<h:commandButton action="#{empleadoBean.doRegistrarEmpleado()}" 
-											class="btn btn-success btn-lg" 
-											value="REGISTRAR"
-											style="width: 200px; height: 50px; background-color: orange; color: black;"
-											 />
-										 
-											<p:confirm header="Confirmacion"
-												message="¿Desea guardar el Empleado"
-												icon="pi pi-exclamation-triangle" />
-									
+											<h:commandButton
+												action="#{empleadoBean.doRegistrarEmpleado()}"
+												class="btn btn-success btn-lg" value="REGISTRAR"
+												style="width: 200px; height: 50px; background-color: orange; color: black;" />
 
-											<p:confirmDialog global="true" showEffect="fade"
-												hideEffect="fade">
-												<h:commandButton value="SI" type="button"
-													styleClass="ui-confirmdialog-yes" icon="pi pi-check" />
-												<h:commandButton value="NO" type="button"
-													styleClass="ui-confirmdialog-no" icon="pi pi-times" />
-											</p:confirmDialog>
+
 											<br> </br>
 											<div class="form-group">
 												<label>Usuario</label>
@@ -156,10 +144,10 @@
 													value="#{empleadoBean.obtenerUsuario()}" type="text"
 													placeholder="" disabled="#{!bean.permissionToWrite}"
 													class="form-control form-control-line" required="true" />
-					
+
 											</div>
 											<br> </br>
- 
+
 										</div>
 									</h:form>
 

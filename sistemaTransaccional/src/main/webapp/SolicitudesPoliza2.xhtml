@@ -1,0 +1,130 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:h="http://java.sun.com/jsf/html">
+
+
+<h:head>Solicitudes</h:head>
+<body>
+	<ui:composition template="template/templateAsistentePoliza.xhtml">
+		<ui:define name="title">Listado Solicitudes de Póliza</ui:define>
+		<ui:param name="nombre" value="#{loginBean.empleado.nombres}" />
+		<ui:define name="content">
+
+			<h:form id="form">
+				<p:growl id="msgs" showDetail="true" />
+				<div class="card">
+					<h5>lista editable</h5>
+					<p:dataTable id="poliz" var="poliza"
+						value="#{polizaBean.listarPoliza()}" editable="true"
+						editMode="cell" widgetVar="cellCars2" editInitEvent="dblclick"
+						style="margin-bottom:20px">
+						<p:ajax event="cellEdit" listener="#{polizaBean.onCellEdit()}"
+							update="poliz" />
+
+						<p:ajax event="cellEdit" update="poliz" immediate="true"
+							listener="#{polizaBean.editar()}" process="@this" />
+						<p:column headerText="Code">
+							<p:cellEditor>
+								<f:facet name="output">
+									<h:outputText value="#{poliza.codigo}" />
+								</f:facet>
+								<f:facet name="input">
+									<p:inputText value="#{poliza.codigo}" style="width:100%" />
+								</f:facet>
+							</p:cellEditor>
+						</p:column>
+						<p:column headerText="Numero Cuenta">
+							<p:cellEditor>
+								<f:facet name="output">
+									<h:outputText value="#{poliza.cuentaClientePoliza}" />
+								</f:facet>
+								<f:facet name="input">
+									<p:inputText value="#{poliza.cuentaClientePoliza}"
+										style="width:100%" />
+								</f:facet>
+
+							</p:cellEditor>
+						</p:column>
+
+						<p:column headerText="Nombres">
+							<p:cellEditor>
+								<f:facet name="output">
+									<h:outputText value="${poliza.cliente.nombres}" />
+								</f:facet>
+								<f:facet name="input">
+									<p:inputText value="#{poliza.cliente.nombres}"
+										style="width:100%" />
+								</f:facet>
+							</p:cellEditor>
+						</p:column>
+
+						<p:column headerText="Apellidos">
+							<p:cellEditor>
+								<f:facet name="output">
+									<h:outputText value="#{poliza.cliente.apellidos}" />
+								</f:facet>
+								<f:facet name="input">
+									<p:inputText value="#{poliza.cliente.apellidos}"
+										style="width:100%" />
+								</f:facet>
+							</p:cellEditor>
+						</p:column>
+						<p:column headerText="Monto Inversión">
+							<p:cellEditor>
+								<f:facet name="output">
+									<h:outputText value="#{poliza.montoP}" />
+								</f:facet>
+								<f:facet name="input">
+									<p:inputText value="#{poliza.montoP}" style="width:100%" />
+								</f:facet>
+							</p:cellEditor>
+						</p:column>
+
+						<p:column headerText="Tiempo">
+							<p:cellEditor>
+								<f:facet name="output">
+									<h:outputText value="#{poliza.tiempoPlazo}" />
+								</f:facet>
+								<f:facet name="input">
+									<p:inputText value="#{poliza.tiempoPlazo}" style="width:100%" />
+								</f:facet>
+
+							</p:cellEditor>
+						</p:column>
+
+						<p:column headerText="Estado">
+							<p:cellEditor>
+								<f:facet name="output">
+									<h:outputText value="#{poliza.estadoPoliza}" />
+								</f:facet>
+								<f:facet name="input">
+									<h:selectOneMenu id="comboT" required="true" label=" "
+										value="#{polizaBean.estadoPoliza}">
+										<f:selectItem itemValue="Aprobado" itemLabel="Aprobado" />
+										<f:selectItem itemValue="Negado" itemLabel="Negado" />
+									</h:selectOneMenu>
+
+								</f:facet>
+							</p:cellEditor>
+						</p:column>
+
+
+
+					</p:dataTable>
+				</div>
+				<p:contextMenu for="poliz" widgetVar="cMenu">
+					<p:menuitem value="Edit Cell" icon="pi pi-search"
+						onclick="PF('cellProducts').showCellEditor();return false;" />
+					<p:menuitem value="Hide Menu" icon="pi pi-times"
+						onclick="PF('cMenu').hide()" />
+				</p:contextMenu>
+			</h:form>
+
+
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

@@ -46,7 +46,7 @@ public class TransaccionDao {
 	 */
 	public List<Transaccion> obtenerTransaccion (){
 		String jpql = "SELECT c FROM Transaccion c";
-		Query q = em.createQuery(jpql, Empleado.class);
+		Query q = em.createQuery(jpql, Transaccion.class);
 		List<Transaccion> listado = q.getResultList();
 		return listado;
 		

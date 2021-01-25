@@ -1,0 +1,129 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:h="http://java.sun.com/jsf/html">
+
+
+<h:head>Registrar Póliza</h:head>
+
+<body>
+	<ui:composition template="template/templateAsistentePoliza.xhtml">
+		<ui:define name="title"></ui:define>
+		<ui:param name="nombre" value="#{loginBean.cliente.nombres}" />
+		<ui:define name="content">
+			<h:form role="form">
+				<div class="row">
+					<div class="col-lg-12">
+						<div class="panel panel-default">
+							<br /> <br /> <br />
+							<div class="panel-body">
+								<p:growl id="message" showDetail="true" class="ui-growl"
+									life="4000" />
+								<div class="col-sm-12">
+									<label class="col-sm-12">Tipo de Póliza</label>
+									<div class="col-sm-12">
+										<h:selectOneMenu id="polizaT" required="true" label=" "
+											value="#{polizaBean.newPoliza.tipoPoliza}">
+											<f:selectItem itemValue="PERIODICO" itemLabel="PERIODICO" />
+											<f:selectItem itemValue="VENCIMIENTO" itemLabel="VENCIMIENTO" />
+										</h:selectOneMenu>
+									</div>
+
+								</div>
+								<div class="form-group">
+									<label>Fecha Inicio</label>
+									<h:inputText id="fechaI" disabled="#{!bean.permissionToWrite}"
+										value="#{polizaBean.fechaActu}" type="text"
+										class="form-control form-control-line">
+									</h:inputText>
+
+								</div>
+								<div class="form-group">
+									<label> Cuenta </label>
+									<h:inputText id="cuenta"
+										value="#{polizaBean.newPoliza.cuentaClientePoliza}"
+										type="text" class="form-control form-control-line">
+
+									</h:inputText>
+
+								</div>
+
+								<div class="form-group">
+									<label> Monto Abono</label>
+									<h:inputText id="monto" value="#{polizaBean.newPoliza.montoP}"
+										type="text" placeholder="Joe Down"
+										class="form-control form-control-line">
+									</h:inputText>
+
+								</div>
+
+								<div class="form-group">
+									<label> Tiempo Plazo</label>
+									<h:inputText id="tiempoP" value="#{polizaBean.maximoTiempo}"
+										type="text" class="form-control form-control-line">
+									</h:inputText>
+
+								</div>
+					
+								<div class="form-group">
+									<label>Interes</label>
+									<h:inputText id="corr" disabled="#{!bean.permissionToWrite}"
+										value="#{polizaBean.tasaInteres}" type="text"
+										class="form-control form-control-line">
+									</h:inputText>
+
+								</div>
+
+							</div>
+						</div>
+						<h2 class="page-header">Subir Archivos</h2>
+						<div class="form-group">
+							<div class="form-group">
+								<label>Subir cedula&nbsp;
+									&nbsp;</label>
+								<p:fileUpload value="#{polizaBean.subirCedula()}"
+									mode="advanced"  auto="true"
+									sizeLimit="10485760" label="Elegir Archivo"
+									uploadLabel="Cargar" required="true"
+									requiredMessage="Archivo no seleccionado" />
+							</div>
+							<br />
+							<div class="form-group">
+								<label>Subir planilla&nbsp;
+									&nbsp;</label>
+								<p:fileUpload value="#{polizaBean.subirPlanilla()}"
+									mode="advanced"  auto="true"
+									sizeLimit="10485760" label="Elegir Archivo"
+									uploadLabel="Cargar" required="true"
+									requiredMessage="Archivo no seleccionado" />
+							</div>
+
+						</div>
+
+						<br /> <br />
+						<div class="col-sm-2">
+							<h:commandButton action="#{polizaBean.crearPoliza()}"
+								class="btn btn-success btn-lg" value="REALIZAR TRANSACCION"
+								style="width: 250px; height: 50px; color: black; text-align: left; background-color:
+									blue);" />
+
+						</div>
+						<div class="col-sm-1">
+							<h:commandButton
+								action="#{transaccionBean.doRegistroTransaccion()}"
+								class="btn btn-success btn-lg" value="LIMPIAR"
+								style="width: 250px; height: 50px; color: black; text-align: rigt; background-color:
+									blue);" />
+						</div>
+					</div>
+				</div>
+			</h:form>
+
+
+
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

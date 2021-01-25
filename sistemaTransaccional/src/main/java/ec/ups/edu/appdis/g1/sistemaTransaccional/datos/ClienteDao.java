@@ -127,5 +127,18 @@ public class ClienteDao {
 		//return null;
 	}
 	
+	public Cliente obtenerDatosPorCedula (String cedula) throws Exception {
+		try {
+			String jpl = "select c from Cliente c Where c.cedula =:contr";
+			Query q = em.createQuery(jpl, Cliente.class);
+			q.setParameter("contr", cedula);
+			return (Cliente)q.getSingleResult();
+			
+		} catch (NoResultException e) {
+			//System.out.println(e.getMessage());
+			 throw new Exception("Revisar numero de cedula"); 
+		}
+	}
+	
 	
 }

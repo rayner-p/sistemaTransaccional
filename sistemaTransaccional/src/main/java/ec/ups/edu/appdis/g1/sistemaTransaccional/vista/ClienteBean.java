@@ -145,6 +145,7 @@ public class ClienteBean implements Serializable {
 	 */
 	public List<SesionCliente> cargarSesiones() {
 		List<SesionCliente> lis = on.obtenerSesionesEmpleados(newCliente.getCedula());
+		System.out.println("QUE TRAE ESTO" + " " + lis);
 		if (lis != null) {
 			lstSesionesCliente = lis;
 			return lstSesionesCliente;
@@ -153,7 +154,7 @@ public class ClienteBean implements Serializable {
 	}
 
 	/**
-	 * Metodo para generar usuarios aleatorios  del cliente
+	 * Metodo para generar usuarios aleatorios del cliente
 	 * 
 	 * @return usuario el nombre con elq ue se debe logear el cliente
 	 */
@@ -165,8 +166,9 @@ public class ClienteBean implements Serializable {
 		System.out.println("Se ha generado un nombre de usuario al azar");
 		return usuario;
 	}
+
 	/**
-	 * Metodo para generar usuarios aleatorios  del cliente
+	 * Metodo para generar usuarios aleatorios del cliente
 	 * 
 	 * @return usuario el nombre con elq ue se debe logear el cliente
 	 */
@@ -179,8 +181,9 @@ public class ClienteBean implements Serializable {
 		return contrasenia;
 
 	}
+
 	/**
-	 * Metodo para registrar el correo cuando se cree el cliente 
+	 * Metodo para registrar el correo cuando se cree el cliente
 	 * 
 	 * 
 	 */
@@ -220,15 +223,14 @@ public class ClienteBean implements Serializable {
 		return null;
 
 	}
+
 	/**
-	 * Metodo para registrar el correo cuando se cree el cliente 
+	 * Metodo para registrar el correo cuando se cree el cliente
 	 * 
 	 * 
 	 */
 	public String doRegistraCliente() {
-
-		System.out.println(this.newCliente.getCedula() + "   " + this.newCliente.getNombres() + tipoEstado);
-
+		System.out.println("DATOS CREADOS"+this.newCliente.getCedula() + "   " + this.newCliente.getNombres() + tipoEstado);
 		try {
 			if (tipoEstado.equalsIgnoreCase("Soltero/o")) {
 				System.out.println(tipoEstado);
@@ -237,10 +239,9 @@ public class ClienteBean implements Serializable {
 				newCliente.setEstadoCivil("Soltero(a)");
 				obtenerUsuario();
 				generarContrasena();
-
 				try {
+					System.out.println("ENTRAS AL TRY PARA CREAR?");
 					on.registarCliente(newCliente);
-
 					addMessage("Confirmacion", "Cliente Guardado");
 					registrarCorreo();
 					addMessage("Confirmacion", "Correo Enviado");
@@ -300,8 +301,7 @@ public class ClienteBean implements Serializable {
 			}
 
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println("Error al crear cliente"+ e.getLocalizedMessage());
 		}
 
 		return null;
@@ -319,6 +319,7 @@ public class ClienteBean implements Serializable {
 
 	public String doBuscoCliente() {
 		try {
+			
 			System.out.println("ENTRAS A BUSCAR DATOS CLIENTES?");
 			Cliente emple = on.buscarCliente(newCliente.getCedula());
 			System.out.println("ESTOS SON DATOS RECOGIDOS DEL USUARIO" + emple);
@@ -376,7 +377,7 @@ public class ClienteBean implements Serializable {
 		}
 		return null;
 	}
-	
+
 	public String doIniciarSesiónCliente() {
 		try {
 			on.IniciarSesion(newCliente.getUsuario(), newCliente.getContrasenia());

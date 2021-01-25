@@ -1,5 +1,8 @@
 package ec.ups.edu.appdis.g1.sistemaTransaccional.negocio;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -38,12 +41,13 @@ import ec.ups.edu.appdis.g1.sistemaTransaccional.modelo.Cuenta;
 import ec.ups.edu.appdis.g1.sistemaTransaccional.modelo.Empleado;
 import ec.ups.edu.appdis.g1.sistemaTransaccional.modelo.Parametrizar;
 import ec.ups.edu.appdis.g1.sistemaTransaccional.modelo.Poliza;
+import ec.ups.edu.appdis.g1.sistemaTransaccional.modelo.PolizaPOJO;
 import ec.ups.edu.appdis.g1.sistemaTransaccional.modelo.SesionCliente;
 import ec.ups.edu.appdis.g1.sistemaTransaccional.modelo.TranferenciaLocal;
 import ec.ups.edu.appdis.g1.sistemaTransaccional.modelo.Transaccion;
 
 @Stateless
-public class sistemaTransaccionaON implements GestionSistemRemoto, GestionSistemLocal {
+public class sistemaTransaccionaON implements GestionSistemLocal {
 	@Inject
 	private EmpleadoDao daoEmpleado;
 	@Inject
@@ -131,8 +135,9 @@ public class sistemaTransaccionaON implements GestionSistemRemoto, GestionSistem
 		} else {
 
 			try {
+				System.out.println("INGRESA AL CREAR EMPLEADO");
 				daoEmpleado.insert(empleado);
-				System.out.println("creado");
+				System.out.println("EMPLEADO CREADO CORRECTO");
 			} catch (Exception e) {
 				throw new Exception(e.toString());
 			}
@@ -364,10 +369,6 @@ public class sistemaTransaccionaON implements GestionSistemRemoto, GestionSistem
 	public void insertarPoliza(Poliza poliza) throws SQLException {
 		daoPoliza.insertarPoliza(poliza);
 
-	}
-
-	public List<Poliza> obtenerPolizas() {
-		return daoPoliza.obtenerPolizas();
 	}
 
 	public void insertarTransaccion(Transaccion transaccion) {
@@ -661,6 +662,7 @@ public class sistemaTransaccionaON implements GestionSistemRemoto, GestionSistem
 		}
 		return null;
 	}
+
 	/**
 	 * Metodo para obtener un Cliente
 	 * 
@@ -673,7 +675,7 @@ public class sistemaTransaccionaON implements GestionSistemRemoto, GestionSistem
 	 */
 	public Cliente usuarioCliente(String usuario, String contra) throws Exception {
 		try {
-			
+
 			Cliente clie = daoCliente.obtenerClienteUsuarioContraseña(usuario, contra);
 
 			if (clie != null) {
@@ -696,12 +698,13 @@ public class sistemaTransaccionaON implements GestionSistemRemoto, GestionSistem
 		DateFormat hourdateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 		return hourdateFormat.format(fecha);
 	}
+
 	/**
-	 * Metodo que permite llevar un registro de los intentos de acceso del cliente al 
-	 * sistema transacciomnal
+	 * Metodo que permite llevar un registro de los intentos de acceso del cliente
+	 * al sistema transacciomnal
 	 * 
 	 * @param SesionCliente datos del cliente
-	
+	 * 
 	 */
 	public void guardarSesionCliente(SesionCliente sesionCliente) {
 		Cliente cli = sesionCliente.getCliente();
@@ -755,12 +758,13 @@ public class sistemaTransaccionaON implements GestionSistemRemoto, GestionSistem
 		daoSesion.insert(sesionCliente);
 
 	}
+
 	/**
-	 * Metodo que permite llevar un registro de los intentos de acceso de los empleados al 
-	 * sistema transacciomnal
+	 * Metodo que permite llevar un registro de los intentos de acceso de los
+	 * empleados al sistema transacciomnal
 	 * 
 	 * @param SesionCliente datos del cliente
-	
+	 * 
 	 */
 	public void guardarSesionEmpleado(SesionCliente sesionCliente) {
 		Empleado cli = sesionCliente.getEmpleado();
@@ -870,10 +874,9 @@ public class sistemaTransaccionaON implements GestionSistemRemoto, GestionSistem
 
 	}
 
-
-
 	/**
-	 * Metodo que me permite obtener una cuenta de ahorros que pertenezca a un cliente
+	 * Metodo que me permite obtener una cuenta de ahorros que pertenezca a un
+	 * cliente
 	 * 
 	 * @param cedulaCliente Cedula del cliente de la cuenta de ahorros
 	 * @return Cuenta de ahorro obtenida de la busqueda
@@ -930,48 +933,49 @@ public class sistemaTransaccionaON implements GestionSistemRemoto, GestionSistem
 
 	}
 
-
+	/**
+	 * 
+	 */
 	public void agregarCuentaTransferecia(TranferenciaLocal transferencia) throws Exception {
 		Cuenta c = new Cuenta();
 		if (daoCliente.read(c.getNumeroCuenta()) == null) {
 			throw new Exception("No existe usuario con esa cédula");
-		}
-		else {
+		} else {
 			System.out.println("Transferencia");
 			daoTransferenciaR.insert(transferencia);
 		}
-		
+
 	}
-	//metodo que sirve para actualizar los datos del cliente
+
+	// metodo que sirve para actualizar los datos del cliente
 	public TranferenciaLocal obtenerClienteCuenta(String numeroCuenta) {
-		if(daoTransferenciaR.obtenerClienteCuenta(numeroCuenta)== null){
+		if (daoTransferenciaR.obtenerClienteCuenta(numeroCuenta) == null) {
 			System.out.println("No existe cliente con ese número de cuenta");
 
-		}else {
+		} else {
 			System.out.println("existe usuario");
 		}
 		return null;
 	}
 
-
 	/**
 	 * Metodo que permite obtener las transferencias locales de un cliente
 	 * 
 	 * 
-	 *                    
+	 * 
 	 * @return Lista de transferencias de un cliemte
 	 */
-	/*public List<TranferenciaLocal> getTransfereciaLocals() {
-		try {
-			return daoTransferenciaR.getTransfereciaLocals();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
-	}*/
+	/*
+	 * public List<TranferenciaLocal> getTransfereciaLocals() { try { return
+	 * daoTransferenciaR.getTransfereciaLocals(); } catch (Exception e) {
+	 * e.printStackTrace(); } return null; }
+	 */
+	/**
+	 * 
+	 */
 	public List<Cuenta> getTransfereciasOrigenes(String cuenta) {
 		try {
-			List<Cuenta> resultados= (List<Cuenta>) daoTransferenciaR.getTransfereciaLocals(cuenta);
+			List<Cuenta> resultados = (List<Cuenta>) daoTransferenciaR.getTransfereciaLocals(cuenta);
 			return resultados;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -985,7 +989,9 @@ public class sistemaTransaccionaON implements GestionSistemRemoto, GestionSistem
 		return null;
 	}
 
-
+	/**
+	 * 
+	 */
 	public Cuenta obtenerSaldoClienteCuenta(String numeroCuenta) {
 		Cuenta valor = new Cuenta();
 		try {
@@ -997,29 +1003,117 @@ public class sistemaTransaccionaON implements GestionSistemRemoto, GestionSistem
 		return valor;
 	}
 
-	
+	/**
+	 * 
+	 */
 	public String actaulizarCuentaCliente(String numeroCuenta, double valor) {
 		if (numeroCuenta == null) {
 			System.out.println("No hay datos en la cuenta");
 		} else {
-			System.out.println("qOBTIENES s "+""+numeroCuenta+""+valor);
+			System.out.println("qOBTIENES s " + "" + numeroCuenta + "" + valor);
 			daoCuenta.actaulizarCuentaCliente(numeroCuenta, valor);
 			System.out.println("se actualizan cuenta");
 		}
 		return null;
 	}
 
-	
+	/**
+	 * 
+	 */
 	public Cuenta obtenerCuentaPorNumero(String numerCuenta) {
 		Cuenta cuentB = new Cuenta();
 		if (numerCuenta == null) {
 			System.out.println("No hay datos en la cuenta");
 		} else {
-			
+
 			cuentB = daoCuenta.obtenerCuentaPorNumero(numerCuenta);
 			System.out.println("vale obtener cuenta por num");
 		}
 		return cuentB;
 	}
 
+	public void crearPoliza(Poliza poli) {
+		try {
+			System.out.println("Poliza a crearse" + " " + poli);
+			daoPoliza.insertarPoliza(poli);
+
+		} catch (Exception e) {
+			System.err.println("Error al crear la póliza " + " " + e.getLocalizedMessage());
+		}
+	}
+
+	public Parametrizar obtenerParametrosporDia(int maximo) {
+
+		Parametrizar resultadosP = new Parametrizar();
+		try {
+			System.out.println("ENTRA AL ON PARA POR DIA");
+			resultadosP = daoParametrizar.obtenerParametrosporDia(maximo);
+
+			System.out.println("TASA OBTENIDA " + " " + resultadosP.getTasaInteres());
+
+		} catch (Exception e) {
+			System.err.println("ERROR AL MOMENTO DE OBTENER LA TASA DE INTERES " + " " + e.getLocalizedMessage());
+		}
+		return resultadosP;
+	}
+
+	/**
+	 * Metodo que permite convertir una clase InputStream en un byte [] arreglo de
+	 * bytes para su posterior guardado en la base de datos.
+	 * 
+	 * @param in Una clase InputStream que continue la información de un archivo que
+	 *           se selecciona en el proceso de la solicitud de credito.
+	 * @return Un clase byte [] un arreglo de bytes del InputStream pasado como
+	 *         parametro.
+	 * @throws IOException Excepción para el manejo de clases que tengan que ver con
+	 *                     archivos.
+	 */
+
+	public byte[] convertirArchivos(InputStream in) throws IOException {
+		System.out.println("TRAE ALGUN ARCHIVO?" + in);
+		ByteArrayOutputStream os = new ByteArrayOutputStream();
+		byte[] buffer = new byte[2024];
+		int len;
+		while ((len = in.read(buffer)) != -1) {
+			os.write(buffer, 0, len);
+		}
+		return os.toByteArray();
+	}
+
+	public String actualizarPoliza(String numeroCuenta) {
+		System.out.println("Entra al on act poli" + " " + numeroCuenta);
+		if (numeroCuenta == null) {
+			System.out.println("NUMERO VACIO");
+		} else {
+			daoPoliza.actualizarPoliza(numeroCuenta);
+		}
+		return null;
+	}
+
+	@Override
+	public List<Poliza> obtenerPolizas() {
+		System.out.println("ENTRA AL ON OBTENER POLIZA");
+		daoPoliza.obtenerPolizas();
+		System.out.println("Resultado dao" + daoPoliza.obtenerPolizas());
+		return daoPoliza.obtenerPolizas();
+	}
+
+	@Override
+	public Cliente obtenerDatosPorCedula(String cedula) throws Exception {
+		System.err.println("INGRESA AL ON PARA BUSCAR "); 
+		if(cedula == null) {
+			System.out.println("Cedula vacia");
+		}else {
+			try {
+				System.err.println("INGRESA AL ON PARA BUSCAR CLIENTE PO");
+				Cliente cliente = daoCliente.obtenerDatosPorCedula(cedula);
+				System.out.println("CLIENTE" +cliente);
+				return cliente;
+				
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
+		}
+		return null;
+	}
 }

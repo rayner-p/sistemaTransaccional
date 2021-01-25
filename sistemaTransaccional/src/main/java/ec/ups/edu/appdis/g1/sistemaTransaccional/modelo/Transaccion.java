@@ -31,6 +31,10 @@ public class Transaccion {
 	@Column(name = "tipo_transaccion")
 	private String tipoTransaccion;
 	
+	@Column(name = "tipo_poliza")
+	private String tipoPoliza;
+	
+
 	private Empleado empleado;
 
 	@ManyToOne(fetch = FetchType.EAGER)
@@ -40,6 +44,15 @@ public class Transaccion {
 	private String transaccion_fk;  //no tocar
 
 	
+	
+	
+	
+	public String getTipoPoliza() {
+		return tipoPoliza;
+	}
+	public void setTipoPoliza(String tipoPoliza) {
+		this.tipoPoliza = tipoPoliza;
+	}
 	/** 
 	 * Metodo que permite obtener un valor al atributo transaccion_fk 
 	 * @return transaccion_fk Variable que se asigna al atributo de la clase

@@ -1,8 +1,11 @@
 package ec.ups.edu.appdis.g1.sistemaTransaccional.modelo;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -53,13 +56,18 @@ public class Cliente  implements Serializable{
 	@Column(length=40)
 	private String contrasenia;
 	
-	@OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL })
+	@OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL })
 	@JoinColumn(name="cuenta_fk")	
 	private List<Cuenta> cuentaCliente;
 	
-	@OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL })
+	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinColumn(name="transaccion_fk")	
-	private List<Transaccion> transaccionCliente;
+	private Set<Transaccion> transaccionCliente = new HashSet<Transaccion>();
+	
+	@OneToMany(fetch = FetchType.EAGER)
+	@JoinColumn(name="poliza_fk")	
+	private Set<Poliza> polizaCliente = new HashSet<Poliza>();
+	
 	
 	/** 
 	 * Metodo que permite obtener un valor al atributo nombre 
@@ -305,25 +313,37 @@ public class Cliente  implements Serializable{
 	 * @return El atributo direccion de esta clase
 	 */
 	
-	public List<Transaccion> getTransaccionCliente() {
+	public Set<Transaccion> getTransaccionCliente() {
 		return transaccionCliente;
 	}
 	/**  
 	 * Metodo que permite asignar el atributo transaccionCliente 
 	 * @param El atributo direccion de esta clase
 	 */
-	public void setTransaccionCliente(List<Transaccion> transaccionCliente) {
+	public void setTransaccionCliente(Set<Transaccion> transaccionCliente) {
 		this.transaccionCliente = transaccionCliente;
+	}
+	
+	
+	public Set<Poliza> getPolizaCliente() {
+		return polizaCliente;
+	}
+	public void setPolizaCliente(Set<Poliza> polizaCliente) {
+		this.polizaCliente = polizaCliente;
 	}
 	@Override
 	public String toString() {
 		return "Cliente [cedula=" + cedula + ", nombres=" + nombres + ", apellidos=" + apellidos + ", fechaNacimiento="
-				+ fechaNacimiento + ", edad=" + edad + ", provincia=" + provincia + ", ciudad=" + ciudad
+				+ fechaNacimiento + ", ciudad=" + ciudad
 				+ ", estadoCivil=" + estadoCivil + ", direccion=" + direccion + ", tiempoResidencia=" + tiempoResidencia
-				+ ", referenciaDomicilio=" + referenciaDomicilio + ", correo=" + correo + ", celular=" + celular
+				+ ", correo=" + correo + ", celular=" + celular
 				+ ", telefono=" + telefono + ", usuario=" + usuario + ", contrasenia=" + contrasenia
-				+ ", cuentaCliente=" + cuentaCliente + ", transaccionCliente=" + transaccionCliente + "]";
+				+ ", cuentaCliente=" + cuentaCliente + ", transaccionCliente=" + transaccionCliente + ", polizaCliente="
+				+ polizaCliente + "]";
 	}
+
+	
+	
 	
 	
 	

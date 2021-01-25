@@ -201,25 +201,23 @@ public class TransaccionBean implements Serializable {
 	 */
 	public String validarTransaccion() {
 		// cliente = on.buscarCliente(cliente.getCedula());
-		System.out.println("INGRESO A VALIDAR TRANSACCION " + "" + cliente.getCedula());
+		//System.out.println("INGRESO A VALIDAR TRANSACCION " + "" + cliente.getCedula());
 		Cuenta cl = on.buscarCuentaD(cliente.getCedula());
-		System.out.println("VALIDACION " + cl);
+		//System.out.println("VALIDACION " + cl);
 		double montoNuevo = newTransaccion.getMonto();
-		if (newTransaccion.getTipoTransaccion() == "Retiro" && montoNuevo > cl.getSaldo()) {
+
+		System.out.println("MONTO OBTENIDO DEL XH"+montoNuevo);
+		if (newTransaccion.getTipoTransaccion() == "Retiro" &&  cl.getSaldo() < montoNuevo) {
 			System.out.println("El monto a retirar es mayor que el saldo");
 
 		} else {
-			saldoNuevo = cl.getSaldo() - newTransaccion.getMonto();
-			System.out.println("saldo nuevo" + saldoNuevo);
-			newTransaccion.setMonto(saldoNuevo);
-			System.out.println("Puede realziar Retiro");
-			System.out.println("------");
-			System.out.println("se ha retiro :" + saldoNuevo + "" + "de la cuenta");
+			System.out.println("Ingreso a RETIRO Validacion"+" "+cl.getSaldo());
+			saldoNuevo = cl.getSaldo() - montoNuevo;
+			System.out.println("se ha retiro :" + montoNuevo + "" + "de la cuenta"+" "+"SALDO ACTUAL"+" "+saldoNuevo);
 		}
 		if (newTransaccion.getTipoTransaccion() == "Deposito") {
-			System.out.println("Puede depositar a la cuenta");
-			saldoNuevo = cl.getSaldo() + newTransaccion.getMonto();
-			newTransaccion.setMonto(saldoNuevo);
+			System.out.println("Ingreso a DEPOSITO Validacion");
+			saldoNuevo = montoNuevo + cl.getSaldo();
 			newCuenta.setSaldo(saldoNuevo);
 			System.out.println("se ha aniadido este valor a la cuenta" + saldoNuevo);
 		} else {
@@ -264,10 +262,8 @@ public class TransaccionBean implements Serializable {
 	public String doRegistroTransaccion() {
 		Cuenta cuentaB;
 		new Date();
-		System.out.println("Obtienes fecha?  ==>" + "" + new Date());
 		try {
 			listaTransaccion.add(newTransaccion);
-			System.out.println("liata tra" + listaTransaccion);
 			System.err.println("ENTRA A TRANSACCION");
 			// System.out.println("LISTA DE CUENTA -->" + listaCuenta);
 			if (tipoCuenta == null) {
@@ -300,6 +296,7 @@ public class TransaccionBean implements Serializable {
 						cuentaB = on.obtenerCuentaPorNumero(cuentaObt);
 						System.out.println("QUE TIENE CUENTA" + cuentaB);
 						newTransaccion.setCuenta(cuentaB);
+						newTransaccion.setSucursal(cliente.getCiudad());
 						on.insertarTransaccion(newTransaccion);
 						System.out.println("TRANSACCION CREADA  ---> " + " " + listaTransaccion);
 						System.out.println("cuenta a actualizar " + " " + cuentaObt + "SALDO ACTUALIZADO" + saldoNuevo);
@@ -316,7 +313,7 @@ public class TransaccionBean implements Serializable {
 				try {
 					System.out.println("DENTRO DEL BUSCAR CLIENTE BEAN DEPO");
 					newTransaccion.setFechaHora(new Date());
-
+				
 					if (newTransaccion.getMonto() == 0.0 & newTransaccion.getTipoTransaccion().isEmpty()) {
 						System.out.println("cuenta en blanco, ingrese valores");
 					} else {
@@ -324,11 +321,17 @@ public class TransaccionBean implements Serializable {
 						validarTransaccion();
 						// .out.println("cuenta a actualizar " + " " + newCuenta.getNumeroCuenta());
 						newTransaccion.setEmpleado(empleadoB);
-
+						
+						System.out.println("MONTO DE LA TRANSACCION =" +""+newTransaccion.getMonto());
+						newTransaccion.getMonto();
+						
+						newTransaccion.setSucursal(cliente.getCiudad());
+						
 						cuentaB = new Cuenta();
-						System.out.println("numero a buscqr" +cuentaObt);
 						cuentaB = on.obtenerCuentaPorNumero(cuentaObt);
-						System.out.println("QUE TIENE CUENTA" + cuentaB);
+						System.out.println("QUE TIENE CUENTA BEAN" + cuentaB);
+						newTransaccion.setCuenta(cuentaB);
+						System.out.println("numero a buscqr" +cuentaObt);
 						//newTransaccion.setCuenta(cuentaB);
 						on.insertarTransaccion(newTransaccion);
 						System.out.println("TRANSACCION CREADA  ---> " + " " + listaTransaccion);

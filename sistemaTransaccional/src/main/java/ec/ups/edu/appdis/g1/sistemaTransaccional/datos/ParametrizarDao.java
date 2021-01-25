@@ -10,6 +10,7 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
+import ec.ups.edu.appdis.g1.sistemaTransaccional.modelo.Cuenta;
 import ec.ups.edu.appdis.g1.sistemaTransaccional.modelo.Empleado;
 import ec.ups.edu.appdis.g1.sistemaTransaccional.modelo.Parametrizar;
 @Stateless 
@@ -44,5 +45,29 @@ public class ParametrizarDao {
 		Query q = em.createQuery(jpql, Empleado.class);
 		List<Parametrizar> listado = q.getResultList();
 		return listado;
+	}
+	/** 
+	 * Metodo que permite obtener los Parametros que se crearon anteriormente por medio del tiempo maximo
+	 * @param maximo Cantidad de los dias para la poliza
+	 * @return listado Una lista con todos los parametros ingresado
+	 */
+	
+	//public List<Parametrizar> obtenerParametrosporDia (int maximo){
+	public Parametrizar obtenerParametrosporDia (int maximo){
+		System.out.println("LLEGA EL NUMERO?"+ maximo);
+		String castInter = String.valueOf(maximo);
+		/*@SuppressWarnings("unchecked")
+		List<Parametrizar> resultadoParametrizar = em.createNativeQuery(
+				"SELECT parametrizar.tasa_interes FROM parametrizar  where parametrizar.maximo = :maxi",
+				Parametrizar.class).setParameter("maxi", castInter).getResultList();
+		System.out.println("RESULTADO DEL QUERY "+ resultadoParametrizar);
+		return resultadoParametrizar;	*/
+	
+		
+		String jpql = "SELECT c FROM Parametrizar c where c.maximo=:maxi";
+		Query q = em.createQuery(jpql, Parametrizar.class);
+		q.setParameter("maxi", castInter);
+		 
+		return  (Parametrizar) q.getSingleResult();
 	}
 }

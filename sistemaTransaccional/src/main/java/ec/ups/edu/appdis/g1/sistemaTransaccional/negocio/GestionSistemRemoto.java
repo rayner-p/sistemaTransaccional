@@ -11,6 +11,7 @@ import ec.ups.edu.appdis.g1.sistemaTransaccional.modelo.Cuenta;
 import ec.ups.edu.appdis.g1.sistemaTransaccional.modelo.Empleado;
 import ec.ups.edu.appdis.g1.sistemaTransaccional.modelo.Parametrizar;
 import ec.ups.edu.appdis.g1.sistemaTransaccional.modelo.Poliza;
+import ec.ups.edu.appdis.g1.sistemaTransaccional.modelo.PolizaPOJO;
 import ec.ups.edu.appdis.g1.sistemaTransaccional.modelo.Transaccion;
 
 @Remote
@@ -22,7 +23,7 @@ public interface GestionSistemRemoto {
 	public List<Empleado> getEmpleadosT();
 	public void insertar(Parametrizar parametros) throws SQLException;
 	public void insertarPoliza(Poliza poliza)throws SQLException ;
-	public List<Poliza> obtenerPolizas();
+	public List<PolizaPOJO> obtenerPolizas();
 	public void insertarTransaccion(Transaccion transaccion);
 	public List<Transaccion> obtenerTransaccion ();
 	public String generarNombreUsuario(String cedula, String nombre, String apellido);

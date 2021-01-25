@@ -46,8 +46,15 @@
 		<maven.compiler.source>1.8</maven.compiler.source>
 	</properties>
 
+
 	<!-- the JBoss community and Red Hat GA Maven repositories -->
 	<repositories>
+		<repository>
+			<id>prime-repo</id>
+			<name>PrimeFaces Maven Repository</name>
+			<url>http://repository.primefaces.org</url>
+			<layout>default</layout>
+		</repository>
 		<repository>
 			<releases>
 				<enabled>true</enabled>
@@ -119,12 +126,24 @@
 		</dependencies>
 	</dependencyManagement>
 
+
 	<dependencies>
+		<!-- https://mvnrepository.com/artifact/org.primefaces/primefaces -->
 		<dependency>
-    	    <groupId>com.sun.mail</groupId>
-        	<artifactId>javax.mail</artifactId>
-        	<version>1.6.2</version>
-   	 	</dependency>
+			<groupId>org.primefaces</groupId>
+			<artifactId>primefaces</artifactId>
+			<version>8.0.RC3</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.mail</groupId>
+			<artifactId>javax.mail</artifactId>
+			<version>1.6.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+		</dependency>
 
 		<!-- Import the CDI API, we use provided scope as the API is included in 
 			WildFly / JBoss EAP -->
@@ -243,7 +262,6 @@
 
 	<profiles>
 		<profile>
-			<!-- All the modules that require nothing but WildFly or JBoss EAP -->
 			<id>default</id>
 			<activation>
 				<activeByDefault>true</activeByDefault>
@@ -251,10 +269,6 @@
 		</profile>
 
 		<profile>
-			<!-- An optional Arquillian testing profile that executes tests in your 
-				WildFly / JBoss EAP instance. This profile will start a new WildFly / JBoss 
-				EAP instance, and execute the test, shutting it down when done. Run with: 
-				mvn clean verify -Parq-managed -->
 			<id>arq-managed</id>
 			<dependencies>
 				<dependency>
@@ -263,6 +277,7 @@
 					<scope>test</scope>
 				</dependency>
 			</dependencies>
+
 			<build>
 				<plugins>
 					<plugin>
@@ -278,9 +293,7 @@
 							</execution>
 						</executions>
 						<configuration>
-							<!-- Configuration for Arquillian: -->
 							<systemPropertyVariables>
-								<!-- Defines the container qualifier in "arquillian.xml" -->
 								<arquillian.launch>managed</arquillian.launch>
 							</systemPropertyVariables>
 						</configuration>
@@ -290,8 +303,7 @@
 		</profile>
 
 		<profile>
-			<!-- An optional Arquillian testing profile that executes tests in a remote 
-				JBoss EAP instance. Run with: mvn clean verify -Parq-remote -->
+
 			<id>arq-remote</id>
 			<dependencies>
 				<dependency>
@@ -315,7 +327,6 @@
 							</execution>
 						</executions>
 						<configuration>
-							<!-- Configuration for Arquillian: -->
 							<systemPropertyVariables>
 								<!-- Defines the container qualifier in "arquillian.xml" -->
 								<arquillian.launch>remote</arquillian.launch>

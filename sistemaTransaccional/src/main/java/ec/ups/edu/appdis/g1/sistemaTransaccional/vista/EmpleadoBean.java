@@ -198,18 +198,15 @@ public class EmpleadoBean implements Serializable {
 	}
 
 	public String doRegistrarEmpleado() {
-
 		System.out.println(this.newEmpleado.getCedula() + "   " + this.newEmpleado.getNombres() + tipoEmpleado);
-
+		System.out.println("INGRESA AL REGISTRO");
 		try {
 			if (tipoEmpleado.equalsIgnoreCase("Administrador")) {
 				newEmpleado.setRol("Administrador");
 				obtenerUsuario();
 				generarContrasena();
-
+				
 				try {
-					
-
 					if(newEmpleado.getCedula().isEmpty() && newEmpleado.getNombres().isEmpty() 
 							&& newEmpleado.getApellidos().isEmpty() && newEmpleado.getCorreo().isEmpty()
 							&& newEmpleado.getRol().isEmpty()) {
@@ -235,7 +232,9 @@ public class EmpleadoBean implements Serializable {
 							&& newEmpleado.getApellidos().isEmpty() && newEmpleado.getCorreo().isEmpty()
 							&& newEmpleado.getRol().isEmpty()) {
 							System.out.println("Ingrese los datos priemero");
+							System.out.println("EMPLEADO A GUARDARSE"+newEmpleado);
 							on.registarEmpleado(newEmpleado);
+							
 					}else {
 						addMessage("Confirmacion", "Empleado Guardado");
 						registrarCorreo();
@@ -286,6 +285,7 @@ public class EmpleadoBean implements Serializable {
 
 	public String doBuscarEmpleado() {
 		try {
+			newEmpleado = new Empleado();
 			System.out.println("ENTRAS A BUSCAR DATOS?");
 			Empleado emple = on.buscarEmpleado(newEmpleado.getCedula());
 			System.out.println("ESTOS SON DATOS RECOGIDOS DEL USUARIO" + emple);
@@ -311,6 +311,7 @@ public class EmpleadoBean implements Serializable {
 	
 	public String doEliminar() {
 		try {
+			newEmpleado = new Empleado();
 			System.out.println("cedula eliminar"+newEmpleado.getCedula());
 			on.eliminarEmpleado(newEmpleado.getCedula());
 			System.out.println("EMPLEADO ELIMINADO");
@@ -322,6 +323,7 @@ public class EmpleadoBean implements Serializable {
 	public String doActualizacion() {
 
 		try {
+			newEmpleado = new Empleado();
 			System.out.println("entras a la actualizacion");
 			System.out.println(this.newEmpleado.getCedula() + "   " + this.newEmpleado.getNombres() + " "
 					+ this.newEmpleado.getRol());
