@@ -33,10 +33,10 @@ public class SesionCliente implements Serializable{
 	private String estado;
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date fechaSesion; 
-	@OneToOne(fetch = FetchType.EAGER, cascade = {CascadeType.ALL })
+	@OneToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name="cedula_cliente")
 	private Cliente cliente; 
-	@OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.ALL })
+	@OneToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name="cedula_empleado")
 	private Empleado empleado; 
 	
@@ -118,6 +118,12 @@ public class SesionCliente implements Serializable{
 	 */
 	public void setEmpleado(Empleado empleado) {
 		this.empleado = empleado;
+	}
+
+	@Override
+	public String toString() {
+		return "SesionCliente [codigoSesion=" + codigoSesion + ", estado=" + estado + ", fechaSesion=" + fechaSesion
+				+ ", cliente=" + cliente + ", empleado=" + empleado + "]";
 	} 
 	
 	

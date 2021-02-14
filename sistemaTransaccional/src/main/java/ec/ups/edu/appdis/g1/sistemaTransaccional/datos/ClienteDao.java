@@ -96,7 +96,7 @@ public class ClienteDao {
 			Query q = em.createQuery(jpl, Cliente.class);
 			q.setParameter("usu", usuario);
 			q.setParameter("contr", contra);
-			System.out.println("datos de la consulta    " +(Cliente)q.getSingleResult());
+			//System.out.println("datos de la consulta    " +(Cliente)q.getSingleResult());
 			return (Cliente)q.getSingleResult();
 			
 		} catch (Exception e) {

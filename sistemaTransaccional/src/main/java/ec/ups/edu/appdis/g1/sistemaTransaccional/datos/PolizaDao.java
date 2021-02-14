@@ -68,9 +68,9 @@ public class PolizaDao {
 	 */
 
 	public List<Poliza> obtenerPolizas() {
+		System.out.println("enrra dao");
 		@SuppressWarnings("unchecked")
 		List<Poliza> resultadoPoliza = em.createNativeQuery("select p.* from Poliza p", Poliza.class).getResultList();
-		System.out.println("RESULTADO DEL QUERY DAO POLIZA  " + resultadoPoliza);
 		return resultadoPoliza;
 
 		/*
@@ -104,7 +104,7 @@ public class PolizaDao {
 		Query query = em
 				.createQuery("UPDATE Poliza p  SET p.estadoPoliza =: valor WHERE c.cuentaClientePoliza_fk =:codigo");
 		query.setParameter("codigo", numeroCuenta);
-		int result = query.executeUpdate();
+		//int result = query.executeUpdate();
 		return "poliza";
 	}
 

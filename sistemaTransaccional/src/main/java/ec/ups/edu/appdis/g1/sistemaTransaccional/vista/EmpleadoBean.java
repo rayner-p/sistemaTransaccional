@@ -33,7 +33,6 @@ public class EmpleadoBean implements Serializable {
 	@Inject
 	private LoginBean loginB;
 
-
 	@Inject
 	private GestionSistemLocal on;
 
@@ -181,12 +180,9 @@ public class EmpleadoBean implements Serializable {
 		CompletableFuture.runAsync(() -> {
 			try {
 
-				
-					System.out.println("VALE EL CORREO?");
-					on.enviarCorreo(destinatario, asunto, cuerpo);
-					System.out.println("SE ha enviado un correo a: " + "\n" + "" + newEmpleado.getCorreo() + "");
-			
-				
+				System.out.println("VALE EL CORREO?");
+				on.enviarCorreo(destinatario, asunto, cuerpo);
+				System.out.println("SE ha enviado un correo a: " + "\n" + "" + newEmpleado.getCorreo() + "");
 
 			} catch (Exception e) {
 				System.out.println("Error al enviar correo con contrasenia");
@@ -203,40 +199,43 @@ public class EmpleadoBean implements Serializable {
 		try {
 			if (tipoEmpleado.equalsIgnoreCase("Administrador")) {
 				newEmpleado.setRol("Administrador");
-				obtenerUsuario();
-				generarContrasena();
-				
+
 				try {
-					if(newEmpleado.getCedula().isEmpty() && newEmpleado.getNombres().isEmpty() 
+					if (newEmpleado.getCedula().isEmpty() && newEmpleado.getNombres().isEmpty()
 							&& newEmpleado.getApellidos().isEmpty() && newEmpleado.getCorreo().isEmpty()
 							&& newEmpleado.getRol().isEmpty()) {
-							System.out.println("Ingrese los datos priemero");
-							on.registarEmpleado(newEmpleado);
-					}else {
+
+					} else {
 						addMessage("Confirmacion", "Empleado Guardado");
+						System.out.println("guardado");
+						obtenerUsuario();
+						generarContrasena();
+
+						on.registarEmpleado(newEmpleado);
 						registrarCorreo();
 						addMessage("Confirmacion", "Correo Enviado");
 					}
-					
+
 				} catch (Exception e) {
 					System.out.println("error guardar empleado con correo");
 					e.printStackTrace();
 				}
 			} else if (tipoEmpleado.equalsIgnoreCase("Cajero")) {
 				newEmpleado.setRol("Cajero");
-				obtenerUsuario();
-				generarContrasena();
 
 				try {
-					if(newEmpleado.getCedula().isEmpty() && newEmpleado.getNombres().isEmpty() 
+					if (newEmpleado.getCedula().isEmpty() && newEmpleado.getNombres().isEmpty()
 							&& newEmpleado.getApellidos().isEmpty() && newEmpleado.getCorreo().isEmpty()
 							&& newEmpleado.getRol().isEmpty()) {
-							System.out.println("Ingrese los datos priemero");
-							System.out.println("EMPLEADO A GUARDARSE"+newEmpleado);
-							on.registarEmpleado(newEmpleado);
-							
-					}else {
+						System.out.println("Ingrese los datos priemero");
+
+					} else {
 						addMessage("Confirmacion", "Empleado Guardado");
+						System.out.println("EMPLEADO A GUARDARSE" + newEmpleado);
+
+						obtenerUsuario();
+						generarContrasena();
+						on.registarEmpleado(newEmpleado);
 						registrarCorreo();
 						addMessage("Confirmacion", "Correo Enviado");
 					}
@@ -246,17 +245,21 @@ public class EmpleadoBean implements Serializable {
 				}
 			} else if (tipoEmpleado.equalsIgnoreCase("Asistente Captaciones")) {
 				newEmpleado.setRol("Asistente Captaciones");
-				obtenerUsuario();
-				generarContrasena();
+
 				try {
-					if(newEmpleado.getCedula().isEmpty() && newEmpleado.getNombres().isEmpty() 
+					if (newEmpleado.getCedula().isEmpty() && newEmpleado.getNombres().isEmpty()
 							&& newEmpleado.getApellidos().isEmpty() && newEmpleado.getCorreo().isEmpty()
 							&& newEmpleado.getRol().isEmpty()) {
-							System.out.println("Ingrese los datos priemero");
-							on.registarEmpleado(newEmpleado);
-					}else {
+						System.out.println("Ingrese los datos priemero");
+
+					} else {
 						addMessage("Confirmacion", "Empleado Guardado");
+						System.out.println("ingresa a guardar empleado");
+						obtenerUsuario();
+						generarContrasena();
 						registrarCorreo();
+						on.registarEmpleado(newEmpleado);
+
 						addMessage("Confirmacion", "Correo Enviado");
 					}
 				} catch (Exception e) {
@@ -285,7 +288,7 @@ public class EmpleadoBean implements Serializable {
 
 	public String doBuscarEmpleado() {
 		try {
-			newEmpleado = new Empleado();
+
 			System.out.println("ENTRAS A BUSCAR DATOS?");
 			Empleado emple = on.buscarEmpleado(newEmpleado.getCedula());
 			System.out.println("ESTOS SON DATOS RECOGIDOS DEL USUARIO" + emple);
@@ -308,22 +311,22 @@ public class EmpleadoBean implements Serializable {
 		return null;
 	}
 
-	
 	public String doEliminar() {
 		try {
-			newEmpleado = new Empleado();
-			System.out.println("cedula eliminar"+newEmpleado.getCedula());
+			//newEmpleado = new Empleado();
+			System.out.println("cedula eliminar" + newEmpleado.getCedula());
 			on.eliminarEmpleado(newEmpleado.getCedula());
 			System.out.println("EMPLEADO ELIMINADO");
-		}catch (Exception e) {
-			System.out.println("Error al eliminar al empleado "  +" "+e.getMessage());
+		} catch (Exception e) {
+			System.out.println("Error al eliminar al empleado " + " " + e.getMessage());
 		}
 		return null;
 	}
+
 	public String doActualizacion() {
 
 		try {
-			newEmpleado = new Empleado();
+			//newEmpleado = new Empleado();
 			System.out.println("entras a la actualizacion");
 			System.out.println(this.newEmpleado.getCedula() + "   " + this.newEmpleado.getNombres() + " "
 					+ this.newEmpleado.getRol());

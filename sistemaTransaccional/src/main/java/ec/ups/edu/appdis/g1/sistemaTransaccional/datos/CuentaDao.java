@@ -4,11 +4,17 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
+import javax.persistence.NoResultException;
+import javax.persistence.PostUpdate;
 import javax.persistence.Query;
 
+import ec.ups.edu.appdis.g1.sistemaTransaccional.modelo.Cliente;
 import ec.ups.edu.appdis.g1.sistemaTransaccional.modelo.Cuenta;
 
 public class CuentaDao {
@@ -16,7 +22,9 @@ public class CuentaDao {
 	private Connection con;
 
 	@Inject
-	private EntityManager em;
+	private static EntityManager em;
+
+	// private static EntityTransaction transactionObj = em.getTransaction();
 
 	/**
 	 * Metodo que permite registrar una cuenta de ahorro en la base de datos
@@ -62,13 +70,17 @@ public class CuentaDao {
 	 * 
 	 * @return Lista de cuentas de ahorros que estan registradas en la base de datos
 	 */
+
 	public List<Cuenta> obtenerCuenta() {
+		return null;
+	}
+
+	public  List<Cuenta> obtenerCuenta2(){
 		String jpql = "SELECT c FROM Cuenta c ";
 
 		Query q = em.createQuery(jpql, Cuenta.class);
 		return q.getResultList();
 	}
-
 	/**
 	 * Metodo que permite obtener una cuenta de ahorro en base a su codigo
 	 * registrado en la base de datos
@@ -77,14 +89,24 @@ public class CuentaDao {
 	 * @return Cuenta de ahorro que tenga un cliente registrado en la base
 	 */
 	public Cuenta getCuentaCedulaCliente(String cedulaCliente) {
-		String jpql = "SELECT c FROM Cuenta c WHERE c.cuenta_fk = :cedulaCliente";
-		Query q = em.createQuery(jpql, Cuenta.class);
-		q.setParameter("cedulaCliente", cedulaCliente);
-		Cuenta cuentaDeAhorro = (Cuenta) q.getSingleResult();
-		return cuentaDeAhorro;
+		System.out.println(cedulaCliente);
+		try {
+			System.out.println("ingresa");
+			String jpql = "SELECT * FROM cuenta  WHERE cuenta_fk = :cedulaCliente";
+			Query q = em.createNativeQuery(jpql, Cliente.class);
+			q.setParameter("cedulaCliente", cedulaCliente);
+			return (Cuenta) q.getSingleResult();
+
+		} catch (NoResultException e) {
+			// System.out.println(e.getMessage());
+			System.out.println("ERROR AL OBTENER CUENTA DE LA BD");
+
+		}
+		return null;
 	}
 
 	public Cuenta obtenerCuentaPorNumero(String numerCuenta) {
+		System.out.println("num dao " + numerCuenta);
 		String jpql = "SELECT c FROM Cuenta c WHERE c.numeroCuenta = :cedulaCliente";
 		Query q = em.createQuery(jpql, Cuenta.class);
 		q.setParameter("cedulaCliente", numerCuenta);
@@ -93,14 +115,29 @@ public class CuentaDao {
 	}
 
 	public String actaulizarCuentaCliente(String numeroCuenta, double valor) {
-		System.out.println("Entra al dao");
-		Query query = em.createQuery(
-			    "UPDATE Cuenta c  SET c.saldo =: valor WHERE c.numeroCuenta =:codigo");
-			query.setParameter("valor", valor);
-			query.setParameter("codigo", numeroCuenta);
-		int result = query.executeUpdate();
-		
-		return null;
+		System.out.println("Entra al dao" + numeroCuenta + valor);
+		Query query = em.createQuery("UPDATE cuenta   SET saldo=:valor WHERE numero_cuenta=:codigo");
+		query.setParameter("valor", valor);
+		query.setParameter("codigo", numeroCuenta);
+		System.out.println("query" + query); // int result =
+		query.executeUpdate();
+		return "hecho";
+
+		/*
+		 * 
+		 * 
+		 * Query query =
+		 * em.createQuery("UPDATE cuenta   SET saldo=:valor WHERE numero_cuenta=:codigo"
+		 * ); query.setParameter("valor", valor); query.setParameter("codigo",
+		 * numeroCuenta); int updateCount = query.executeUpdate(); if (updateCount > 0)
+		 * { System.out.println("Record For Id: " + numeroCuenta + valor +
+		 * " Is Updated"); }
+		 * 
+		 * // transactionObj.commit();
+		 * FacesContext.getCurrentInstance().addMessage("editSchoolForm:schoolId", new
+		 * FacesMessage("School Record #" + valor + " Is Successfully Updated In Db"));
+		 * return "RegistrarTransaccion.xhtml";
+		 */
 	}
 
 	public Cuenta obtenerSaldoClienteCuenta(String numeroCuenta) throws SQLException {

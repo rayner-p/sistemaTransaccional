@@ -7,6 +7,9 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
+import javax.faces.view.facelets.FaceletContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -49,10 +52,8 @@ public class CuentaBean implements Serializable {
 	}
 
 	private List<Cuenta> listaCuenta;
-	
 
 	private Cuenta newCuenta;
-	
 
 	public double getSaldoNuevo() {
 		return saldoNuevo;
@@ -142,13 +143,17 @@ public class CuentaBean implements Serializable {
 		this.listaCuenta = listaCuenta;
 	}
 
-	
-
 	@PostConstruct
 	public void init() {
 		newCuenta = new Cuenta();
 		listaCuenta = new ArrayList<Cuenta>();
 	}
+
+	/**
+	 * metodo que genera un número de cuenta para los clientes automáticamente
+	 * 
+	 * @return cuenta con los datos generados
+	 */
 
 	public String generarCuenta() {
 		if (clienteB.getNewCliente().getCedula() == null) {
@@ -161,21 +166,33 @@ public class CuentaBean implements Serializable {
 
 		return cuenta;
 	}
+	public boolean validarDatosingresados() {
+		boolean bandera = true;
 
+		if (newCuenta.getSaldo() == 0.0 & newCuenta.getNumeroCuenta().isEmpty()) {
+			bandera = false;
+		} else {
+
+		}
+		return bandera;
+	}
+
+	/**
+	 * metodo que me permite registrar una nueva cuenta para el cliente
+	 * 
+	 * @return
+	 */
 	public String doAperturaCuenta() {
 		fechaActual = new Date();
-		System.out.println("Obtienes fecha?  ==>" + "" + fechaActual);
-
-		System.err.println("ENTRA A APERUTRA");
 		try {
 			listaCuenta.add(newCuenta);
-
-			// System.out.println("LISTA DE CUENTA -->" + listaCuenta);
+			// ystem.out.println("LISTA DE CUENTA -->" + listaCuenta);
 			if (tipoCuenta.equalsIgnoreCase("Ahorro")) {
 				System.out.println(tipoCuenta);
 				System.out.println("ENTRA AL IF PARA CREAR CUENTA");
-				System.out.println("cuenta dentro if" + newCuenta.getNumeroCuenta());
-				System.out.println("Cedula CLiente CUENTA" + clienteB.getNewCliente().getCedula());
+				// System.out.println("cuenta dentro if" + newCuenta.getNumeroCuenta());
+				// System.out.println("Cedula CLiente CUENTA" +
+				// clienteB.getNewCliente().getCedula());
 				if (newCuenta.getSaldo() == 0.0 & newCuenta.getTipoCuenta() == null) {
 					System.out.println("Error cedula nula cliente");
 				} else {
@@ -191,8 +208,15 @@ public class CuentaBean implements Serializable {
 					// System.out.println("Clave fk cuenta"+clienteB.getNewCliente().);
 					if (newCuenta.getSaldo() == 0.0 & newCuenta.getTipoCuenta() == null) {
 						System.out.println("cuenta en blaco");
+					} else if (validarDatosingresados() == false) {
+						FacesContext.getCurrentInstance().addMessage(null,
+								new FacesMessage(FacesMessage.SEVERITY_FATAL, "Info", "Ingrese todos los datos"));
+
 					} else {
 						on.guardarCuentaDeAhorros(newCuenta);
+						FacesContext.getCurrentInstance().addMessage(null,
+								new FacesMessage(FacesMessage.FACES_MESSAGES, "Cuenta creada correctamente"));
+
 					}
 				} catch (Exception e) {
 					System.out.println("error guardar Cliente con correo");
@@ -214,8 +238,15 @@ public class CuentaBean implements Serializable {
 					if (newCuenta.getNumeroCuenta().isEmpty()
 							&& newCuenta.getSaldo() == 0.0 & newCuenta.getTipoCuenta().isEmpty()) {
 						System.out.println("cuenta en blaco");
+					} else if (validarDatosingresados() == false) {
+						FacesContext.getCurrentInstance().addMessage(null,
+								new FacesMessage(FacesMessage.SEVERITY_FATAL, "Info", "Ingrese todos los datos"));
+
 					} else {
 						on.guardarCuentaDeAhorros(newCuenta);
+						FacesContext.getCurrentInstance().addMessage(null,
+								new FacesMessage(FacesMessage.FACES_MESSAGES, "Cuenta creada correctamente"));
+
 					}
 
 				} catch (Exception e) {
@@ -234,6 +265,8 @@ public class CuentaBean implements Serializable {
 	public String validarIngreso() {
 
 		if (newCuenta.getSaldo() < saldoAhorro) {
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "Infor",
+					"Para la apertura de cuenta de ahorro el saldo minimo es de $5"));
 			System.out.println("Para la apertura de cuenta ahorro se necesita un valor mínimo de $5 dólares");
 		} else {
 			saldoAhorro = newCuenta.getSaldo();
@@ -241,6 +274,8 @@ public class CuentaBean implements Serializable {
 		}
 
 		if (newCuenta.getSaldo() < saldoCredito) {
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "Infor",
+					"Para la apertura de cuenta de crédito el saldo minimo es de $500"));
 			System.out.println("Para la apertura de cuenta crédito se necesita un valor mínimo de $500 dólares");
 		} else {
 			System.out.println("Se ha ingresado más");

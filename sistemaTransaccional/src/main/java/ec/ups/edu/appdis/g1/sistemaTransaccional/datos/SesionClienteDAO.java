@@ -6,7 +6,6 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 import ec.ups.edu.appdis.g1.sistemaTransaccional.modelo.SesionCliente;
@@ -28,18 +27,19 @@ public class SesionClienteDAO {
 	 * Metodo que permite registrar una sesion en la base de datos
 	 * @param s Sesion que se inserta en la base de datos
 	 */
-	public void insert(SesionCliente s) {
-		em.persist(s);
+	public void insert(SesionCliente sesison) {
+		
+		System.out.println("a insertar"+ sesison);
+		try {
+			em.persist(sesison);
+			System.out.println("termina de instar");
+		}catch (Exception e) {
+			System.err.println("Error al crear sesion"+e.getLocalizedMessage());
+		}
+		
 	}
 
-	/** 
-	 * Metodo que permite actualizar una sesion en la base de datos
-	 * @param s Sesion que se actualiza en la base
-	 */
-	public void update(SesionCliente s) {
-		em.merge(s);
-	}
-	
+
 	/** 
 	 * Metodo que permite obtener una sesion de la base de datos
 	 * @param codigoSesion Codigo de la sesion que se busca
@@ -49,14 +49,6 @@ public class SesionClienteDAO {
 		return em.find(SesionCliente.class, codigoSesion);
 	}
 	
-	/** 
-	 * Metodo que permite eliminar una sesion de la base de datos
-	 * @param codigoSesion Codigo de la sesion que se elimina
-	 */
-	public void delete(int codigoSesion) {
-		SesionCliente c = read(codigoSesion);
-		em.remove(c);
-	}
 	
 	/** 
 	 * Metodo que permite obtener las sesiones que estan registrados en la base de datos

@@ -24,12 +24,12 @@ public class ParametrizarBean implements Serializable {
 	private int diaMi;
 	private int diaMa;
 	private double Tasa;
+	private LoginBean loginB;
 	
 	private List<Parametrizar> listaP;
 	
 	private static final long serialVersionUID = 1L;
 	
-	@Inject
 	private Parametrizar newParametros;
 	
 	@Inject
@@ -42,18 +42,51 @@ public class ParametrizarBean implements Serializable {
 		listaP = new ArrayList<Parametrizar>() ;
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	
+	public LoginBean getLoginB() {
+		return loginB;
+	}
+
+	/**
+	 * 
+	 * @param loginB
+	 */
+
+	public void setLoginB(LoginBean loginB) {
+		this.loginB = loginB;
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+
 	public List<Parametrizar> getListaP() {
 		return listaP;
 	}
-
+	/**
+	 * 
+	 * @param listaP
+	 */
 	public void setListaP(List<Parametrizar> listaP) {
 		this.listaP = listaP;
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public int getDiaMi() {
 		return diaMi;
 	}
+	/**
+	 * 
+	 * @param diaMi
+	 */
 
 	public void setDiaMi(int diaMi) {
 		this.diaMi = diaMi;
@@ -83,7 +116,10 @@ public class ParametrizarBean implements Serializable {
 		this.newParametros = newParametros;
 	}
 	
-	
+	/**
+	 *  metodo que me permite registrar una nueva parametrización
+	 * @return null
+	 */
 	public String registrarParametros () {
 		
 		try {
@@ -92,8 +128,8 @@ public class ParametrizarBean implements Serializable {
 			}	
 				newParametros.getMaximo();
 				newParametros.getMinimo();
-				Tasa =Double.valueOf(newParametros.getTasaInteres());
-				newParametros.setTasaInteres(Tasa);
+				newParametros.getTasaInteres();
+				newParametros.setEmpleado(loginB.getEmpleado());
 				on.insertar(newParametros);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -101,12 +137,12 @@ public class ParametrizarBean implements Serializable {
 		}
 		return null;
 	}
-	
-	public String obtenerListas() {
-		
+	/**
+	 * Metodo que me permite listar las parametrizaciones de la bd 
+	 * @return lista de todos los parametros ingresados
+	 */
+	public List<Parametrizar> obtenerLista(){	
 		listaP = on.obtenerParametros();
-		
-		System.out.println("Parametros"+listaP) ;
-		return "lista";
+		return listaP;
 	}
 }

@@ -27,7 +27,7 @@
 
 					<h:outputLabel value="Tasa interes" for="tasaInt" />
 					<h:inputText class="form-control" type="text" id="tasaInt"
-						value="#{parametrizarBean.tasa}" style="width:100px;" />
+						value="#{parametrizarBean.newParametros.tasaInteres}" style="width:100px;" />
 
 
 				</h:panelGrid>
@@ -37,16 +37,22 @@
 						action="#{parametrizarBean.registrarParametros()}"
 						style="width:240px" />
 				</h:panelGrid>
-				<h:dataTable value="#{parametrizarBean.listaP}"
+				<br/>
+				<br/>
+				<h:dataTable value="#{parametrizarBean.obtenerLista()}"
 					var="cuentaT" class="table" editable="false">
 
-					<h:column headerText="Cuenta">
-						<h:outputText value="#{cuentaT.maximo}" />
+					<h:column headerText="Minimo">
+						<h:outputText value="#{cuentaT.minimo}" />
 					</h:column>
 
-					<h:column headerText="Saldo">
+					<h:column headerText="Maximo">
 
-						<h:outputText value="#{cuentaT.minimo}" />
+						<h:outputText value="#{cuentaT.maximo}" />
+					</h:column>
+					<h:column headerText="Interes">
+
+						<h:outputText value="#{cuentaT.tasaInteres}" />
 					</h:column>
 
 				</h:dataTable>

@@ -13,7 +13,7 @@
 </h:head>
 <h:body>
 	<ui:composition template="template/templateCliente.xhtml">
-		<ui:define name="title"> Listados CLIENTES </ui:define>
+		<ui:define name="title">   </ui:define>
 		<ui:param name="nombre" value="#{loginBean.usuario}" />
 		<ui:define name="content">
 			<h:form>
@@ -83,20 +83,20 @@
 												<h1 class="page-header">Cuentas</h1>
 
 												<h:dataTable value="#{loginBean.cliente.cuentaCliente}"
-													var="cuentaT" class="table" editable="false">
+													var="cuenta" class="table" editable="false">
 
 													<h:column headerText="Cuenta">
-														<h:outputText value="#{cuentaT.numeroCuenta}" />
+														<h:outputText value="#{cuenta.numeroCuenta}" />
 													</h:column>
 
 													<h:column headerText="Saldo">
 
-														<h:outputText value="#{cuentaT.saldo}" />
+														<h:outputText value="#{cuenta.saldo}" />
 													</h:column>
 													
 													<h:column headerText="Tipo Cuenta">
 
-														<h:outputText value="#{cuentaT.tipoCuenta}" />
+														<h:outputText value="#{cuenta.tipoCuenta}" />
 													</h:column>
 													
 
@@ -105,6 +105,66 @@
 
 
 											</div>
+											<br/>
+											<br/>
+											<div>
+												<h1 class="page-header">Transacciones</h1>
+
+												<h:dataTable value="#{loginBean.cliente.transaccionCliente}"
+													var="cuentaT" class="table" editable="false">
+
+													<h:column headerText="Cuenta">
+														<h:outputText value="#{cuentaT.cuenta}" />
+													</h:column>
+
+													<h:column headerText="Saldo">
+
+														<h:outputText value="#{cuentaT.monto}" />
+													</h:column>
+													
+													<h:column headerText="Tipo Cuenta">
+
+														<h:outputText value="#{cuentaT.tipoTransaccion}" />
+													</h:column>
+												
+												</h:dataTable>
+
+
+
+											</div>
+											<br/>
+											<br/>
+											<div>
+												<h1 class="page-header">Polizas</h1>
+
+												<h:dataTable value="#{loginBean.cliente.polizaCliente}"
+													var="cuentaP" class="table" editable="false">
+
+													<h:column headerText="Numero Póliza">
+														<h:outputText value="#{cuentaP.codigo}" />
+													</h:column>
+
+													<h:column headerText="Plazo">
+
+														<h:outputText value="#{cuentaP.tiempoPlazo}" />
+													</h:column>
+													
+													<h:column headerText="Valor Poliza">
+
+														<h:outputText value="#{cuentaP.montoP}" />
+													</h:column>
+													<h:column headerText="Interés">
+
+														<h:outputText value="#{cuentaP.interes}" />
+													</h:column>
+													
+
+												</h:dataTable>
+
+
+
+											</div>
+											
 										</h:form>
 
 									</div>

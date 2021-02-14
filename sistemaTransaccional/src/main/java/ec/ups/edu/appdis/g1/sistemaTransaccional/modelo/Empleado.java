@@ -4,9 +4,13 @@ import java.io.Serializable;
 
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity 
@@ -36,6 +40,9 @@ public class Empleado implements Serializable{
 	@Column(length=40)
 	private String contrasenia;
 	
+	@OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.ALL })
+	@JoinColumn(name="cedula_empleado")
+	private SesionCliente sesion; 
 	/** 
 	 * Metodo que permite obtener el atributo cedula 
 	 * @return El atributo cedula de esta clase
@@ -175,6 +182,18 @@ public class Empleado implements Serializable{
 	 */
 	public void setContrasenia(String contrasenia) {
 		this.contrasenia = contrasenia;
+	}
+	public SesionCliente getSesion() {
+		return sesion;
+	}
+	public void setSesion(SesionCliente sesion) {
+		this.sesion = sesion;
+	}
+	@Override
+	public String toString() {
+		return "Empleado [cedula=" + cedula + ", nombres=" + nombres + ", apellidos=" + apellidos + ", fechaNacimiento="
+				+ fechaNacimiento + ", direccion=" + direccion + ", correo=" + correo + ", telefono=" + telefono
+				+ ", rol=" + rol + ", usuario=" + usuario + ", contrasenia=" + contrasenia + ", sesion=" + sesion + "]";
 	}
 	
 	

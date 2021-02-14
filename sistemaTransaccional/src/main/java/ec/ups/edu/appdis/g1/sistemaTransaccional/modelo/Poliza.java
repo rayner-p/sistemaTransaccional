@@ -51,12 +51,12 @@ public class Poliza implements Serializable {
     private byte[] archivoPlanillaServicios; 
 	private String estadoPoliza="Pendiente";
 	
-	@OneToOne(fetch = FetchType.LAZY)
+	@OneToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "empleado_Fk")
 	private Empleado empleadoCaptacion;
 	private String cuentaClientePoliza_fk;
 	
-	@OneToOne(fetch = FetchType.LAZY)
+	@OneToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "clienteP_Fk")
 	private Cliente poliza_fk;
 	
@@ -172,9 +172,7 @@ public class Poliza implements Serializable {
 	@Override
 	public String toString() {
 		return "Poliza [codigo=" + codigo + ", fechaEmision=" + fechaEmision + ", montoP=" + montoP + ", tiempoPlazo="
-				+ tiempoPlazo + ", interes=" + interes + ", tipoPoliza=" + tipoPoliza + ", archivoCedula="
-				+ Arrays.toString(archivoCedula) + ", archivoPlanillaServicios="
-				+ Arrays.toString(archivoPlanillaServicios) + ", estadoPoliza=" + estadoPoliza + ", empleadoCaptacion="
+				+ tiempoPlazo + ", interes=" + interes + ", tipoPoliza=" + tipoPoliza + ", estadoPoliza=" + estadoPoliza + ", empleadoCaptacion="
 				+ empleadoCaptacion + ", cuentaClientePoliza_fk=" + cuentaClientePoliza_fk + ", poliza_fk=" + poliza_fk
 				+ "]";
 	}

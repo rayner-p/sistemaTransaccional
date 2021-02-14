@@ -31,7 +31,7 @@
 											<label>Cedula</label>
 											<h:inputText value="#{clienteBean.newCliente.cedula}"
 												maxlength="10" class="form-control"
-												validatorMessage="Your name can have only numbers">
+												validatorMessage="Solo números">
 												<f:ajax event="blur" render="valueError" />
 											</h:inputText>
 											<h:outputText id="valueError" value="#{clienteBean.valCedula()}"

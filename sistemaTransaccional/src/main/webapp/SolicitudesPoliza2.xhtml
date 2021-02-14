@@ -18,14 +18,14 @@
 				<div class="card">
 					<h5>lista editable</h5>
 					<p:dataTable id="poliz" var="poliza"
-						value="#{polizaBean.listarPoliza()}" editable="true"
-						editMode="cell" widgetVar="cellCars2" editInitEvent="dblclick"
+						value="#{dtEditView.listarPoliza()}" editable="true"
+						editMode="cell" widgetVar="cellPolizas" editInitEvent="dblclick"
 						style="margin-bottom:20px">
-						<p:ajax event="cellEdit" listener="#{polizaBean.onCellEdit()}"
-							update="poliz" />
 
-						<p:ajax event="cellEdit" update="poliz" immediate="true"
-							listener="#{polizaBean.editar()}" process="@this" />
+
+						<p:ajax event="cellEdit" update=":form:msgs"
+							listener="#{dtEditView.onCellEdit}" />
+
 						<p:column headerText="Code">
 							<p:cellEditor>
 								<f:facet name="output">
@@ -52,7 +52,7 @@
 						<p:column headerText="Nombres">
 							<p:cellEditor>
 								<f:facet name="output">
-									<h:outputText value="${poliza.cliente.nombres}" />
+									<h:outputText value="#{poliza.cliente.nombres}" />
 								</f:facet>
 								<f:facet name="input">
 									<p:inputText value="#{poliza.cliente.nombres}"
@@ -102,7 +102,7 @@
 								</f:facet>
 								<f:facet name="input">
 									<h:selectOneMenu id="comboT" required="true" label=" "
-										value="#{polizaBean.estadoPoliza}">
+										value="#{dtEditView.estadoPoliza}">
 										<f:selectItem itemValue="Aprobado" itemLabel="Aprobado" />
 										<f:selectItem itemValue="Negado" itemLabel="Negado" />
 									</h:selectOneMenu>
@@ -111,16 +111,24 @@
 							</p:cellEditor>
 						</p:column>
 
+						<h:column headerText="visualizarr">
+							<label>Copia Cedula</label>
+							<br />
+							<h:commandLink value="Visualizar"
+								action="#{dtEditView.obtenerDocumentosPDF}" target="_blank" />
+							<label>Copia Planilla</label>
+							<br />
+							<h:commandLink value="Visualizar planilla"
+								action="#{dtEditView.obtenerDocumentosPDF}" target="_blank"/>
+						</h:column>
+
+
+
 
 
 					</p:dataTable>
 				</div>
-				<p:contextMenu for="poliz" widgetVar="cMenu">
-					<p:menuitem value="Edit Cell" icon="pi pi-search"
-						onclick="PF('cellProducts').showCellEditor();return false;" />
-					<p:menuitem value="Hide Menu" icon="pi pi-times"
-						onclick="PF('cMenu').hide()" />
-				</p:contextMenu>
+
 			</h:form>
 
 

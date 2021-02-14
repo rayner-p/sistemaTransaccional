@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.CompletableFuture;
+import java.util.logging.ErrorManager;
 
 import javax.activation.DataHandler;
 import javax.ejb.Stateless;
@@ -19,6 +20,7 @@ import javax.inject.Inject;
 import javax.mail.Authenticator;
 import javax.mail.Message;
 import javax.mail.MessagingException;
+import javax.mail.NoSuchProviderException;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
@@ -83,7 +85,7 @@ public class sistemaTransaccionaON implements GestionSistemLocal {
 
 		boolean cedulaCorrecta = false;
 		System.out.println("INGRESA VALIDACION CEDULA");
-		System.out.println("ESTO CEDULA INGRESADA " + cedula);
+		// System.out.println("ESTO CEDULA INGRESADA " + cedula);
 		try {
 			if (cedula.length() == 10) // ConstantesApp.LongitudCedula
 				System.out.println("ESTAS EN EL VALIDADAOR?");
@@ -154,13 +156,10 @@ public class sistemaTransaccionaON implements GestionSistemLocal {
 	 *                   utilizar el metodo
 	 */
 	public void registarCliente(Cliente empleado) throws Exception {
-		if (!validadorDeCedula(empleado.getCedula())) {
-			throw new Exception("Cedula Incorrecta ssdsd");
-		}
 		try {
+			// System.out.println("BEAN"+empleado);
+			System.out.println("entra al on ");
 			daoCliente.insert(empleado);
-			System.out.println("Cliente creado");
-
 		} catch (SQLException e) {
 			e.printStackTrace();
 			System.out.println("Erro al insertar");
@@ -341,6 +340,7 @@ public class sistemaTransaccionaON implements GestionSistemLocal {
 	 * @return daoEmpleado.getEmpleados() Un Empleado registrado en la Base de Datos
 	 */
 	public List<Empleado> getEmpleadosT() {
+		System.out.println("Entra al LIST DEL SESION EMPLEADO");
 		return daoEmpleado.getEmpleados();
 
 	}
@@ -380,7 +380,8 @@ public class sistemaTransaccionaON implements GestionSistemLocal {
 	}
 
 	public List<Cuenta> listaCuenta() {
-		List<Cuenta> clientes = daoCuenta.obtenerCuenta();
+		List<Cuenta> clientes = daoCuenta.obtenerCuenta2();
+		System.out.println("obtener cuenta on cuenta" + clientes);
 		return clientes;
 	}
 
@@ -392,12 +393,17 @@ public class sistemaTransaccionaON implements GestionSistemLocal {
 	 *         generado
 	 */
 
+	
+	
 	public String generarNumeroDeCuenta() {
+		System.out.println("ingresa al on generar num");
 		int numeroInicio = 4040;
 		List<Cuenta> listaCuentas = listaCuenta();
+		System.out.println("lista" + listaCuentas);
 		int numero = listaCuentas.size() + 1;
 		String resultado = String.format("%08d", numero);
 		String resultadoFinal = String.valueOf(numeroInicio) + resultado;
+		System.out.println("resultado del crear num cuenta on " + resultadoFinal);
 		return resultadoFinal;
 	}
 
@@ -542,56 +548,65 @@ public class sistemaTransaccionaON implements GestionSistemLocal {
 	 *
 	 * @param cuerpo       contenido del mensaje
 	 */
-	@SuppressWarnings("static-access")
+
 	public void enviarCorreo(String destinatario, String asunto, String cuerpo) {
-		// String mailhost = "smtp.gmail.com";
+		System.out.println("ENTR A CORREO ESTO"+" "+destinatario+"    "+ asunto+" "+cuerpo);
 		Properties propiedad = new Properties();
 		propiedad.setProperty("mail.smtp.host", "smtp.gmail.com");
 		propiedad.setProperty("mail.smtp.starttls.enable", "true");
 		propiedad.setProperty("mail.smtp.port", "587");
 		propiedad.setProperty("mail.transport.protocol", "smtp");
-		propiedad.put("mail.smtp.auth", "plain");
+		propiedad.put("mail.smtp.auth", "true");
 		propiedad.put("mail.smtp.socketFactory.fallback", "true");
 		propiedad.put("mail.smtp.socketFactory.port", "587");
 		propiedad.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
-		propiedad.put("mail.smtp.socketFactory.fallback", "false");
+		propiedad.put("mail.smtp.socketFactory.fallback", "true");
 		propiedad.put("mail.smtp.ssl.trust", "smtp.gmail.com");
 
+		// sets SMTP server properties
+		//Properties emailProperties = System.getProperties();
+		//emailProperties.put("mail.smtp.port", "587");
+		// emailProperties.put("mail.ssl.port", "587");
+		//emailProperties.put("mail.smtp.auth", "true");
+		//emailProperties.put("mail.smtp.starttls.enable", "true");
+		Session session = Session.getDefaultInstance(propiedad);
+
 		String correoEnvia = "bancointernacionaprueba@gmail.com";
-		String contrasena = "P4T1T0.123@456";
-		Session sesion = Session.getDefaultInstance(propiedad);
-		System.out.println("vale la session del correo? ");
-
-		sesion.getInstance(propiedad, new Authenticator() {
-			@Override
-			protected PasswordAuthentication getPasswordAuthentication() {
-				return new PasswordAuthentication(correoEnvia, contrasena);
-			}
-		});
+		String contrasena = "p4t1t0.123";
+		propiedad.put("mail.smtp.user", correoEnvia);
+		// creates a new session, no Authenticator (will connect() later)
+		
+		// *** END CHANGE
+		System.out.println("ANTES DEL TRY");
+		// creates a new e-mail message
+		MimeMessage msg = new MimeMessage(session);
 		try {
-			MimeMessage mail = new MimeMessage(sesion);
-			DataHandler handler = new DataHandler(new ByteArrayDataSource(cuerpo.getBytes(), "text/plain"));
-			mail.setFrom("Banco Internacional <" + correoEnvia + ">");
+			System.out.println("ENTRA A; TY");
+			msg.setFrom("Banco Internacional <" + correoEnvia + ">");
+		//	msg.setFrom(new InternetAddress("Banco Internacional <"+correoEnvia+">"));
 			InternetAddress[] toAddresses = { new InternetAddress(destinatario) };
-			mail.addRecipients(Message.RecipientType.TO, toAddresses);
-			mail.setSubject(asunto);
-			mail.setText(cuerpo);
-			mail.setSender(new InternetAddress(correoEnvia));
-			Transport transportar = sesion.getTransport("smtp");
-			transportar.connect(correoEnvia, contrasena);
-			System.out.println(transportar);
-			// transportar.sendMessage(mail, mail.getAllRecipients());
+			msg.addRecipients(Message.RecipientType.TO, toAddresses);
+			msg.setSubject(asunto);
+			
+			msg.setText(cuerpo);
+			msg.setSender(new InternetAddress(correoEnvia));
+			msg.setSentDate(new Date());
+			String emailHost = "smtp.gmail.com";
+			Transport transport = session.getTransport("smtp");
+			System.out.println("inicio"+ " "+correoEnvia + contrasena);
+			
+			transport.connect(emailHost, correoEnvia, contrasena);
+			
+			transport.sendMessage(msg, msg.getAllRecipients());
+			System.out.println("final");
+			transport.close();
 
-			transportar.sendMessage(mail, mail.getRecipients(Message.RecipientType.TO));
-			transportar.close();
-		} catch (AddressException ex) {
-			System.out.println("Errror en la direccion");
-			ex.printStackTrace();
-			System.out.println(ex.getMessage());
-		} catch (MessagingException ex) {
-			System.out.println("Errror al enviar mensje");
-			ex.printStackTrace();
-			System.out.println(ex.getMessage());
+		} catch (NoSuchProviderException e) {
+			// TODO Auto-generated catch block
+			System.out.println("error al enviar correo1" + e.getLocalizedMessage());
+		} catch (MessagingException e1) {
+			System.out.println("error al enviar correo2" + e1.getLocalizedMessage());
+
 		}
 
 	}
@@ -707,10 +722,11 @@ public class sistemaTransaccionaON implements GestionSistemLocal {
 	 * 
 	 */
 	public void guardarSesionCliente(SesionCliente sesionCliente) {
+		System.out.println("ENTRS AQUI?");
 		Cliente cli = sesionCliente.getCliente();
-		System.out.println("esto es lo que se obtiene de la sesion ->" + cli);
+		//System.out.println("esto es lo que se obtiene de la sesion ->" + cli);
 		String destinatario = cli.getCorreo();
-		System.out.println("");
+		System.out.println("estado"+sesionCliente.getEstado());
 		if (sesionCliente.getEstado().equalsIgnoreCase("Incorrecto")) {
 
 			String asunto = "INICIO DE SESION FALLIDA";
@@ -766,11 +782,14 @@ public class sistemaTransaccionaON implements GestionSistemLocal {
 	 * @param SesionCliente datos del cliente
 	 * 
 	 */
-	public void guardarSesionEmpleado(SesionCliente sesionCliente) {
-		Empleado cli = sesionCliente.getEmpleado();
+	public void guardarSesionEmpleado(SesionCliente sesionEmpleado) {
+		System.out.println("que trae el sesion empleado");
+		Empleado cli = sesionEmpleado.getEmpleado();
 		String destinatario = cli.getCorreo();
-		if (sesionCliente.getEstado().equalsIgnoreCase("Incorrecto")) {
+		System.out.println("estado"+sesionEmpleado.getEstado());
 
+		//sesionEmpleado != null & sesionEmpleado.getEstado().equalsIgnoreCase("Incorrecto")
+		if (sesionEmpleado.getEstado().equalsIgnoreCase("Incorrecto")) {
 			String asunto = "INICIO DE SESION FALLIDA";
 			String cuerpo = " BANCO INTERNACIONAL\n"
 					+ "------------------------------------------------------------------------------\n"
@@ -778,7 +797,7 @@ public class sistemaTransaccionaON implements GestionSistemLocal {
 					+ cli.getApellidos().toUpperCase() + "\n"
 					+ "------------------------------------------------------------------------------\n"
 					+ "El sistema transaccional del Banco Internacional le informa a usted que se ha hecho intento de sesión fallida en su cuenta.    \n"
-					+ "                       Fecha: " + obtenerFecha(sesionCliente.getFechaSesion())
+					+ "                       Fecha: " + obtenerFecha(sesionEmpleado.getFechaSesion())
 					+ "                                     \n"
 					+ "                                                                              \n"
 					+ "------------------------------------------------------------------------------\n";
@@ -791,7 +810,7 @@ public class sistemaTransaccionaON implements GestionSistemLocal {
 			});
 
 		} else {
-
+			System.out.println("correcto");
 			String asunto = "INICIO DE SESION CORRECTA";
 			String cuerpo = "BANCO INTERNACIONAL \n"
 					+ "------------------------------------------------------------------------------\n"
@@ -799,7 +818,7 @@ public class sistemaTransaccionaON implements GestionSistemLocal {
 					+ cli.getApellidos().toUpperCase() + "\n"
 					+ "------------------------------------------------------------------------------\n"
 					+ "El sistema transaccional del Banco Internacional le informa a usted que se ha iniciado sesión correctamente    \n"
-					+ "                       Fecha: " + obtenerFecha(sesionCliente.getFechaSesion())
+					+ "                       Fecha: " + obtenerFecha(sesionEmpleado.getFechaSesion())
 					+ "                                     \n"
 					+ "                                                                              \n"
 					+ "------------------------------------------------------------------------------\n";
@@ -813,7 +832,7 @@ public class sistemaTransaccionaON implements GestionSistemLocal {
 			});
 		}
 
-		daoSesion.insert(sesionCliente);
+		daoSesion.insert(sesionEmpleado);
 
 	}
 
@@ -837,12 +856,12 @@ public class sistemaTransaccionaON implements GestionSistemLocal {
 				String destinatario = cliente.getCorreo(); // A quien le quieres escribir.
 				System.out.println("QUE DATOS TIENE ESTO  --?" + usuario + "" + contraseña);
 				String asunto = "CREACION DE USUARIO";
-				String cuerpo = "JAMVirtual                                               SISTEMA TRANSACCIONAL\n"
+				String cuerpo = "                                              SISTEMA TRANSACCIONAL\n"
 						+ "------------------------------------------------------------------------------\n"
 						+ "              Estimado(a): " + cliente.getNombres().toUpperCase() + " "
 						+ cliente.getApellidos().toUpperCase() + "\n"
 						+ "------------------------------------------------------------------------------\n"
-						+ "COOPERATIVA JAM le informa que el usuario ha sido habilitado exitosamente.    \n"
+						+ "le informa que el usuario ha sido habilitado exitosamente.    \n"
 						+ "                                                                              \n"
 						+ "                       Su usuario es : " + usuario + "                          \n"
 						+ "                   	Su clave de acceso es:   " + contraseña + "               \n"
@@ -881,7 +900,7 @@ public class sistemaTransaccionaON implements GestionSistemLocal {
 	 * @param cedulaCliente Cedula del cliente de la cuenta de ahorros
 	 * @return Cuenta de ahorro obtenida de la busqueda
 	 */
-	public Cuenta buscarCuentaD(String cedulaCliente) {
+	public Cuenta getCuentaCedulaCliente(String cedulaCliente) {
 		System.out.println("entra al buscar cuenta");
 		Cuenta cuentaDeAhorro = daoCuenta.getCuentaCedulaCliente(cedulaCliente);
 		return cuentaDeAhorro;
@@ -1065,19 +1084,30 @@ public class sistemaTransaccionaON implements GestionSistemLocal {
 	 *           se selecciona en el proceso de la solicitud de credito.
 	 * @return Un clase byte [] un arreglo de bytes del InputStream pasado como
 	 *         parametro.
-	 * @throws IOException Excepción para el manejo de clases que tengan que ver con
-	 *                     archivos.
+	 * @throws Exception
 	 */
 
-	public byte[] convertirArchivos(InputStream in) throws IOException {
-		System.out.println("TRAE ALGUN ARCHIVO?" + in);
-		ByteArrayOutputStream os = new ByteArrayOutputStream();
-		byte[] buffer = new byte[2024];
-		int len;
-		while ((len = in.read(buffer)) != -1) {
-			os.write(buffer, 0, len);
+	public byte[] convertirArchivos(InputStream in) throws Exception {
+
+		if (in != null) {
+			try {
+				ByteArrayOutputStream os = new ByteArrayOutputStream();
+				byte[] buffer = new byte[5000000];
+				int len;
+				while ((len = in.read(buffer)) != -1) {
+					os.write(buffer, 0, len);
+
+				}
+				return os.toByteArray();
+			} catch (Exception e) {
+				throw new Exception("Error en convertir archivo" + e.getLocalizedMessage());
+			}
+
+		} else {
+			System.err.println("erro, archivo nulo");
 		}
-		return os.toByteArray();
+		return null;
+
 	}
 
 	public String actualizarPoliza(String numeroCuenta) {
@@ -1094,25 +1124,46 @@ public class sistemaTransaccionaON implements GestionSistemLocal {
 	public List<Poliza> obtenerPolizas() {
 		System.out.println("ENTRA AL ON OBTENER POLIZA");
 		daoPoliza.obtenerPolizas();
-		System.out.println("Resultado dao" + daoPoliza.obtenerPolizas());
 		return daoPoliza.obtenerPolizas();
 	}
 
 	@Override
 	public Cliente obtenerDatosPorCedula(String cedula) throws Exception {
-		System.err.println("INGRESA AL ON PARA BUSCAR "); 
-		if(cedula == null) {
+		System.err.println("INGRESA AL ON PARA BUSCAR ");
+		if (cedula == null) {
 			System.out.println("Cedula vacia");
-		}else {
+		} else {
 			try {
 				System.err.println("INGRESA AL ON PARA BUSCAR CLIENTE PO");
 				Cliente cliente = daoCliente.obtenerDatosPorCedula(cedula);
-				System.out.println("CLIENTE" +cliente);
+				System.out.println("CLIENTE" + cliente);
 				return cliente;
-				
+
 			} catch (Exception e) {
 				// TODO: handle exception
 			}
+		}
+		return null;
+	}
+	
+	
+	/**
+	 * Metodo que permite buscar las transacciones de un usuario entre fechas
+	 * 
+	 * @param cedula Numero de cedula de la persona que busca
+	 * @param fechaI La fecha de inicio desde donde se quieren ver las transacciones.
+	 * @param fechaF La fecha de fin hasta donde se quieren ver las transacciones.
+	 * @return Una lista de las transacciones/movimientos del usuario entre las fechas indicadas.
+	 * @throws Exception Excepción por si el cliente no tiene transacciones.
+	 */
+	public List<Transaccion> obtenerTransaccionesFechaHora(String cedula, String fechaI, String fechaF) {
+		String fechaInicio = fechaI + " 00:00:00.000000";
+		String fechaFinal = fechaF + " 23:59:59.000000";
+		try {
+			return daoTransaccion.getListaTransaccionesFechas(cedula, fechaInicio, fechaFinal);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		return null;
 	}

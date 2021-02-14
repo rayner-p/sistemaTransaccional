@@ -24,7 +24,7 @@ public class Parametrizar implements Serializable{
 	private String minimo;
 	@Column(length=4)
 	private String maximo;
-	@OneToOne(fetch=FetchType.LAZY, cascade = {CascadeType.ALL })
+	@OneToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="cedula_empleado")
 	private Empleado empleado;
 	
@@ -101,6 +101,13 @@ public class Parametrizar implements Serializable{
 	 */
 	public void setEmpleado(Empleado empleado) {
 		this.empleado = empleado;
+	}
+	
+	
+	@Override
+	public String toString() {
+		return "Parametrizar [codigo=" + codigo + ", minimo=" + minimo + ", maximo=" + maximo + ", empleado=" + empleado
+				+ ", tasaInteres=" + tasaInteres + "]";
 	}
 	
 	

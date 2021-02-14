@@ -42,7 +42,8 @@ public class ParametrizarDao {
 	 */
 	public List<Parametrizar> obtenerParametros (){
 		String jpql = "SELECT c FROM Parametrizar c";
-		Query q = em.createQuery(jpql, Empleado.class);
+		Query q = em.createQuery(jpql, Parametrizar.class);
+		@SuppressWarnings("unchecked")
 		List<Parametrizar> listado = q.getResultList();
 		return listado;
 	}
@@ -62,8 +63,6 @@ public class ParametrizarDao {
 				Parametrizar.class).setParameter("maxi", castInter).getResultList();
 		System.out.println("RESULTADO DEL QUERY "+ resultadoParametrizar);
 		return resultadoParametrizar;	*/
-	
-		
 		String jpql = "SELECT c FROM Parametrizar c where c.maximo=:maxi";
 		Query q = em.createQuery(jpql, Parametrizar.class);
 		q.setParameter("maxi", castInter);

@@ -109,6 +109,7 @@
 	</pluginRepositories>
 
 	<dependencyManagement>
+
 		<dependencies>
 			<!-- JBoss distributes a complete set of Jakarta EE 8 APIs including a 
 				Bill of Materials (BOM). A BOM specifies the versions of a "stack" (or a 
@@ -128,6 +129,28 @@
 
 
 	<dependencies>
+
+		<dependency>
+			<groupId>org.apache.tika</groupId>
+			<artifactId>tika-java7</artifactId>
+			<version>1.19.1</version>
+			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>org.apache.tika</groupId>
+					<artifactId>tika-parsers</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>1.3.2</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.primefaces/primefaces -->
 		<dependency>
 			<groupId>org.primefaces</groupId>

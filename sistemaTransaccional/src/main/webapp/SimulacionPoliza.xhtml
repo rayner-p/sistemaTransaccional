@@ -1,0 +1,78 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:h="http://java.sun.com/jsf/html">
+
+<h:head>
+	<title>Simular Poliza</title>
+</h:head>
+
+<h:body>
+	<ui:composition template="template/templateCajero.xhtml">
+		<ui:define name="title"> Simular Póliza </ui:define>
+		<ui:param name="nombre" value="#{loginBean.empleado.nombres}" />
+		<ui:define name="content">
+			<div class="row">
+				<div class="col-lg-12">
+					<div class="panel panel-default">
+
+						<div class="panel-body">
+
+							<p:growl id="message" showDetail="true" class="ui-growl"
+								life="4000" />
+							<div class="row">
+								<div class="col-lg-6">
+
+									<h:form role="form">
+
+										<h3 style="color: graytext; size: 12pt">Conoce cuánto vas
+											a ganar por ahorrar tu dinero con nuestra tasa de interés en
+											línea.</h3>
+										<div class="form-group">
+											<label>¿Cuánto deseas invertir?</label> <br />
+											<h:outputText />
+											<p:inputText id="monto"
+												value="#{dtEditView.montoPolizaInvertir}" required="true"
+												validatorMessage="Ingrese solo numeros">
+												<p:ajax event="keyup" update="out1" process="@this" />
+
+											</p:inputText>
+											<h:outputText id="out1"
+												value="#{dtEditView.montoPolizaInvertir}" />
+
+										</div>
+										<div class="form-group">
+											<label>¿Por cuánto días deseas mantener tu Póliza de
+												Inversión Digital?</label> <br />
+											<h:outputText />
+											<p:inputText id="tiempo"
+												value="#{dtEditView.tiempoPolizaInvertir}">
+												<p:ajax event="blur" update="out2" process="@this" />
+											</p:inputText>
+											<h:outputText id="out2"
+												value="#{dtEditView.tiempoPolizaInvertir}" />
+
+										</div>
+										<div>
+											<h:commandButton
+												action="#{dtEditView.calcularValorSimulación()}"
+												class="btn btn-success btn-lg" value="CALCULAR"
+												style="width: 200px; height: 50px; color: black; background-color: orange;" />
+										</div>
+
+									</h:form>
+
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+
+</h:body>
+
+</html>

@@ -1,7 +1,9 @@
 package ec.ups.edu.appdis.g1.sistemaTransaccional.vista;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -42,8 +44,18 @@ public class LoginBean implements Serializable {
 	private String contraCliente;
 
 	private Empleado empleado;
+	private String empleado2;
 
 	private Cliente cliente;
+	private int contador = 0;
+
+	public int getContador() {
+		return contador;
+	}
+
+	public void setContador(int contador) {
+		this.contador = contador;
+	}
 
 	public LoginBean() {
 		init();
@@ -55,6 +67,7 @@ public class LoginBean implements Serializable {
 
 		empleado = new Empleado();
 		cliente = new Cliente();
+		// empleado2 = new Empleado();
 	}
 
 	public String getUsuarioCliente() {
@@ -157,58 +170,88 @@ public class LoginBean implements Serializable {
 		this.cliente = cliente;
 	}
 
-	public String validarEmpleado() {
-		List<Empleado> lstClis = empleadoON.getEmpleadosT();
-		System.out.println("PASO LA LISTAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-		for (Empleado c : lstClis) {
-			System.out.println(c);
-			System.out.println("ENTROOOOOOOOOOOO EN EL FORRRRRR");
-			if (c.getUsuario().equalsIgnoreCase(usuario) && c.getContrasenia().equalsIgnoreCase(contrasena)) {
-				System.out.println("ENTROOOOOOOOOOOO EN EL IFFFFFFFFFFFFFF CORRECTO");
-				SesionCliente sesionCliente = new SesionCliente();
-				sesionCliente.setEmpleado(c);
-				sesionCliente.setFechaSesion(new Date());
-				sesionCliente.setEstado("Correcto");
-				empleadoON.guardarSesionEmpleado(sesionCliente);
-				FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("empleado", c);
-				System.out.println("vale faces?" + "" + "empleado" + c);
-				// FacesContext contex = FacesContext.getCurrentInstance();
+	/**
+	 * metodo que nos permite registrar en la base de datos los intentos correctos e
+	 * incorrectos al sistema por parte del cliente
+	 * 
+	 * @return
+	 */
 
-				// contex.getExternalContext().redirect("Cliente.xhtml");
-			} else if (c.getUsuario().equalsIgnoreCase(usuario) || c.getContrasenia().equalsIgnoreCase(contrasena)) {
-				System.out.println("ENTROOOOOOOOOOOO EN EL IFFFFFFFFFFFFFF MAL");
-				SesionCliente sesionCliente2 = new SesionCliente();
-				sesionCliente2.setEmpleado(c);
-				sesionCliente2.setFechaSesion(new Date());
-				sesionCliente2.setEstado("Incorrecto");
-				empleadoON.guardarSesionEmpleado(sesionCliente2);
-				return "login";
+	public boolean guardarsesionEmpleado() {
+		boolean bandera = true;
+		List<Empleado> lstClis = empleadoON.getEmpleadosT();
+		for (int i = 0; i < lstClis.size(); i++) {
+			empleado2 = lstClis.get(i).getUsuario();
+
+		}
+		// for (Empleado c : empleado) {
+		for (Iterator<Empleado> iterator = lstClis.iterator(); iterator.hasNext();) {
+			empleado = (Empleado) iterator.next();
+			// System.out.println("Esto es el empleado" + empleado.getUsuario());
+			// empleado = c;
+			System.out.println("FOR Que recorre");
+			System.out.println(empleado.getUsuario() + empleado.getContrasenia());
+			System.out.println("user" + " " + usuario + " " + "pass" + " " + contrasena);
+			if (empleado.getUsuario().equals(usuario) && empleado.getContrasenia().equals(contrasena)) {
+				System.out.println("ENTRA AL IF CORRECTO");
+				SesionCliente sesioEmpleado = new SesionCliente();
+				sesioEmpleado.setEmpleado(empleado);
+				sesioEmpleado.setFechaSesion(new Date());
+				sesioEmpleado.setEstado("Correcto");
+				// System.out.println("ESTO VA A LA BASE" + sesioEmpleado);
+				try {
+					empleadoON.guardarSesionEmpleado(sesioEmpleado);
+					System.out.println("GUARDADO OK");
+					FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("empleado", empleado);
+				} catch (Exception e) {
+					System.err.println("sesion nula");
+				}
+
+			} else if (empleado.getUsuario() != (usuario) || empleado.getContrasenia() != (contrasena)) {
+				System.out.println("ENTRA AL IF MAL");
+				contador = contador + 1;
+				SesionCliente sesioEmpleadoMAL = new SesionCliente();
+				// System.out.println("este cliente va al sis" + empleado);
+				sesioEmpleadoMAL.setEmpleado(empleado);
+				sesioEmpleadoMAL.setFechaSesion(new Date());
+				sesioEmpleadoMAL.setEstado("Incorrecto");
+				System.out.println("antes");
+				empleadoON.guardarSesionEmpleado(sesioEmpleadoMAL);
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Info",
+						"Usuario o contrasenia incorrecta" + " " + "Intentos" + " " + contador));
+
+				FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("empleado", empleado);
+
+				return bandera = false;
 			}
 		}
-		return null;
+		return bandera;
 	}
 
-	public String validarUsuario() {
+	/*
+	 * metodo que me permite validar el inicio de sesión del empleado y redirigirlo
+	 * a su respectiva ventana
+	 */
+	public String validarInicioSesionEmpleado() {
 		Empleado emp;
+		guardarsesionEmpleado();
 
 		try {
 			emp = empleadoON.usuario(usuario, contrasena);
-			
-				System.out.println("entra a registro de sesion empleado");
-				//validarEmpleado();
-			
-			System.out.println("***************" + emp.getNombres());
+			System.out.println("empleado con user" + emp);
+			// System.out.println("entra a registro de sesion empleado");
+			// System.out.println("***************" + emp.getNombres());
 			empleado = emp;
 			if (emp != null && emp.getRol().equalsIgnoreCase("Cajero")) {
 				try {
 					addMessage("OK", "Ingreso");
-
 					FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("empleado", emp);
 					FacesContext contex = FacesContext.getCurrentInstance();
-
 					contex.getExternalContext().redirect("Cajero.xhtml");
 
 				} catch (Exception e) {
+					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN,
+							"Warning", "No se pudo acceder, revise usuario o contrasenia"));
 				}
 			} else if (emp != null && emp.getRol().equalsIgnoreCase("Administrador")) {
 				try {
@@ -218,6 +261,8 @@ public class LoginBean implements Serializable {
 					contex.getExternalContext().redirect("Admin.xhtml");
 
 				} catch (Exception e) {
+					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN,
+							"Warning", "No se pudo acceder, revise usuario o contrasenia"));
 				}
 			} else if (emp != null && emp.getRol().equalsIgnoreCase("Asistente Captaciones")) {
 				try {
@@ -226,6 +271,9 @@ public class LoginBean implements Serializable {
 					contex.getExternalContext().redirect("Asistente.xhtml");
 
 				} catch (Exception e) {
+					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN,
+							"Warning", "No se pudo acceder, revise usuario o contrasenia"));
+
 				}
 			}
 
@@ -237,52 +285,31 @@ public class LoginBean implements Serializable {
 		return null;
 	}
 
-	public String validarUsu() {
-		System.out.println("vale el usuario?");
-		Cliente clien;
-		try {
-			clien = empleadoON.usuarioCliente(usuarioCliente, contraCliente);
-			cliente = clien;
-			//validarCliente();
-			System.out.println("CLIENTE LOGIN" + cliente);
-			if (clien != null) {
-				try {
-					System.out.println("vale el ingreso");
-					FacesContext contex = FacesContext.getCurrentInstance();
-					FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("cliente", clien);
-					contex.getExternalContext().redirect("Cliente.xhtml");
-
-				} catch (Exception e) {
-				}
-
-			}
-
-		} catch (Exception e) {
-			System.out.println("NO SE PUEDO INGRESAR, REVISE USUARIO CONTRASEÑA");
-			return "loginCliente";
-		}
-
-		return null;
-	}
-
-	public String validarCliente() {
+	/**
+	 * metodo que nos permite registrar en la base de datos los intentos correctos e
+	 * incorrectos al sistema por parte del cliente
+	 * 
+	 * @return
+	 */
+	@SuppressWarnings("unused")
+	public String guardarSesionCliente() {
 		List<Cliente> lstClis = empleadoON.getClienteT();
-		System.out.println("que obtiene la lista?" + lstClis);
+		System.out.println("que obtiene la lista cliente?" + lstClis);
 		System.out.println("PASO LA LISTAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
 		for (Cliente c : lstClis) {
-			System.out.println(c);
-			System.out.println("ENTROOOOOOOOOOOO EN EL FORRRRRR");
+			System.out.println("Dentro del for" + c);
 			if (c.getUsuario().equalsIgnoreCase(usuarioCliente) && c.getContrasenia().equalsIgnoreCase(contraCliente)) {
-				System.out.println("ENTROOOOOOOOOOOO EN EL IFFFFFFFFFFFFFF CORRECTO");
+				System.out.println("dentro del if ok");
 				SesionCliente sesionCliente = new SesionCliente();
-				sesionCliente.setCliente(c);
+				// sesionCliente.setCliente(c);
 				sesionCliente.setFechaSesion(new Date());
 				sesionCliente.setEstado("Correcto");
+
 				empleadoON.guardarSesionCliente(sesionCliente);
 				FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("empleado", c);
 				System.out.println("vale faces?" + "" + "empleado" + c);
-				// FacesContext contex = FacesContext.getCurrentInstance();
-				// contex.getExternalContext().redirect("Cliente.xhtml");
+				FacesContext contex = FacesContext.getCurrentInstance();
+
 			} else if (c.getUsuario().equalsIgnoreCase(usuarioCliente)
 					|| c.getContrasenia().equalsIgnoreCase(contraCliente)) {
 				System.out.println("ENTROOOOOOOOOOOO EN EL IFFFFFFFFFFFFFF MAL");
@@ -295,6 +322,39 @@ public class LoginBean implements Serializable {
 			}
 		}
 		return null;
+
+	}
+
+	/**
+	 * metodo que nos permite validar el ingreso del cliente al sistema
+	 * 
+	 * @return
+	 */
+	public String validarInicioSesionCliente() {
+		System.out.println("vale el usuario?");
+		Cliente clien;
+		try {
+			clien = empleadoON.usuarioCliente(usuarioCliente, contraCliente);
+			cliente = clien;
+			guardarSesionCliente();
+			System.out.println("CLIENTE LOGIN" + cliente);
+			if (clien != null) {
+				try {
+					System.out.println("vale el ingreso");
+					FacesContext contex = FacesContext.getCurrentInstance();
+					FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("cliente", clien);
+					contex.getExternalContext().redirect("Cliente.xhtml");
+				} catch (Exception e) {
+					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN,
+							"Warning", "No se pudo acceder, revise usuario o contrasenia"));
+				}
+			}
+		} catch (Exception e) {
+			System.out.println("NO SE PUEDO INGRESAR, REVISE USUARIO CONTRASEÑA");
+			return "loginCliente";
+		}
+
+		return null;
 	}
 
 	public void addMessage(String summary, String detail) {
@@ -305,7 +365,8 @@ public class LoginBean implements Serializable {
 
 	public String logout() {
 		FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
-		return "login?faces-redirect=true";
+		System.out.println("entral al logout");
+		return "login";
 
 	}
 

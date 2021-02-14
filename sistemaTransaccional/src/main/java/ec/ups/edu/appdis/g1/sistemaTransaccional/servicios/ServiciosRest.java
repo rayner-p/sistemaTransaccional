@@ -108,7 +108,7 @@ public class ServiciosRest {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Cuenta obtenerCuentaCliente(@QueryParam("cedula")String cedula) throws Exception{
 		try {
-		return on.buscarCuentaD(cedula);
+		return on.obtenerCuentaPorNumero(cedula);
 		}catch (Exception e) {
 			throw new Exception("Se ah producido un error"+e.getMessage());
 

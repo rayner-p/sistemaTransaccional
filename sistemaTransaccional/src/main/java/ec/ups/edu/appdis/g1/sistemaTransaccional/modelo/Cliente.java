@@ -64,7 +64,7 @@ public class Cliente  implements Serializable{
 	@JoinColumn(name="transaccion_fk")	
 	private Set<Transaccion> transaccionCliente = new HashSet<Transaccion>();
 	
-	@OneToMany(fetch = FetchType.EAGER)
+	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinColumn(name="poliza_fk")	
 	private Set<Poliza> polizaCliente = new HashSet<Poliza>();
 	
@@ -330,6 +330,12 @@ public class Cliente  implements Serializable{
 	}
 	public void setPolizaCliente(Set<Poliza> polizaCliente) {
 		this.polizaCliente = polizaCliente;
+	}
+	
+	
+	
+	public static long getSerialversionuid() {
+		return serialVersionUID;
 	}
 	@Override
 	public String toString() {

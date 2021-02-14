@@ -19,13 +19,13 @@
 						<div class="panel panel-default">
 							<br /> <br /> <br />
 							<div class="panel-body">
-								<p:growl id="message" showDetail="true" class="ui-growl"
-									life="4000" />
+								<p:growl id="messages" showDetail="true" class="ui-growl"
+									life="5000" />
 								<div class="col-sm-12">
 									<label class="col-sm-12">Tipo de Póliza</label>
 									<div class="col-sm-12">
 										<h:selectOneMenu id="polizaT" required="true" label=" "
-											value="#{polizaBean.newPoliza.tipoPoliza}">
+											value="#{dtEditView.newPoliza.tipoPoliza}">
 											<f:selectItem itemValue="PERIODICO" itemLabel="PERIODICO" />
 											<f:selectItem itemValue="VENCIMIENTO" itemLabel="VENCIMIENTO" />
 										</h:selectOneMenu>
@@ -35,7 +35,7 @@
 								<div class="form-group">
 									<label>Fecha Inicio</label>
 									<h:inputText id="fechaI" disabled="#{!bean.permissionToWrite}"
-										value="#{polizaBean.fechaActu}" type="text"
+										value="#{dtEditView.fechaActu}" type="text"
 										class="form-control form-control-line">
 									</h:inputText>
 
@@ -43,7 +43,7 @@
 								<div class="form-group">
 									<label> Cuenta </label>
 									<h:inputText id="cuenta"
-										value="#{polizaBean.newPoliza.cuentaClientePoliza}"
+										value="#{dtEditView.newPoliza.cuentaClientePoliza}"
 										type="text" class="form-control form-control-line">
 
 									</h:inputText>
@@ -52,7 +52,7 @@
 
 								<div class="form-group">
 									<label> Monto Abono</label>
-									<h:inputText id="monto" value="#{polizaBean.newPoliza.montoP}"
+									<h:inputText id="monto" value="#{dtEditView.newPoliza.montoP}"
 										type="text" placeholder="Joe Down"
 										class="form-control form-control-line">
 									</h:inputText>
@@ -61,16 +61,16 @@
 
 								<div class="form-group">
 									<label> Tiempo Plazo</label>
-									<h:inputText id="tiempoP" value="#{polizaBean.maximoTiempo}"
+									<h:inputText id="tiempoP" value="#{dtEditView.maximoTiempo}"
 										type="text" class="form-control form-control-line">
 									</h:inputText>
 
 								</div>
-					
+
 								<div class="form-group">
 									<label>Interes</label>
 									<h:inputText id="corr" disabled="#{!bean.permissionToWrite}"
-										value="#{polizaBean.tasaInteres}" type="text"
+										value="#{dtEditView.tasaInteres}" type="text"
 										class="form-control form-control-line">
 									</h:inputText>
 
@@ -81,30 +81,34 @@
 						<h2 class="page-header">Subir Archivos</h2>
 						<div class="form-group">
 							<div class="form-group">
-								<label>Subir cedula&nbsp;
-									&nbsp;</label>
-								<p:fileUpload value="#{polizaBean.subirCedula()}"
-									mode="advanced"  auto="true"
-									sizeLimit="10485760" label="Elegir Archivo"
-									uploadLabel="Cargar" required="true"
-									requiredMessage="Archivo no seleccionado" />
+								<label>Subir cedula&nbsp; &nbsp;</label>
+								<h:form id="formcontract" enctype="multipart/form-data"
+									dir="rtl">
+									<p:fileUpload listener="#{dtEditView.subirCedula}" mode="advanced"
+										 auto="true" sizeLimit="10485760"
+										label="Elegir Archivo" uploadLabel="Cargar" required="true"
+										requiredMessage="Archivo no seleccionado" />
+								</h:form>
 							</div>
 							<br />
 							<div class="form-group">
-								<label>Subir planilla&nbsp;
-									&nbsp;</label>
-								<p:fileUpload value="#{polizaBean.subirPlanilla()}"
-									mode="advanced"  auto="true"
-									sizeLimit="10485760" label="Elegir Archivo"
-									uploadLabel="Cargar" required="true"
-									requiredMessage="Archivo no seleccionado" />
+								<label>Subir planilla&nbsp; &nbsp;</label>
+								<h:form id="formcontract2" enctype="multipart/form-data"
+									dir="rtl">
+									<p:fileUpload listener="#{dtEditView.subirPlanlilla}" mode="advanced"
+										 auto="true" sizeLimit="10485760"
+										label="Elegir Archivo" uploadLabel="Cargar" required="true"
+										requiredMessage="Archivo no seleccionado" />
+								</h:form>
+								<br /> <br />
+
 							</div>
 
 						</div>
 
 						<br /> <br />
 						<div class="col-sm-2">
-							<h:commandButton action="#{polizaBean.crearPoliza()}"
+							<h:commandButton action="#{dtEditView.crearPoliza()}"
 								class="btn btn-success btn-lg" value="REALIZAR TRANSACCION"
 								style="width: 250px; height: 50px; color: black; text-align: left; background-color:
 									blue);" />

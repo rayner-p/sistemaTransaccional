@@ -8,6 +8,7 @@ import java.util.concurrent.CompletableFuture;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
+import javax.faces.application.FacesMessage.Severity;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -37,6 +38,7 @@ public class ClienteBean implements Serializable {
 	private int tiempo;
 	private List<String> cuentasK;
 	private Cuenta c;
+	Cliente validaroCliente;
 
 	public List<String> getCuentasK() {
 		return cuentasK;
@@ -106,6 +108,7 @@ public class ClienteBean implements Serializable {
 	@PostConstruct
 	public void init() {
 		newCliente = new Cliente();
+		validaroCliente = new Cliente();
 	}
 
 	public Cliente getNewCliente() {
@@ -161,9 +164,7 @@ public class ClienteBean implements Serializable {
 
 	public String obtenerUsuario() {
 		usuario = on.generarNombreUsuario(newCliente.getCedula(), newCliente.getNombres(), newCliente.getApellidos());
-
 		newCliente.setUsuario(usuario);
-		System.out.println("Se ha generado un nombre de usuario al azar");
 		return usuario;
 	}
 
@@ -176,10 +177,22 @@ public class ClienteBean implements Serializable {
 	public String generarContrasena() {
 		contrasenia = on.generarContrasenia();
 		newCliente.setContrasenia(contrasenia);
-		System.err.println("Se ha generado una contrasenia al azar");
-		System.out.println(contrasenia);
+		System.err.println("Se ha generado una contrasenia al azar" + contrasenia);
 		return contrasenia;
 
+	}
+
+	public boolean validarCedulaExistent() {
+		boolean bandera = true;
+
+		try {
+			validaroCliente = on.obtenerDatosPorCedula(newCliente.getCedula());
+		} catch (Exception e) {
+			System.out.println("Error al obtener cedula existen");
+			bandera = false;
+			e.printStackTrace();
+		}
+		return bandera;
 	}
 
 	/**
@@ -224,84 +237,133 @@ public class ClienteBean implements Serializable {
 
 	}
 
+	public boolean validarDatos() {
+		boolean bandera = true;
+		if (newCliente.getCedula().isEmpty() & newCliente.getNombres().isEmpty() & newCliente.getApellidos().isEmpty()
+				& newCliente.getCiudad().isEmpty() & newCliente.getCelular().isEmpty()
+				& newCliente.getFechaNacimiento() == null & newCliente.getCorreo().isEmpty()
+				& newCliente.getEstadoCivil().isEmpty() & newCliente.getProvincia().isEmpty()
+				& newCliente.getReferenciaDomicilio().isEmpty() & newCliente.getTelefono().isEmpty()) {
+			FacesContext.getCurrentInstance().addMessage(null,
+					new FacesMessage(FacesMessage.SEVERITY_WARN, "Info", "Ingrese todos los datos"));
+			bandera = false;
+		} else {
+
+		}
+		return bandera;
+	}
+
 	/**
 	 * Metodo para registrar el correo cuando se cree el cliente
 	 * 
 	 * 
 	 */
 	public String doRegistraCliente() {
-		System.out.println("DATOS CREADOS"+this.newCliente.getCedula() + "   " + this.newCliente.getNombres() + tipoEstado);
+		System.out.println(
+				"DATOS CREADOS" + this.newCliente.getCedula() + "   " + this.newCliente.getNombres() + tipoEstado);
 		try {
-			if (tipoEstado.equalsIgnoreCase("Soltero/o")) {
+			System.out.println("Ingreso al try");
+			if (validaroCliente.getCedula() == newCliente.getCedula()) {
+				FacesContext.getCurrentInstance().addMessage(null,
+						new FacesMessage(FacesMessage.SEVERITY_WARN, "Info", "Cedula ingresada ya está en el sistema"));
+
+			} else if (tipoEstado.equalsIgnoreCase("Soltero/a")) {
 				System.out.println(tipoEstado);
-				System.out.println("ENTRA AL IF PARA CREAR CLIENTE");
-				// newCliente.setTiempoResidencia(tiempo);
+				System.out.println("ENTRA AL IF  SOLTERO PARA CREAR CLIENTE");
+
 				newCliente.setEstadoCivil("Soltero(a)");
-				obtenerUsuario();
-				generarContrasena();
+
 				try {
 					System.out.println("ENTRAS AL TRY PARA CREAR?");
-					on.registarCliente(newCliente);
-					addMessage("Confirmacion", "Cliente Guardado");
-					registrarCorreo();
-					addMessage("Confirmacion", "Correo Enviado");
+					if (validarDatos() == false) {
+
+					} else {
+						System.out.println("soltero");
+						obtenerUsuario();
+						generarContrasena();
+						on.registarCliente(newCliente);
+						addMessage("Confirmacion", "Cliente Guardado");
+						registrarCorreo();
+						addMessage("Confirmacion", "Correo Enviado");
+					}
+
 				} catch (Exception e) {
 					System.out.println("error guardar Cliente con correo");
 					e.printStackTrace();
 				}
 			} else if (tipoEstado.equalsIgnoreCase("Casado/a")) {
-				System.out.println("ENTRA AL IF PARA CREAR CLIENTE");
+				System.out.println("ENTRA AL IF CASADO PARA CREAR CLIENTE");
 				// newCliente.setTiempoResidencia(tiempo);
 				newCliente.setEstadoCivil("Casado(a)");
-				obtenerUsuario();
-				generarContrasena();
 
 				try {
-					on.registarCliente(newCliente);
+					if (validarDatos() == false) {
 
-					addMessage("Confirmacion", "Cliente Guardado");
-					registrarCorreo();
+					} else {
+						System.out.println("casad");
+						obtenerUsuario();
+						generarContrasena();
+						on.registarCliente(newCliente);
+						addMessage("Confirmacion", "Cliente Guardado");
+						registrarCorreo();
+						addMessage("Confirmacion", "Correo Enviado");
+					}
 					addMessage("Confirmacion", "Correo Enviado");
 				} catch (Exception e) {
 					System.out.println("error guardar Cliente con correo");
 					e.printStackTrace();
 				}
 			} else if (tipoEstado.equalsIgnoreCase("Divorciado/a")) {
-				System.out.println("ENTRA AL IF PARA CREAR CLIENTE");
+				System.out.println("ENTRA AL IF DVI PARA CREAR CLIENTE");
 				// newCliente.setTiempoResidencia(tiempo);
 				newCliente.setEstadoCivil("Divorciado(a)");
-				obtenerUsuario();
-				generarContrasena();
-				try {
-					on.registarCliente(newCliente);
 
-					addMessage("Confirmacion", "Cliente Guardado");
-					registrarCorreo();
-					addMessage("Confirmacion", "Correo Enviado");
+				try {
+					if (validarDatos() == false) {
+
+					} else {
+						System.out.println("divo");
+						obtenerUsuario();
+						generarContrasena();
+						on.registarCliente(newCliente);
+						addMessage("Confirmacion", "Cliente Guardado");
+						registrarCorreo();
+						addMessage("Confirmacion", "Correo Enviado");
+					}
 				} catch (Exception e) {
 					System.out.println("error guardar Cliente con correo");
 					e.printStackTrace();
 				}
 			} else if (tipoEstado.equalsIgnoreCase("Viudo/a")) {
-				System.out.println("ENTRA AL IF PARA CREAR CLIENTE");
+				System.out.println("ENTRA AL IF VIU PARA CREAR CLIENTE");
 				// newCliente.setTiempoResidencia(tiempo);
 				newCliente.setEstadoCivil("Viudo(a)");
-				obtenerUsuario();
-				generarContrasena();
-				try {
-					on.registarCliente(newCliente);
 
-					addMessage("Confirmacion", "Cliente Guardado");
-					registrarCorreo();
-					addMessage("Confirmacion", "Correo Enviado");
+				try {
+					if (validarDatos() == false) {
+
+					} else {
+						System.out.println("VIUD");
+						obtenerUsuario();
+						generarContrasena();
+						on.registarCliente(newCliente);
+						addMessage("Confirmacion", "Cliente Guardado");
+						registrarCorreo();
+						addMessage("Confirmacion", "Correo Enviado");
+					}
 				} catch (Exception e) {
 					System.out.println("error guardar Cliente con correo");
 					e.printStackTrace();
 				}
-			}
+			} else {
 
-		} catch (Exception e) {
-			System.out.println("Error al crear cliente"+ e.getLocalizedMessage());
+				System.out.println("else");
+
+			}
+		}
+
+		catch (Exception e) {
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "Info", "No se pudo crear el cliente"));
 		}
 
 		return null;
@@ -318,42 +380,48 @@ public class ClienteBean implements Serializable {
 	}
 
 	public String doBuscoCliente() {
-		try {
-			
-			System.out.println("ENTRAS A BUSCAR DATOS CLIENTES?");
-			Cliente emple = on.buscarCliente(newCliente.getCedula());
-			System.out.println("ESTOS SON DATOS RECOGIDOS DEL USUARIO" + emple);
-			newCliente.setNombres(emple.getNombres());
-			System.out.println(emple.getNombres());
-			newCliente.setApellidos(emple.getApellidos());
-			newCliente.setDireccion(emple.getDireccion());
-			newCliente.setCorreo(emple.getCorreo());
-			newCliente.setTelefono(emple.getTelefono());
-			newCliente.setCiudad(emple.getCiudad());
-			newCliente.setFechaNacimiento(emple.getFechaNacimiento());
-			newCliente.setCelular(emple.getCelular());
-			newCliente.setProvincia(emple.getProvincia());
-			newCliente.setTiempoResidencia(emple.getTiempoResidencia());
-			newCliente.setEstadoCivil(emple.getEstadoCivil());
-			newCliente.setReferenciaDomicilio(emple.getReferenciaDomicilio());
-			newCliente.setCuentaCliente(emple.getCuentaCliente());
-			cuentasK = new ArrayList<String>();
-			for (int i = 0; i < emple.getCuentaCliente().size(); i++) {
-				System.out.println(emple.getCuentaCliente().get(i).getNumeroCuenta());
-				cuentasK.add(emple.getCuentaCliente().get(i).getNumeroCuenta());
-				System.out.println("CUENTAS TOTAL " + cuentasK);
-			}
-			System.out.println("CUENTA CLIENTES BUSQEUDA" + emple.getCuentaCliente().get(0));
 
-			// usuarioAntiguo = emple.getUsuario();
-			// contrasenaAntigua = emple.getContrasenia();
-			// System.out.println("USUARIO + CONTRASENIA " +usuarioAntiguo
-			// +""+contrasenaAntigua);
-		} catch (Exception e) {
-			System.err.println(e.getMessage());
-			e.printStackTrace();
+		System.out.println("ENTRAS A BUSCAR DATOS CLIENTES?");
+		if (newCliente.getCedula() == null) {
+			FacesContext.getCurrentInstance().addMessage(null,
+					new FacesMessage(FacesMessage.SEVERITY_WARN, "Info", "Ingrese una cedula antes de buscar"));
+		} else {
+			try {
+				Cliente emple = on.buscarCliente(newCliente.getCedula());
+				System.out.println("ESTOS SON DATOS RECOGIDOS DEL USUARIO" + emple);
+				newCliente.setNombres(emple.getNombres());
+				System.out.println(emple.getNombres());
+				newCliente.setApellidos(emple.getApellidos());
+				newCliente.setDireccion(emple.getDireccion());
+				newCliente.setCorreo(emple.getCorreo());
+				newCliente.setTelefono(emple.getTelefono());
+				newCliente.setCiudad(emple.getCiudad());
+				newCliente.setFechaNacimiento(emple.getFechaNacimiento());
+				newCliente.setCelular(emple.getCelular());
+				newCliente.setProvincia(emple.getProvincia());
+				newCliente.setTiempoResidencia(emple.getTiempoResidencia());
+				newCliente.setEstadoCivil(emple.getEstadoCivil());
+				newCliente.setReferenciaDomicilio(emple.getReferenciaDomicilio());
+				newCliente.setCuentaCliente(emple.getCuentaCliente());
+				cuentasK = new ArrayList<String>();
+				for (int i = 0; i < emple.getCuentaCliente().size(); i++) {
+					System.out.println(emple.getCuentaCliente().get(i).getNumeroCuenta());
+					cuentasK.add(emple.getCuentaCliente().get(i).getNumeroCuenta());
+					System.out.println("CUENTAS TOTAL " + cuentasK);
+				}
+				System.out.println("CUENTA CLIENTES BUSQEUDA" + emple.getCuentaCliente().get(0));
+
+				// usuarioAntiguo = emple.getUsuario();
+				// contrasenaAntigua = emple.getContrasenia();
+				// System.out.println("USUARIO + CONTRASENIA " +usuarioAntiguo
+				// +""+contrasenaAntigua);
+			} catch (Exception e) {
+				System.err.println(e.getMessage());
+				e.printStackTrace();
+			}
 		}
 		return null;
+
 	}
 
 	public int calcularEdad() {

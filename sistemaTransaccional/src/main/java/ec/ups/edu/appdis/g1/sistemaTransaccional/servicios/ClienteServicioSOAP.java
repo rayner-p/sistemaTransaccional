@@ -25,7 +25,7 @@ public class ClienteServicioSOAP {
 	public void realizarTransaccion(String cedula,String cuenta, String tipoTransaccion, double monto) {
 		
 		tran = new Transaccion();
-		Cuenta cl = on.buscarCuentaD(cedula);
+		Cuenta cl = on.obtenerCuentaPorNumero(cedula);
 		System.out.println("datos recogidos"+" "+cuenta+" "+tipoTransaccion+" "+monto);	
 		if (tipoTransaccion.equals("Retiro") &&  cl.getSaldo() < monto) {
 			System.out.println("El monto a retirar es mayor que el saldo");

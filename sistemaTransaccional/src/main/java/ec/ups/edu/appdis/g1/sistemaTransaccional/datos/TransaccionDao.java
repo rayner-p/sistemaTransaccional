@@ -6,6 +6,7 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
 import ec.ups.edu.appdis.g1.sistemaTransaccional.modelo.Empleado;
@@ -50,5 +51,28 @@ public class TransaccionDao {
 		List<Transaccion> listado = q.getResultList();
 		return listado;
 		
+	}
+	/**
+	 * Metodoq que me permite consultar entre fechas las transacciones realizadas por el cliente.
+	 * @param cedula   pertenece al cliente logueado
+	 * @param fechI		fecha inicio de la busqeuda
+	 * @param fechaF	fecha final de la búsqueda
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Transaccion> getListaTransaccionesFechas(String cedula,String fechI , String fechaF ) throws Exception {
+		//select * from transaccion where cedula_cliente = 0105011399 AND fecha BETWEEN '2020-06-03 20:21:40.090000' AND '2020-06-03 23:22:39.160000';
+		String tl = "select s from Transaccion s where s.cliente.cedula = '"+cedula+"' AND s.fecha BETWEEN '"+fechI+"' AND '"+fechaF+"' ORDER BY s.fecha DESC";
+		//select s.tipo_transaccion, s.monto, s.cuenta_trans from transaccion s join cuenta on numero_cuenta = '404000000001' AND s.fecha_hora BETWEEN '2021-01-30 01:04:24.329' AND '2021-01-30 01:04:24.329' ORDER BY s.fecha_hora 	
+		try {
+			Query q = em.createQuery(tl, Transaccion.class);
+			//q.setParameter("ced", cedula);
+			//q.setParameter("fcI", fechI);
+			//q.setParameter("fcF", fechaF);
+			return q.getResultList();
+		} catch (NoResultException e) {
+			throw new Exception("Erro Consultas Entre Fechas");
+		}
+
 	}
 }
