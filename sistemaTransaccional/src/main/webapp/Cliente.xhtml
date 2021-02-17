@@ -13,7 +13,8 @@
 </h:head>
 <h:body>
 	<ui:composition template="template/templateCliente.xhtml">
-		<ui:define name="title">   </ui:define>
+		<ui:define name="title">
+		</ui:define>
 		<ui:param name="nombre" value="#{loginBean.usuario}" />
 		<ui:define name="content">
 			<h:form>
@@ -93,20 +94,20 @@
 
 														<h:outputText value="#{cuenta.saldo}" />
 													</h:column>
-													
+
 													<h:column headerText="Tipo Cuenta">
 
 														<h:outputText value="#{cuenta.tipoCuenta}" />
 													</h:column>
-													
+
 
 												</h:dataTable>
 
 
 
 											</div>
-											<br/>
-											<br/>
+											<br />
+											<br />
 											<div>
 												<h1 class="page-header">Transacciones</h1>
 
@@ -121,19 +122,19 @@
 
 														<h:outputText value="#{cuentaT.monto}" />
 													</h:column>
-													
+
 													<h:column headerText="Tipo Cuenta">
 
 														<h:outputText value="#{cuentaT.tipoTransaccion}" />
 													</h:column>
-												
+
 												</h:dataTable>
 
 
 
 											</div>
-											<br/>
-											<br/>
+											<br />
+											<br />
 											<div>
 												<h1 class="page-header">Polizas</h1>
 
@@ -148,7 +149,7 @@
 
 														<h:outputText value="#{cuentaP.tiempoPlazo}" />
 													</h:column>
-													
+
 													<h:column headerText="Valor Poliza">
 
 														<h:outputText value="#{cuentaP.montoP}" />
@@ -157,14 +158,14 @@
 
 														<h:outputText value="#{cuentaP.interes}" />
 													</h:column>
-													
+
 
 												</h:dataTable>
 
 
 
 											</div>
-											
+
 										</h:form>
 
 									</div>

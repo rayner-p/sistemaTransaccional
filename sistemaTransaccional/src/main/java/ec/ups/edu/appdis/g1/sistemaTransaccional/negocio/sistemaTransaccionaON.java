@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -29,6 +30,8 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.mail.util.ByteArrayDataSource;
 import javax.persistence.NoResultException;
+
+import org.primefaces.PrimeFaces;
 
 import ec.ups.edu.appdis.g1.sistemaTransaccional.datos.ClienteDao;
 import ec.ups.edu.appdis.g1.sistemaTransaccional.datos.CuentaDao;
@@ -393,8 +396,6 @@ public class sistemaTransaccionaON implements GestionSistemLocal {
 	 *         generado
 	 */
 
-	
-	
 	public String generarNumeroDeCuenta() {
 		System.out.println("ingresa al on generar num");
 		int numeroInicio = 4040;
@@ -550,7 +551,7 @@ public class sistemaTransaccionaON implements GestionSistemLocal {
 	 */
 
 	public void enviarCorreo(String destinatario, String asunto, String cuerpo) {
-		System.out.println("ENTR A CORREO ESTO"+" "+destinatario+"    "+ asunto+" "+cuerpo);
+		System.out.println("ENTR A CORREO ESTO" + " " + destinatario + "    " + asunto + " " + cuerpo);
 		Properties propiedad = new Properties();
 		propiedad.setProperty("mail.smtp.host", "smtp.gmail.com");
 		propiedad.setProperty("mail.smtp.starttls.enable", "true");
@@ -564,18 +565,18 @@ public class sistemaTransaccionaON implements GestionSistemLocal {
 		propiedad.put("mail.smtp.ssl.trust", "smtp.gmail.com");
 
 		// sets SMTP server properties
-		//Properties emailProperties = System.getProperties();
-		//emailProperties.put("mail.smtp.port", "587");
+		// Properties emailProperties = System.getProperties();
+		// emailProperties.put("mail.smtp.port", "587");
 		// emailProperties.put("mail.ssl.port", "587");
-		//emailProperties.put("mail.smtp.auth", "true");
-		//emailProperties.put("mail.smtp.starttls.enable", "true");
+		// emailProperties.put("mail.smtp.auth", "true");
+		// emailProperties.put("mail.smtp.starttls.enable", "true");
 		Session session = Session.getDefaultInstance(propiedad);
 
 		String correoEnvia = "bancointernacionaprueba@gmail.com";
 		String contrasena = "p4t1t0.123";
 		propiedad.put("mail.smtp.user", correoEnvia);
 		// creates a new session, no Authenticator (will connect() later)
-		
+
 		// *** END CHANGE
 		System.out.println("ANTES DEL TRY");
 		// creates a new e-mail message
@@ -583,20 +584,20 @@ public class sistemaTransaccionaON implements GestionSistemLocal {
 		try {
 			System.out.println("ENTRA A; TY");
 			msg.setFrom("Banco Internacional <" + correoEnvia + ">");
-		//	msg.setFrom(new InternetAddress("Banco Internacional <"+correoEnvia+">"));
+			// msg.setFrom(new InternetAddress("Banco Internacional <"+correoEnvia+">"));
 			InternetAddress[] toAddresses = { new InternetAddress(destinatario) };
 			msg.addRecipients(Message.RecipientType.TO, toAddresses);
 			msg.setSubject(asunto);
-			
+
 			msg.setText(cuerpo);
 			msg.setSender(new InternetAddress(correoEnvia));
 			msg.setSentDate(new Date());
 			String emailHost = "smtp.gmail.com";
 			Transport transport = session.getTransport("smtp");
-			System.out.println("inicio"+ " "+correoEnvia + contrasena);
-			
+			System.out.println("inicio" + " " + correoEnvia + contrasena);
+
 			transport.connect(emailHost, correoEnvia, contrasena);
-			
+
 			transport.sendMessage(msg, msg.getAllRecipients());
 			System.out.println("final");
 			transport.close();
@@ -724,9 +725,10 @@ public class sistemaTransaccionaON implements GestionSistemLocal {
 	public void guardarSesionCliente(SesionCliente sesionCliente) {
 		System.out.println("ENTRS AQUI?");
 		Cliente cli = sesionCliente.getCliente();
-		//System.out.println("esto es lo que se obtiene de la sesion ->" + cli);
+		System.out.println("cliente que guarda sesion clietne" + cli);
+		// System.out.println("esto es lo que se obtiene de la sesion ->" + cli);
 		String destinatario = cli.getCorreo();
-		System.out.println("estado"+sesionCliente.getEstado());
+		System.out.println("estado" + sesionCliente.getEstado());
 		if (sesionCliente.getEstado().equalsIgnoreCase("Incorrecto")) {
 
 			String asunto = "INICIO DE SESION FALLIDA";
@@ -786,9 +788,10 @@ public class sistemaTransaccionaON implements GestionSistemLocal {
 		System.out.println("que trae el sesion empleado");
 		Empleado cli = sesionEmpleado.getEmpleado();
 		String destinatario = cli.getCorreo();
-		System.out.println("estado"+sesionEmpleado.getEstado());
+		System.out.println("estado" + sesionEmpleado.getEstado());
 
-		//sesionEmpleado != null & sesionEmpleado.getEstado().equalsIgnoreCase("Incorrecto")
+		// sesionEmpleado != null &
+		// sesionEmpleado.getEstado().equalsIgnoreCase("Incorrecto")
 		if (sesionEmpleado.getEstado().equalsIgnoreCase("Incorrecto")) {
 			String asunto = "INICIO DE SESION FALLIDA";
 			String cuerpo = " BANCO INTERNACIONAL\n"
@@ -855,23 +858,27 @@ public class sistemaTransaccionaON implements GestionSistemLocal {
 
 				String destinatario = cliente.getCorreo(); // A quien le quieres escribir.
 				System.out.println("QUE DATOS TIENE ESTO  --?" + usuario + "" + contraseña);
-				String asunto = "CREACION DE USUARIO";
+				String asunto = "APERTURA DE CUENTA";
 				String cuerpo = "                                              SISTEMA TRANSACCIONAL\n"
 						+ "------------------------------------------------------------------------------\n"
 						+ "              Estimado(a): " + cliente.getNombres().toUpperCase() + " "
 						+ cliente.getApellidos().toUpperCase() + "\n"
 						+ "------------------------------------------------------------------------------\n"
-						+ "le informa que el usuario ha sido habilitado exitosamente.    \n"
-						+ "                                                                              \n"
-						+ "                       Su usuario es : " + usuario + "                          \n"
-						+ "                   	Su clave de acceso es:   " + contraseña + "               \n"
-						+ "                       Fecha: " + fech + "                                     \n"
+						+ "BANCO INTERNACIONAL le informa que la apertura de su cuenta ha sido  exitosa.    \n"
+						+ "                       Fecha de apertura: " + fech
+						+ "                                     \n"
 						+ "                                                                              \n"
 						+ "------------------------------------------------------------------------------\n";
 				CompletableFuture.runAsync(() -> {
 					try {
 						if (c.getSaldo() != 0.0) {
+
 							enviarCorreo(destinatario, asunto, cuerpo);
+							FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Message",
+									"Se ha enviado un correo a" +destinatario);
+
+							PrimeFaces.current().dialog().showMessageDynamic(message);
+
 						}
 
 					} catch (Exception e) {
@@ -926,12 +933,15 @@ public class sistemaTransaccionaON implements GestionSistemLocal {
 	 * @return Lista de sesiones de un cliente
 	 */
 	public List<SesionCliente> obtenerSesionesCliente(String cedulaCliente) {
+		List<SesionCliente> sesonCliente = new ArrayList<SesionCliente>();
 		try {
-			return daoSesion.obtenerSesionCliente(cedulaCliente);
+			System.out.println("INGRESA ON OBTEN CLIENTE" + cedulaCliente);
+			sesonCliente = daoSesion.obtenerSesionCliente(cedulaCliente);
+			System.out.println("TRAE ON " + sesonCliente);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return null;
+		return sesonCliente;
 
 	}
 
@@ -944,6 +954,7 @@ public class sistemaTransaccionaON implements GestionSistemLocal {
 	 */
 	public List<SesionCliente> obtenerSesionesEmpleados(String cedulaCliente) {
 		try {
+			System.out.println("obtener sesion empleado on" + cedulaCliente);
 			return daoSesion.obtenerSesionEmpleado(cedulaCliente);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -1145,15 +1156,16 @@ public class sistemaTransaccionaON implements GestionSistemLocal {
 		}
 		return null;
 	}
-	
-	
+
 	/**
 	 * Metodo que permite buscar las transacciones de un usuario entre fechas
 	 * 
 	 * @param cedula Numero de cedula de la persona que busca
-	 * @param fechaI La fecha de inicio desde donde se quieren ver las transacciones.
+	 * @param fechaI La fecha de inicio desde donde se quieren ver las
+	 *               transacciones.
 	 * @param fechaF La fecha de fin hasta donde se quieren ver las transacciones.
-	 * @return Una lista de las transacciones/movimientos del usuario entre las fechas indicadas.
+	 * @return Una lista de las transacciones/movimientos del usuario entre las
+	 *         fechas indicadas.
 	 * @throws Exception Excepción por si el cliente no tiene transacciones.
 	 */
 	public List<Transaccion> obtenerTransaccionesFechaHora(String cedula, String fechaI, String fechaF) {

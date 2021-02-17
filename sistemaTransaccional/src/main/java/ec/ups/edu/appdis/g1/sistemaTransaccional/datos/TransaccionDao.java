@@ -46,6 +46,8 @@ public class TransaccionDao {
 	 * @return listado si se realiza la actualziacion devuelve la lista con todos los datos existentes
 	 */
 	public List<Transaccion> obtenerTransaccion (){
+		// obtener todas las cuentas con fehca de transaccion y saldo 
+		//select distinct c.*, t.* from Transaccion t join Cuenta c on t.cuenta_trans = '404000000002'  and c.numero_cuenta = t.cuenta_trans
 		String jpql = "SELECT c FROM Transaccion c";
 		Query q = em.createQuery(jpql, Transaccion.class);
 		List<Transaccion> listado = q.getResultList();

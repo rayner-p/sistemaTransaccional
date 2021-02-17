@@ -13,6 +13,8 @@ import javax.faces.view.facelets.FaceletContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.primefaces.PrimeFaces;
+
 import ec.ups.edu.appdis.g1.sistemaTransaccional.modelo.Cliente;
 import ec.ups.edu.appdis.g1.sistemaTransaccional.modelo.Cuenta;
 import ec.ups.edu.appdis.g1.sistemaTransaccional.modelo.Empleado;
@@ -30,8 +32,7 @@ public class CuentaBean implements Serializable {
 	private GestionSistemLocal on;
 	@Inject
 	private ClienteBean clienteB;
-	@Inject
-	private Empleado empleadoB;
+
 	private Date fechaActual;
 	private String cuenta;
 	private String tipoCuenta;
@@ -39,7 +40,7 @@ public class CuentaBean implements Serializable {
 	private double saldoAhorro = 5.0;
 	private double saldoCredito = 500.00;
 	private String nombrEmpleado;
-	private Cliente cliente;
+	// private Cliente cliente;
 	private double saldoNuevo;
 	private String cuentaObtenida;
 
@@ -166,6 +167,7 @@ public class CuentaBean implements Serializable {
 
 		return cuenta;
 	}
+
 	public boolean validarDatosingresados() {
 		boolean bandera = true;
 
@@ -173,6 +175,43 @@ public class CuentaBean implements Serializable {
 			bandera = false;
 		} else {
 
+		}
+		return bandera;
+	}
+
+	/**
+	 * Metodo que me permite validar el ingreso correcto de los valores para crear
+	 * una cuenta
+	 * 
+	 * @return
+	 */
+
+	public boolean validarIngreso() {
+		boolean bandera = true;
+
+		if (newCuenta.getSaldo() < saldoAhorro) {
+			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Message",
+					"Para la apertura de cuenta de ahorro el saldo minimo es de $5");
+
+			PrimeFaces.current().dialog().showMessageDynamic(message);
+			bandera = false;
+			System.out.println("Para la apertura de cuenta ahorro se necesita un valor mínimo de $5 dólares");
+		} else {
+			saldoAhorro = newCuenta.getSaldo();
+			System.out.println(saldoAhorro);
+		}
+
+		if (newCuenta.getSaldo() < saldoCredito) {
+			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Message",
+					"Para la apertura de cuenta de crédito el saldo minimo es de $500");
+
+			PrimeFaces.current().dialog().showMessageDynamic(message);
+			bandera = false;
+			System.out.println("Para la apertura de cuenta crédito se necesita un valor mínimo de $500 dólares");
+		} else {
+			System.out.println("Se ha ingresado más");
+			saldoCredito = newCuenta.getSaldo();
+			System.out.println(saldoCredito);
 		}
 		return bandera;
 	}
@@ -210,15 +249,21 @@ public class CuentaBean implements Serializable {
 						System.out.println("cuenta en blaco");
 					} else if (validarDatosingresados() == false) {
 						FacesContext.getCurrentInstance().addMessage(null,
-								new FacesMessage(FacesMessage.SEVERITY_FATAL, "Info", "Ingrese todos los datos"));
+								new FacesMessage(FacesMessage.SEVERITY_WARN, "Info", "Ingrese todos los datos"));
 
+					} else if (validarIngreso() == false) {
+						System.err.println("valores menores a lo especificado");
 					} else {
 						on.guardarCuentaDeAhorros(newCuenta);
-						FacesContext.getCurrentInstance().addMessage(null,
-								new FacesMessage(FacesMessage.FACES_MESSAGES, "Cuenta creada correctamente"));
+						FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Message",
+								"Cuenta creada correctamente");
+
+						PrimeFaces.current().dialog().showMessageDynamic(message);
 
 					}
 				} catch (Exception e) {
+					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+							"Info", "Error en la apertura de cuenta de ahorro"));
 					System.out.println("error guardar Cliente con correo");
 					e.printStackTrace();
 				}
@@ -239,50 +284,37 @@ public class CuentaBean implements Serializable {
 							&& newCuenta.getSaldo() == 0.0 & newCuenta.getTipoCuenta().isEmpty()) {
 						System.out.println("cuenta en blaco");
 					} else if (validarDatosingresados() == false) {
-						FacesContext.getCurrentInstance().addMessage(null,
-								new FacesMessage(FacesMessage.SEVERITY_FATAL, "Info", "Ingrese todos los datos"));
+						FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_FATAL, "Message",
+								"Ingrese todos los datos");
 
+						PrimeFaces.current().dialog().showMessageDynamic(message);
+
+					} else if (validarIngreso() == false) {
+						
+						System.err.println("valores menores a lo especificado");
 					} else {
 						on.guardarCuentaDeAhorros(newCuenta);
-						FacesContext.getCurrentInstance().addMessage(null,
-								new FacesMessage(FacesMessage.FACES_MESSAGES, "Cuenta creada correctamente"));
+						FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Message",
+								"Cuenta creada correctamente");
 
+						PrimeFaces.current().dialog().showMessageDynamic(message);
 					}
 
 				} catch (Exception e) {
-					System.out.println("error guardar Cliente con correo");
+					FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Message",
+							"No se pudo crear la cuenta correctamente");
+
+					PrimeFaces.current().dialog().showMessageDynamic(message);
 					e.printStackTrace();
 				}
 			}
 
 		} catch (Exception e) {
+			FacesContext.getCurrentInstance().addMessage(null,
+					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Info", "Error en la creación de cuentas"));
 			System.out.println("error al guardar cuenta" + e.getMessage());
 			e.printStackTrace();
 		}
 		return null;
 	}
-
-	public String validarIngreso() {
-
-		if (newCuenta.getSaldo() < saldoAhorro) {
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "Infor",
-					"Para la apertura de cuenta de ahorro el saldo minimo es de $5"));
-			System.out.println("Para la apertura de cuenta ahorro se necesita un valor mínimo de $5 dólares");
-		} else {
-			saldoAhorro = newCuenta.getSaldo();
-			System.out.println(saldoAhorro);
-		}
-
-		if (newCuenta.getSaldo() < saldoCredito) {
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "Infor",
-					"Para la apertura de cuenta de crédito el saldo minimo es de $500"));
-			System.out.println("Para la apertura de cuenta crédito se necesita un valor mínimo de $500 dólares");
-		} else {
-			System.out.println("Se ha ingresado más");
-			saldoCredito = newCuenta.getSaldo();
-			System.out.println(saldoCredito);
-		}
-		return null;
-	}
-
 }

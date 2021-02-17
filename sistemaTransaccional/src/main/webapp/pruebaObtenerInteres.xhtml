@@ -47,38 +47,20 @@
 											<label>¿Por cuánto días deseas mantener tu Póliza de
 												Inversión Digital?</label> <br />
 											<h:outputText />
-											<p:inputText id="tiempo"
-												value="#{dtEditView.maximoTiempo}">
+											<p:inputText id="tiempo" value="#{dtEditView.maximoTiempo}">
 												<p:ajax event="blur" update="out2" process="@this" />
 											</p:inputText>
 											<h:outputText id="out2"
 												value="#{dtEditView.tiempoPolizaInvertir}" />
 
 										</div>
-
-										<div class="col-sm-12">
-											<label class="col-sm-12">Tipo de Póliza</label>
-											<div class="col-sm-12">
-												<h:selectOneMenu id="polizaT" required="true" label=" "
-													value="#{dtEditView.tipoPolizaSimulacion}">
-													<f:selectItem itemValue="PERIODICO" itemLabel="PERIODICO" />
-													<f:selectItem itemValue="VENCIMIENTO" itemLabel="VENCIMIENTO" />
-												</h:selectOneMenu>
-											</div>
-
-										</div>
 										<div>
-											<h:commandButton
-												action="#{dtEditView.calcularValorSimulación()}"
+											<h:commandButton action="#{dtEditView.obtenerInteres()}"
 												class="btn btn-success btn-lg" value="CALCULAR"
 												style="width: 200px; height: 50px; color: black; background-color: orange;" />
 										</div>
 										<h:outputText id="interes"
-											value="Interes obtenido en base al tiempo ingresado: #{dtEditView.tasaInteres}">
-										</h:outputText>
-										<br/>
-										<h:outputText id="totalV"
-											value="Ganancia total: #{dtEditView.saldoSimulación}">
+											value="#{dtEditView.tasaInteres}">
 										</h:outputText>
 
 									</h:form>

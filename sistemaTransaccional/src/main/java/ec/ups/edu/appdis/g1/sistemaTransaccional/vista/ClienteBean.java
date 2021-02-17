@@ -13,6 +13,8 @@ import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.primefaces.PrimeFaces;
+
 import ec.ups.edu.appdis.g1.sistemaTransaccional.modelo.Cliente;
 import ec.ups.edu.appdis.g1.sistemaTransaccional.modelo.Cuenta;
 import ec.ups.edu.appdis.g1.sistemaTransaccional.modelo.Empleado;
@@ -39,6 +41,10 @@ public class ClienteBean implements Serializable {
 	private List<String> cuentasK;
 	private Cuenta c;
 	Cliente validaroCliente;
+	private Date fechaInicio;
+	private Date fechaFinal;
+	@Inject
+	private LoginBean clienteB;
 
 	public List<String> getCuentasK() {
 		return cuentasK;
@@ -95,6 +101,30 @@ public class ClienteBean implements Serializable {
 		return contrasenia;
 	}
 
+	public Date getFechaInicio() {
+		return fechaInicio;
+	}
+
+	public void setFechaInicio(Date fechaInicio) {
+		this.fechaInicio = fechaInicio;
+	}
+
+	public Date getFechaFinal() {
+		return fechaFinal;
+	}
+
+	public void setFechaFinal(Date fechaFinal) {
+		this.fechaFinal = fechaFinal;
+	}
+
+	public LoginBean getClienteB() {
+		return clienteB;
+	}
+
+	public void setClienteB(LoginBean clienteB) {
+		this.clienteB = clienteB;
+	}
+
 	/**
 	 * Metodo para obtener un tipo de Empleado
 	 * 
@@ -147,7 +177,8 @@ public class ClienteBean implements Serializable {
 	 * @return Lista de sesiones que tiene el cliente
 	 */
 	public List<SesionCliente> cargarSesiones() {
-		List<SesionCliente> lis = on.obtenerSesionesEmpleados(newCliente.getCedula());
+
+		List<SesionCliente> lis = on.obtenerSesionesCliente(clienteB.getCliente().getCedula());
 		System.out.println("QUE TRAE ESTO" + " " + lis);
 		if (lis != null) {
 			lstSesionesCliente = lis;
@@ -244,8 +275,10 @@ public class ClienteBean implements Serializable {
 				& newCliente.getFechaNacimiento() == null & newCliente.getCorreo().isEmpty()
 				& newCliente.getEstadoCivil().isEmpty() & newCliente.getProvincia().isEmpty()
 				& newCliente.getReferenciaDomicilio().isEmpty() & newCliente.getTelefono().isEmpty()) {
-			FacesContext.getCurrentInstance().addMessage(null,
-					new FacesMessage(FacesMessage.SEVERITY_WARN, "Info", "Ingrese todos los datos"));
+			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Message",
+					"Ingrese todos los datos ");
+
+			PrimeFaces.current().dialog().showMessageDynamic(message);
 			bandera = false;
 		} else {
 
@@ -363,7 +396,8 @@ public class ClienteBean implements Serializable {
 		}
 
 		catch (Exception e) {
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "Info", "No se pudo crear el cliente"));
+			FacesContext.getCurrentInstance().addMessage(null,
+					new FacesMessage(FacesMessage.SEVERITY_FATAL, "Info", "No se pudo crear el cliente"));
 		}
 
 		return null;
@@ -371,12 +405,10 @@ public class ClienteBean implements Serializable {
 	}
 
 	public void addMessage(String summary, String detail) {
-		FacesContext context = FacesContext.getCurrentInstance();
-		context.getExternalContext().getFlash().setKeepMessages(true);
-		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, summary, detail));
-		// FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, summary,
-		// detail);
-		// FacesContext.getCurrentInstance().addMessage(null, message);
+
+		FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, summary, detail);
+
+		PrimeFaces.current().dialog().showMessageDynamic(message);
 	}
 
 	public String doBuscoCliente() {
@@ -464,7 +496,9 @@ public class ClienteBean implements Serializable {
 		try {
 			System.out.println("cedula eliminar" + newCliente.getCedula());
 			on.eliminarEmpleado(newCliente.getCedula());
-			System.out.println("EMPLEADO ELIMINADO");
+			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_WARN, "Message", "Cliente eliminado");
+
+			PrimeFaces.current().dialog().showMessageDynamic(message);
 		} catch (Exception e) {
 			System.out.println("Error al eliminar al empleado " + " " + e.getMessage());
 		}
@@ -478,6 +512,9 @@ public class ClienteBean implements Serializable {
 			System.out.println(this.newCliente.getCedula() + "   " + this.newCliente.getNombres() + " ");
 
 			on.actaulizarCliente(newCliente);
+			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Message", "Cliente Actualizado");
+
+			PrimeFaces.current().dialog().showMessageDynamic(message);
 			System.out.println("actualizas?");
 
 		} catch (Exception e) {

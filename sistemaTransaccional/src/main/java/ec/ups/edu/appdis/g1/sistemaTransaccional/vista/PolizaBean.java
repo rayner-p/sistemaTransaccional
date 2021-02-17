@@ -10,7 +10,10 @@ import java.io.InputStream;
 import java.io.Serializable;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -23,6 +26,7 @@ import javax.inject.Named;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
+import org.primefaces.PrimeFaces;
 import org.primefaces.event.CellEditEvent;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.RowEditEvent;
@@ -54,16 +58,18 @@ public class PolizaBean implements Serializable {
 	private String cuenta;
 	private double saldoNuevo;
 	private Parametrizar newParametrizar;
+	private List<Parametrizar> listaPara;
 	private String nombrEmpleado;
 	private Date fechaActu = new Date();
 	private String estadoPoliza;
 	private List<Poliza> polizas = new ArrayList<Poliza>();
 	private double saldoSimulación;
-
+	private int nuevoRango = 0;
 	private InputStream ceduCliente;
 	private InputStream planiCliente;
 	private Cliente clienteP;
 	private Part fileS;
+	private String tipoPolizaSimulacion;
 
 	public Part getFileS() {
 		return fileS;
@@ -217,33 +223,44 @@ public class PolizaBean implements Serializable {
 		this.planiCliente = planiCliente;
 	}
 
+	public double getSaldoSimulación() {
+		return saldoSimulación;
+	}
+
+	public void setSaldoSimulación(double saldoSimulación) {
+		this.saldoSimulación = saldoSimulación;
+	}
+
+	public String getTipoPolizaSimulacion() {
+		return tipoPolizaSimulacion;
+	}
+
+	public void setTipoPolizaSimulacion(String tipoPolizaSimulacion) {
+		this.tipoPolizaSimulacion = tipoPolizaSimulacion;
+	}
+
 	@PostConstruct
 	public void init() {
 		newCuenta = new Cuenta();
 		newPoliza = new Poliza();
 		newParametrizar = new Parametrizar();
 		estadoPoliza = new String();
-		listarPoliza();
+		listaPara = new ArrayList<Parametrizar>();
+		// listarPoliza();
 
 	}
 
 	public void obtenerInteres() {
-		newParametrizar = (Parametrizar) on.obtenerParametros();
-		System.out.println("OBTENER TIEMPO METOOD INTERES" + maximoTiempo);
-		int miniPo = Integer.parseInt(newParametrizar.getMinimo());
-		int maxiPo = Integer.parseInt(newParametrizar.getMaximo());
-		if (maximoTiempo >= miniPo & maximoTiempo <= maxiPo) {
-			newParametrizar = on.obtenerParametrosporDia(maximoTiempo);
-			tasaInteres = newParametrizar.getTasaInteres();
-			System.out.println("TASA DE INTERES DEL BEAN POLIZA" + " " + tasaInteres);
-		} else {
-			System.out.println("error al sacar el rango");
+		listaPara = on.obtenerParametros();
+		for (Parametrizar s : listaPara) {
+			int rangoMinimo = Integer.parseInt(s.getMinimo());
+			int rangoMaximo = Integer.parseInt(s.getMaximo());
+			System.out.println("rangos" + rangoMinimo + rangoMaximo + maximoTiempo);
+			if (maximoTiempo <= rangoMaximo && maximoTiempo >= rangoMinimo) {
+				nuevoRango = rangoMaximo;
+			}
 		}
 
-		/*
-		 * for (int i = 0; i < parametrizar.size(); i++) { tasaInteres = i;
-		 * System.out.println("LA TASA DE INTERES OBTENIDA ES:" + " " + tasaInteres); }
-		 */
 	}
 
 	/**
@@ -346,9 +363,13 @@ public class PolizaBean implements Serializable {
 	 */
 	public String crearPoliza() {
 		verificarCuenta();
-		// obtenerInteres();
+		obtenerInteres();
 		obtenerClientePoliza();
 
+		Calendar calendar = Calendar.getInstance();
+		// calendar.add(Calendar.DATE, maximoTiempo); //
+		calendar.add(Calendar.DAY_OF_MONTH, maximoTiempo);
+		System.out.println("fecha aniadidad" + calendar);
 		String mensaje = new String();
 		try {
 			System.out.println("INGRESA A CREAR POLIZA");
@@ -366,22 +387,26 @@ public class PolizaBean implements Serializable {
 					newPoliza.setCliente(clienteP);
 					try {
 						if (validarDatosCompletos() != true) {
-							
 
-						} else if (validarSaldo() != true ){
-							FacesContext.getCurrentInstance().addMessage(null,
-									new FacesMessage(FacesMessage.SEVERITY_INFO, "Info",
-											"El saldo a invertir debe ser mayor a $500"));
-						
-						}else {
+						} else if (validarSaldo() != true) {
+							FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
+									FacesMessage.SEVERITY_INFO, "Info", "El saldo a invertir debe ser mayor a $500"));
+
+						} else {
 							on.insertarPoliza(newPoliza);
 							saldoNuevo = newCuenta.getSaldo() - newPoliza.getMontoP();
 							System.out.println("saldo nuevo de la cuenta por poliza" + " " + saldoNuevo);
 							on.actaulizarCuentaCliente(newPoliza.getCuentaClientePoliza(), saldoNuevo);
-							FacesContext.getCurrentInstance().addMessage(null,
-									new FacesMessage(FacesMessage.FACES_MESSAGES, "Poliza Creada"));
+							FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_WARN, "Message",
+									"Póliza creada correctamente");
+
+							PrimeFaces.current().dialog().showMessageDynamic(message);
 						}
 					} catch (Exception e) {
+						FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Message",
+								"ERROR DATOS INCOMPLETOS");
+
+						PrimeFaces.current().dialog().showMessageDynamic(message);
 						System.err.println("ERROR DATOS INCOMPLETOS" + e.getLocalizedMessage());
 					}
 
@@ -508,7 +533,7 @@ public class PolizaBean implements Serializable {
 	}
 
 	public void onRowEdit(RowEditEvent<Poliza> event) {
-		FacesMessage msg = new FacesMessage("Poliå Edited", String.valueOf(event.getObject().getCodigo()));
+		FacesMessage msg = new FacesMessage("Poliza Editada", String.valueOf(event.getObject().getCodigo()));
 		FacesContext.getCurrentInstance().addMessage(null, msg);
 	}
 
@@ -533,13 +558,20 @@ public class PolizaBean implements Serializable {
 	 */
 	public void calcularValorSimulación() {
 		System.out.println("entra a calcular simulacion");
-		try {
-			newParametrizar = (Parametrizar) on.obtenerParametrosporDia(tiempoPolizaInvertir);
-			saldoSimulación = montoPolizaInvertir * newParametrizar.getTasaInteres() / 360 * tiempoPolizaInvertir;
-			System.out.println("EL SALDO POR LA SIMULACION ES " + saldoSimulación);
-		} catch (Exception e) {
-			// TODO: handle exception
+		obtenerInteres();
+		System.out.println("nuevo rango" + nuevoRango);
+		newParametrizar = (Parametrizar) on.obtenerParametrosporDia(nuevoRango);
+		tasaInteres = newParametrizar.getTasaInteres();
+		if (tipoPolizaSimulacion.equals("PERIODICO")) {
+			saldoSimulación = montoPolizaInvertir * tasaInteres / 360 * 30;
+			System.out.println("saldo antes" + saldoSimulación);
+		} else if (tipoPolizaSimulacion.equals("VENCIMIENTO")) {
+			saldoSimulación = montoPolizaInvertir * tasaInteres / 360 * maximoTiempo;
+			System.out.println("saldo antes" + saldoSimulación);
+		} else {
+			System.out.println("escoja un valor");
 		}
+
 	}
 
 	public void validarNumeros() {

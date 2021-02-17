@@ -4,25 +4,20 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
+import javax.ejb.Stateless;
 import javax.inject.Inject;
-
 import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
 import javax.persistence.NoResultException;
-import javax.persistence.PostUpdate;
 import javax.persistence.Query;
 
-import ec.ups.edu.appdis.g1.sistemaTransaccional.modelo.Cliente;
 import ec.ups.edu.appdis.g1.sistemaTransaccional.modelo.Cuenta;
-
+@Stateless
 public class CuentaDao {
 	@Inject
 	private Connection con;
 
 	@Inject
-	private static EntityManager em;
+	private EntityManager em;	
 
 	// private static EntityTransaction transactionObj = em.getTransaction();
 
@@ -75,10 +70,11 @@ public class CuentaDao {
 		return null;
 	}
 
+	@SuppressWarnings("unchecked")
 	public  List<Cuenta> obtenerCuenta2(){
-		String jpql = "SELECT c FROM Cuenta c ";
-
-		Query q = em.createQuery(jpql, Cuenta.class);
+		String jpql = "SELECT * FROM cuenta  ";
+		Query q = em.createNativeQuery(jpql, Cuenta.class);
+		System.out.println("retorno" +q.getResultList());
 		return q.getResultList();
 	}
 	/**
@@ -91,10 +87,12 @@ public class CuentaDao {
 	public Cuenta getCuentaCedulaCliente(String cedulaCliente) {
 		System.out.println(cedulaCliente);
 		try {
-			System.out.println("ingresa");
+			System.out.println("ingresa al dao cuenta get cedula cliente" + cedulaCliente);
 			String jpql = "SELECT * FROM cuenta  WHERE cuenta_fk = :cedulaCliente";
-			Query q = em.createNativeQuery(jpql, Cliente.class);
+			System.out.println("ESTO ES EM"+ em);
+			Query q = em.createNativeQuery(jpql, Cuenta.class); //estaba cliente.class
 			q.setParameter("cedulaCliente", cedulaCliente);
+			System.out.println("termina");
 			return (Cuenta) q.getSingleResult();
 
 		} catch (NoResultException e) {
@@ -108,6 +106,7 @@ public class CuentaDao {
 	public Cuenta obtenerCuentaPorNumero(String numerCuenta) {
 		System.out.println("num dao " + numerCuenta);
 		String jpql = "SELECT c FROM Cuenta c WHERE c.numeroCuenta = :cedulaCliente";
+		System.out.println("esto es el em"  +" "+em);
 		Query q = em.createQuery(jpql, Cuenta.class);
 		q.setParameter("cedulaCliente", numerCuenta);
 		Cuenta cuentaDeAhorro = (Cuenta) q.getSingleResult();
@@ -116,7 +115,7 @@ public class CuentaDao {
 
 	public String actaulizarCuentaCliente(String numeroCuenta, double valor) {
 		System.out.println("Entra al dao" + numeroCuenta + valor);
-		Query query = em.createQuery("UPDATE cuenta   SET saldo=:valor WHERE numero_cuenta=:codigo");
+		Query query = em.createNativeQuery("UPDATE cuenta  SET saldo=:valor WHERE numero_cuenta=:codigo");
 		query.setParameter("valor", valor);
 		query.setParameter("codigo", numeroCuenta);
 		System.out.println("query" + query); // int result =

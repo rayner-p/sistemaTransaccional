@@ -22,7 +22,8 @@ public class Resources {
         return ds.getConnection();
     }
     
-    private void closeConnection(@Disposes Connection conn) throws SQLException {
+    @SuppressWarnings("unused")
+	private void closeConnection(@Disposes Connection conn) throws SQLException {
         conn.close();
     }
     @Produces

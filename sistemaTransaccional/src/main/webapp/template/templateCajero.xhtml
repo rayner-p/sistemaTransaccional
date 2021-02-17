@@ -34,18 +34,25 @@
 				<a class="navbar-brand" href="">Menu Cajero</a>
 				<div>
 					<ul class="nav navbar-right navbar-top-links">
-						<li style="color: orange;">Bienvenido(a)
-							#{loginBean.empleado.nombres}</li>
+						<!--  	<li style="color: orange;">Bienvenido(a)
+							#{loginBean.empleado.nombres}</li>  -->
+						<li  style="color: orange;" class="dropdown "><a class="dropdown-toggle" 
+							data-toggle="dropdown" href="#"> <i class="fa fa-user fa-fw "></i>
+								Bienvenido(a) #{loginBean.empleado.nombres} <b class="caret"></b>
 
+						</a></li>
+
+						<p:commandButton icon="fa fa-fw fa-sign-out"
+							action="#{loginBean.logout()}" value="Cerrar Sesión"
+							styleClass="red-button" />
 					</ul>
 				</div>
 			</div>
 			<div class="nav navbar-right navbar-top-links" role="navigation">
 				<div class="sidebar-nav ">
 					<ul class="nav" id="side-menu">
-						<li style="color: black; text-align: center; color:orange;"><i
-							class="fa fa-users fa-fw "
-							></i> <span class="fa arrow"></span>
+						<li style="color: black; text-align: center; color: orange;"><i
+							class="fa fa-users fa-fw "></i> <span class="fa arrow"></span>
 							<ul class="nav nav-second-level" style="color: highlight;">
 								<li><a href="CrearCliente.xhtml"> <i
 										class="fa fa-users fa-fw" />Registar Cliente
@@ -55,8 +62,8 @@
 								</a></li>
 								<li><a href="RegistrarTransaccion.xhtml"> <i
 										class="fa fa-user fa-fw" />Realizar Transacción
-								</a></li>						
-								
+								</a></li>
+
 							</ul> <!-- /.nav-second-level --></li>
 					</ul>
 				</div>

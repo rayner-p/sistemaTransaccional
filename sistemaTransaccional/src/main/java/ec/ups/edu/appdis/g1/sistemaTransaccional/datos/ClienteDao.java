@@ -55,6 +55,7 @@ public class ClienteDao {
 	public List<Cliente> getEmpleados(){
 		
 		String jpql = "SELECT c FROM Cliente c";
+		
 		Query q = em.createQuery(jpql, Cliente.class);
 		List<Cliente> listado = q.getResultList();
 		System.out.println("ESTO ES DEL DAO CLIENTE LISTAR" +listado);

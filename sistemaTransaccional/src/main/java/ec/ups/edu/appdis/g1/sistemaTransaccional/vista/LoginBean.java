@@ -13,6 +13,8 @@ import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.primefaces.PrimeFaces;
+
 import ec.ups.edu.appdis.g1.sistemaTransaccional.modelo.Cliente;
 import ec.ups.edu.appdis.g1.sistemaTransaccional.modelo.Empleado;
 import ec.ups.edu.appdis.g1.sistemaTransaccional.modelo.SesionCliente;
@@ -47,6 +49,7 @@ public class LoginBean implements Serializable {
 	private String empleado2;
 
 	private Cliente cliente;
+
 	private int contador = 0;
 
 	public int getContador() {
@@ -184,9 +187,12 @@ public class LoginBean implements Serializable {
 			empleado2 = lstClis.get(i).getUsuario();
 
 		}
+		int contadoFor = 0;
 		// for (Empleado c : empleado) {
 		for (Iterator<Empleado> iterator = lstClis.iterator(); iterator.hasNext();) {
+
 			empleado = (Empleado) iterator.next();
+
 			// System.out.println("Esto es el empleado" + empleado.getUsuario());
 			// empleado = c;
 			System.out.println("FOR Que recorre");
@@ -209,17 +215,20 @@ public class LoginBean implements Serializable {
 
 			} else if (empleado.getUsuario() != (usuario) || empleado.getContrasenia() != (contrasena)) {
 				System.out.println("ENTRA AL IF MAL");
-				contador = contador + 1;
+				contador = contadoFor + 1;
+				System.out.println("esto es contador" + contador);
 				SesionCliente sesioEmpleadoMAL = new SesionCliente();
 				// System.out.println("este cliente va al sis" + empleado);
 				sesioEmpleadoMAL.setEmpleado(empleado);
 				sesioEmpleadoMAL.setFechaSesion(new Date());
 				sesioEmpleadoMAL.setEstado("Incorrecto");
 				System.out.println("antes");
-				empleadoON.guardarSesionEmpleado(sesioEmpleadoMAL);
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Info",
-						"Usuario o contrasenia incorrecta" + " " + "Intentos" + " " + contador));
+				FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Message",
+						"Error al iniciar sesión" + "\n" + "Intentos restantes:" + contadoFor);
 
+				PrimeFaces.current().dialog().showMessageDynamic(message);
+
+				empleadoON.guardarSesionEmpleado(sesioEmpleadoMAL);
 				FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("empleado", empleado);
 
 				return bandera = false;
@@ -235,51 +244,71 @@ public class LoginBean implements Serializable {
 	public String validarInicioSesionEmpleado() {
 		Empleado emp;
 		guardarsesionEmpleado();
+		if (contador == 2) {
+			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_WARN, "Message",
+					"Solo le queda 1 intento antes de que se bloquee su cuenta");
 
-		try {
-			emp = empleadoON.usuario(usuario, contrasena);
-			System.out.println("empleado con user" + emp);
-			// System.out.println("entra a registro de sesion empleado");
-			// System.out.println("***************" + emp.getNombres());
-			empleado = emp;
-			if (emp != null && emp.getRol().equalsIgnoreCase("Cajero")) {
-				try {
-					addMessage("OK", "Ingreso");
-					FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("empleado", emp);
-					FacesContext contex = FacesContext.getCurrentInstance();
-					contex.getExternalContext().redirect("Cajero.xhtml");
+			PrimeFaces.current().dialog().showMessageDynamic(message);
+		} else if (contador == 3) {
+			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_FATAL, "Message", "Su cuenta está bloqueada");
 
-				} catch (Exception e) {
-					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN,
-							"Warning", "No se pudo acceder, revise usuario o contrasenia"));
-				}
-			} else if (emp != null && emp.getRol().equalsIgnoreCase("Administrador")) {
-				try {
-
-					FacesContext contex = FacesContext.getCurrentInstance();
-					FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("empleado", emp);
-					contex.getExternalContext().redirect("Admin.xhtml");
-
-				} catch (Exception e) {
-					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN,
-							"Warning", "No se pudo acceder, revise usuario o contrasenia"));
-				}
-			} else if (emp != null && emp.getRol().equalsIgnoreCase("Asistente Captaciones")) {
-				try {
-					FacesContext contex = FacesContext.getCurrentInstance();
-					FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("empleado", emp);
-					contex.getExternalContext().redirect("Asistente.xhtml");
-
-				} catch (Exception e) {
-					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN,
-							"Warning", "No se pudo acceder, revise usuario o contrasenia"));
-
-				}
-			}
-
-		} catch (Exception e) {
-			System.out.println("NO SE PUEDO INGRESAR, REVISE USUARIO CONTRASEÑA");
+			PrimeFaces.current().dialog().showMessageDynamic(message);
 			return "login";
+		} else {
+			try {
+
+				emp = empleadoON.usuario(usuario, contrasena);
+				System.out.println("empleado con user" + emp);
+				// System.out.println("entra a registro de sesion empleado");
+				// System.out.println("***************" + emp.getNombres());
+				empleado = emp;
+				if (emp != null && emp.getRol().equalsIgnoreCase("Cajero")) {
+					try {
+						addMessage("OK", "Ingreso");
+						FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("empleado", emp);
+						FacesContext contex = FacesContext.getCurrentInstance();
+						contex.getExternalContext().redirect("Cajero.xhtml");
+
+					} catch (Exception e) {
+						FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_WARN, "Message",
+								"No se pudo acceder, revise usuario o contrasenia");
+
+						PrimeFaces.current().dialog().showMessageDynamic(message);
+					}
+				} else if (emp != null && emp.getRol().equalsIgnoreCase("Administrador")) {
+					try {
+
+						FacesContext contex = FacesContext.getCurrentInstance();
+						FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("empleado", emp);
+						contex.getExternalContext().redirect("Admin.xhtml");
+
+					} catch (Exception e) {
+						FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_WARN, "Message",
+								"No se pudo acceder, revise usuario o contrasenia");
+
+						PrimeFaces.current().dialog().showMessageDynamic(message);
+					}
+				} else if (emp != null && emp.getRol().equalsIgnoreCase("Asistente Captaciones")) {
+					try {
+						FacesContext contex = FacesContext.getCurrentInstance();
+						FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("empleado", emp);
+						contex.getExternalContext().redirect("Asistente.xhtml");
+
+					} catch (Exception e) {
+						FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_WARN, "Message",
+								"No se pudo acceder, revise usuario o contrasenia");
+
+						PrimeFaces.current().dialog().showMessageDynamic(message);
+
+					}
+				} else {
+					// validarInicioSesionCliente();
+				}
+
+			} catch (Exception e) {
+				System.out.println("NO SE PUEDO INGRESAR, REVISE USUARIO CONTRASEÑA");
+				return "login";
+			}
 		}
 
 		return null;
@@ -301,7 +330,7 @@ public class LoginBean implements Serializable {
 			if (c.getUsuario().equalsIgnoreCase(usuarioCliente) && c.getContrasenia().equalsIgnoreCase(contraCliente)) {
 				System.out.println("dentro del if ok");
 				SesionCliente sesionCliente = new SesionCliente();
-				// sesionCliente.setCliente(c);
+				sesionCliente.setCliente(c);
 				sesionCliente.setFechaSesion(new Date());
 				sesionCliente.setEstado("Correcto");
 
@@ -345,8 +374,10 @@ public class LoginBean implements Serializable {
 					FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("cliente", clien);
 					contex.getExternalContext().redirect("Cliente.xhtml");
 				} catch (Exception e) {
-					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN,
-							"Warning", "No se pudo acceder, revise usuario o contrasenia"));
+					FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_WARN, "Message",
+							"No se pudo acceder, revise usuario o contrasenia");
+
+					PrimeFaces.current().dialog().showMessageDynamic(message);
 				}
 			}
 		} catch (Exception e) {

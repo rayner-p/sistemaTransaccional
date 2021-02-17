@@ -8,11 +8,9 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
-import ec.ups.edu.appdis.g1.sistemaTransaccional.modelo.Cuenta;
-import ec.ups.edu.appdis.g1.sistemaTransaccional.modelo.Empleado;
+
 import ec.ups.edu.appdis.g1.sistemaTransaccional.modelo.Poliza;
-import ec.ups.edu.appdis.g1.sistemaTransaccional.modelo.PolizaPOJO;
-import ec.ups.edu.appdis.g1.sistemaTransaccional.servicios.ClientePOJO;
+
 
 @Stateless
 public class PolizaDao {
@@ -46,7 +44,9 @@ public class PolizaDao {
 	 */
 	public Poliza buscarPoliza(String cuenta) {
 		Poliza poli = new Poliza();
+		System.out.println("EM ANTE buscas" + em);
 		poli = em.find(Poliza.class, cuenta);
+		System.out.println("EM de buscas" + em);
 		return poli;
 	}
 
@@ -66,11 +66,13 @@ public class PolizaDao {
 	 * 
 	 * @return listado Una lista con todos los parametros ingresado
 	 */
-
+	@SuppressWarnings("unchecked")
 	public List<Poliza> obtenerPolizas() {
 		System.out.println("enrra dao");
-		@SuppressWarnings("unchecked")
+		System.out.println("EM ANTE" + em);
+	
 		List<Poliza> resultadoPoliza = em.createNativeQuery("select p.* from Poliza p", Poliza.class).getResultList();
+		System.out.println("EM DESOUES" + em);
 		return resultadoPoliza;
 
 		/*

@@ -67,22 +67,25 @@ public class SesionClienteDAO {
 	 * @return lista de sesiones de un cliente en especifico
 	 * @throws Exception Control de errores a la hora de realizar la consulta
 	 */
+	@SuppressWarnings("unchecked")
 	public List<SesionCliente> obtenerSesionCliente(String cedulaCliente) throws Exception { 
 		try {
+			System.out.println("llega al dao sesion");
 			String jpql = "SELECT s FROM SesionCliente s WHERE s.cliente.cedula = :cedulaCliente order by s.fechaSesion desc";
 			Query q = em.createQuery(jpql, SesionCliente.class);  
 			q.setParameter("cedulaCliente",cedulaCliente);
+			System.out.println("ejecuta consulta"+q.getResultList());
 			return q.getResultList();
 		} catch (Exception e) {
 			throw new Exception("No ha ingresado ni una sola vez");
 		}
 		
 	}
-	public List<SesionCliente> obtenerSesionEmpleado(String cedulaCliente) throws Exception { 
+	public List<SesionCliente> obtenerSesionEmpleado(String cedulaEmpleado) throws Exception { 
 		try {
 			String jpql = "SELECT s FROM SesionCliente s WHERE s.empleado.cedula = :cedulaCliente order by s.fechaSesion desc";
 			Query q = em.createQuery(jpql, SesionCliente.class);  
-			q.setParameter("cedulaCliente",cedulaCliente);
+			q.setParameter("cedulaCliente",cedulaEmpleado);
 			return q.getResultList();
 		} catch (Exception e) {
 			throw new Exception("No ha ingresado ni una sola vez");

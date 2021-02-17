@@ -34,18 +34,27 @@
 				<a class="navbar-brand" href="">Menu Administrador</a>
 				<div>
 					<ul class="nav navbar-right navbar-top-links">
-						<li style="color: orange;">Bienvenido(a)
+						<!--  li style="color: orange;">Bienvenido(a)
 							#{loginBean.empleado.nombres}</li>
+							
+ -->
+						<li class="dropdown"><a class="dropdown-toggle"
+							data-toggle="dropdown" href="#"> <i class="fa fa-user fa-fw"></i>
+								Bienvenido(a) #{loginBean.empleado.nombres} <b class="caret"></b>
 
+						</a></li>
+
+						<p:commandButton icon="fa fa-fw fa-sign-out"
+							action="#{loginBean.logout()}" value="Cerrar Sesión"
+							styleClass="red-button" />
 					</ul>
 				</div>
 			</div>
 			<div class="nav navbar-right navbar-top-links" role="navigation">
 				<div class="sidebar-nav ">
 					<ul class="nav" id="side-menu">
-						<li style="color: black; text-align: center; color:orange;"><i
-							class="fa fa-users fa-fw "
-							></i><STRONG>Administración
+						<li style="color: black; text-align: center; color: orange;"><i
+							class="fa fa-users fa-fw "></i><STRONG>Administración
 								de Usuarios </STRONG> <span class="fa arrow"></span>
 							<ul class="nav nav-second-level" style="color: highlight;">
 								<li><a href="CrearEmpleado.xhtml"> <i
