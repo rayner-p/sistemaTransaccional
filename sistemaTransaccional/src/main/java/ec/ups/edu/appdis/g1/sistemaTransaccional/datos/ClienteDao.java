@@ -127,7 +127,11 @@ public class ClienteDao {
 		}
 		//return null;
 	}
-	
+	/** 
+	 * Metodo que permite obtener un cliente por medio de su numero de cedula
+	 * @param cedula Variable de tipo String que pertenece al cliente
+	 * @throws Exception
+	 */
 	public Cliente obtenerDatosPorCedula (String cedula) throws Exception {
 		try {
 			String jpl = "select c from Cliente c Where c.cedula =:contr";
