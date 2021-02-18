@@ -102,6 +102,10 @@ public class CuentaDao {
 		}
 		return null;
 	}
+	/**
+	 * Metodo que permite buscar una cuenta por su número 
+	 * @param numeroCuenta Numero de la cuenta que queremos obtener
+	 */
 
 	public Cuenta obtenerCuentaPorNumero(String numerCuenta) {
 		System.out.println("num dao " + numerCuenta);
@@ -112,7 +116,12 @@ public class CuentaDao {
 		Cuenta cuentaDeAhorro = (Cuenta) q.getSingleResult();
 		return cuentaDeAhorro;
 	}
-
+	/**
+	 * Metodo que permite actualizar el saldo de  una cuenta de ahorro en la base de datos
+	 * 
+	 * @param numeroCuentaDeAhorro Numero de la cuenta que queremos actualiza
+	 * @param valor  Cantidad que se va a actualizar
+	 */
 	public String actaulizarCuentaCliente(String numeroCuenta, double valor) {
 		System.out.println("Entra al dao" + numeroCuenta + valor);
 		Query query = em.createNativeQuery("UPDATE cuenta  SET saldo=:valor WHERE numero_cuenta=:codigo");
@@ -122,22 +131,12 @@ public class CuentaDao {
 		query.executeUpdate();
 		return "hecho";
 
-		/*
-		 * 
-		 * 
-		 * Query query =
-		 * em.createQuery("UPDATE cuenta   SET saldo=:valor WHERE numero_cuenta=:codigo"
-		 * ); query.setParameter("valor", valor); query.setParameter("codigo",
-		 * numeroCuenta); int updateCount = query.executeUpdate(); if (updateCount > 0)
-		 * { System.out.println("Record For Id: " + numeroCuenta + valor +
-		 * " Is Updated"); }
-		 * 
-		 * // transactionObj.commit();
-		 * FacesContext.getCurrentInstance().addMessage("editSchoolForm:schoolId", new
-		 * FacesMessage("School Record #" + valor + " Is Successfully Updated In Db"));
-		 * return "RegistrarTransaccion.xhtml";
-		 */
 	}
+	/**
+	 * Metodo que permite obtener el saldo de una cuenta por medio del numero de cuenta
+	 * 
+	 * @param numeroCuentaDeAhorro Numero de la cuenta que queremos eliminar
+	 */
 
 	public Cuenta obtenerSaldoClienteCuenta(String numeroCuenta) throws SQLException {
 		String jpql = "SELECT c FROM Cuenta c   WHERE Cuenta.numeroCuenta = :numCuenta";
