@@ -73,7 +73,7 @@ public class TransferencialLocalDAO {
 		List<Cuenta> resultadoCuentas = em.createNativeQuery(
 				"SELECT cuenta.numero_cuenta, cuenta.fecha_apertura, cuenta.saldo, cuenta.tipo_cuenta, cuenta.cuenta_fk"
 						+ " from (select distinct cuenta_destino, cuenta.* " + "from transferencia_local "
-						+ "join cuenta on cuenta.numero_cuenta = transferencia_local.cuenta_destino where cuenta_origen = :cuentaOrigen) as cuenta",
+						+ "join cuenta on cuenta.numero_cuenta = transferencia_local.cuenta_destino where cuenta_origen=:cuentaOrigen) as cuenta",
 				Cuenta.class).setParameter("cuentaOrigen", cuentaOrigen).getResultList();
 		System.out.println("RESULTADO DEL QUERY "+ resultadoCuentas);
 		return resultadoCuentas;
@@ -117,7 +117,7 @@ public class TransferencialLocalDAO {
 	 */
 
 	public TranferenciaLocal obtenerClienteCuenta(String numeroCuenta) {
-		String jpql = "SELECT t, c from Cliente join Cuenta on cedula = :cuentaCliente and c.cuenta_fk = t.cedula";
+		String jpql = "SELECT t, c from Cliente join Cuenta on cedula=:cuentaCliente and c.cuenta_fk = t.cedula";
 		Query q = em.createQuery(jpql, TranferenciaLocal.class);
 		q.setParameter("cuentaCliente", numeroCuenta);
 		TranferenciaLocal cuentaDeAhorro = (TranferenciaLocal) q.getSingleResult();

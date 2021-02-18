@@ -41,10 +41,19 @@ public class ClienteBean implements Serializable {
 	private List<String> cuentasK;
 	private Cuenta c;
 	Cliente validaroCliente;
+	private String consultaEstado;
 	private Date fechaInicio;
 	private Date fechaFinal;
 	@Inject
 	private LoginBean clienteB;
+
+	public String getConsultaEstado() {
+		return consultaEstado;
+	}
+
+	public void setConsultaEstado(String consultaEstado) {
+		this.consultaEstado = consultaEstado;
+	}
 
 	public List<String> getCuentasK() {
 		return cuentasK;
@@ -563,6 +572,8 @@ public class ClienteBean implements Serializable {
 		// c = on.buscarCuentaD(newCliente.getCuentaCliente());
 	}
 
+	
+	
 	public Cuenta getC() {
 		return c;
 	}

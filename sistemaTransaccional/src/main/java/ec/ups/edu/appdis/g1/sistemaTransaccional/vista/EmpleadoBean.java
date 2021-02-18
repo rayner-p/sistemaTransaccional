@@ -7,9 +7,11 @@ import java.util.concurrent.CompletableFuture;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.servlet.http.HttpServletRequest;
 
 import ec.ups.edu.appdis.g1.sistemaTransaccional.modelo.Empleado;
 import ec.ups.edu.appdis.g1.sistemaTransaccional.modelo.SesionCliente;
@@ -214,6 +216,9 @@ public class EmpleadoBean implements Serializable {
 						on.registarEmpleado(newEmpleado);
 						registrarCorreo();
 						addMessage("Confirmacion", "Correo Enviado");
+						ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
+						ec.redirect(((HttpServletRequest) ec.getRequest()).getRequestURI());
+
 					}
 
 				} catch (Exception e) {
@@ -238,6 +243,9 @@ public class EmpleadoBean implements Serializable {
 						on.registarEmpleado(newEmpleado);
 						registrarCorreo();
 						addMessage("Confirmacion", "Correo Enviado");
+						ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
+						ec.redirect(((HttpServletRequest) ec.getRequest()).getRequestURI());
+
 					}
 				} catch (Exception e) {
 					System.out.println("error guardar empleado con correo");
@@ -259,6 +267,8 @@ public class EmpleadoBean implements Serializable {
 						generarContrasena();
 						registrarCorreo();
 						on.registarEmpleado(newEmpleado);
+						ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
+						ec.redirect(((HttpServletRequest) ec.getRequest()).getRequestURI());
 
 						addMessage("Confirmacion", "Correo Enviado");
 					}
@@ -304,6 +314,9 @@ public class EmpleadoBean implements Serializable {
 			// contrasenaAntigua = emple.getContrasenia();
 			// System.out.println("USUARIO + CONTRASENIA " +usuarioAntiguo
 			// +""+contrasenaAntigua);
+			ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
+			ec.redirect(((HttpServletRequest) ec.getRequest()).getRequestURI());
+
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
 			e.printStackTrace();
@@ -313,9 +326,12 @@ public class EmpleadoBean implements Serializable {
 
 	public String doEliminar() {
 		try {
-			//newEmpleado = new Empleado();
+			// newEmpleado = new Empleado();
 			System.out.println("cedula eliminar" + newEmpleado.getCedula());
 			on.eliminarEmpleado(newEmpleado.getCedula());
+			ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
+			ec.redirect(((HttpServletRequest) ec.getRequest()).getRequestURI());
+
 			System.out.println("EMPLEADO ELIMINADO");
 		} catch (Exception e) {
 			System.out.println("Error al eliminar al empleado " + " " + e.getMessage());
@@ -326,7 +342,7 @@ public class EmpleadoBean implements Serializable {
 	public String doActualizacion() {
 
 		try {
-			//newEmpleado = new Empleado();
+			// newEmpleado = new Empleado();
 			System.out.println("entras a la actualizacion");
 			System.out.println(this.newEmpleado.getCedula() + "   " + this.newEmpleado.getNombres() + " "
 					+ this.newEmpleado.getRol());
@@ -344,6 +360,9 @@ public class EmpleadoBean implements Serializable {
 				newEmpleado.setRol("Cajero");
 
 				on.actualizarEmpleado(newEmpleado);
+				ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
+				ec.redirect(((HttpServletRequest) ec.getRequest()).getRequestURI());
+
 				System.out.println("actualizas?");
 
 			} else if (tipoEmpleado.equalsIgnoreCase("Asistente Captaciones")) {
@@ -351,6 +370,9 @@ public class EmpleadoBean implements Serializable {
 
 				try {
 					on.actualizarEmpleado(newEmpleado);
+					ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
+					ec.redirect(((HttpServletRequest) ec.getRequest()).getRequestURI());
+
 					System.out.println("actualizas?");
 				} catch (Exception e) {
 					System.out.println("error actualizar empleado");

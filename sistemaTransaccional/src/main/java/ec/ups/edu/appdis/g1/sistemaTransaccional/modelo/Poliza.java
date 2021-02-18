@@ -36,6 +36,10 @@ public class Poliza implements Serializable {
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="fecha_emision")
 	private Date fechaEmision;
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name="fecha_vencimento")
+	private Date fechaVencimiento;
+	
 	@Column(length = 5, name = "monto_poliza")
 	private double montoP;
 	@Column(name = "tiempo_plazo", length = 5)
@@ -51,12 +55,12 @@ public class Poliza implements Serializable {
     private byte[] archivoPlanillaServicios; 
 	private String estadoPoliza="Pendiente";
 	
-	@OneToOne(fetch = FetchType.EAGER)
+	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
 	@JoinColumn(name = "empleado_Fk")
 	private Empleado empleadoCaptacion;
 	private String cuentaClientePoliza_fk;
 	
-	@OneToOne(fetch = FetchType.EAGER)
+	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
 	@JoinColumn(name = "clienteP_Fk")
 	private Cliente poliza_fk;
 	
@@ -169,9 +173,17 @@ public class Poliza implements Serializable {
 		this.estadoPoliza = estadoPoliza;
 	}
 
+	public Date getFechaVencimiento() {
+		return fechaVencimiento;
+	}
+
+	public void setFechaVencimiento(Date fechaVencimiento) {
+		this.fechaVencimiento = fechaVencimiento;
+	}
+
 	@Override
 	public String toString() {
-		return "Poliza [codigo=" + codigo + ", fechaEmision=" + fechaEmision + ", montoP=" + montoP + ", tiempoPlazo="
+		return "Poliza [codigo=" + codigo + ", fechaEmision=" + fechaEmision + ", fechaVencimiento=" + fechaVencimiento + ", montoP=" + montoP + ", tiempoPlazo="
 				+ tiempoPlazo + ", interes=" + interes + ", tipoPoliza=" + tipoPoliza + ", estadoPoliza=" + estadoPoliza + ", empleadoCaptacion="
 				+ empleadoCaptacion + ", cuentaClientePoliza_fk=" + cuentaClientePoliza_fk + ", poliza_fk=" + poliza_fk
 				+ "]";

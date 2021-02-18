@@ -8,7 +8,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
-
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -23,6 +24,7 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
@@ -35,6 +37,7 @@ import ec.ups.edu.appdis.g1.sistemaTransaccional.modelo.Cliente;
 import ec.ups.edu.appdis.g1.sistemaTransaccional.modelo.Cuenta;
 import ec.ups.edu.appdis.g1.sistemaTransaccional.modelo.Parametrizar;
 import ec.ups.edu.appdis.g1.sistemaTransaccional.modelo.Poliza;
+import ec.ups.edu.appdis.g1.sistemaTransaccional.modelo.Transaccion;
 import ec.ups.edu.appdis.g1.sistemaTransaccional.negocio.GestionSistemLocal;
 
 @Named("dtEditView")
@@ -49,6 +52,8 @@ public class PolizaBean implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@Inject
 	private GestionSistemLocal on;
+	@Inject
+	private LoginBean clientB;
 	private Poliza newPoliza;
 	private double montoPolizaInvertir;
 	private int tiempoPolizaInvertir;
@@ -57,6 +62,8 @@ public class PolizaBean implements Serializable {
 	private Cuenta newCuenta;
 	private String cuenta;
 	private double saldoNuevo;
+	List<Poliza>transac ;
+	List<Transaccion>transac2 ;
 	private Parametrizar newParametrizar;
 	private List<Parametrizar> listaPara;
 	private String nombrEmpleado;
@@ -239,6 +246,14 @@ public class PolizaBean implements Serializable {
 		this.tipoPolizaSimulacion = tipoPolizaSimulacion;
 	}
 
+	public List<Poliza> getTransac() {
+		return transac;
+	}
+
+	public void setTransac(List<Poliza> transac) {
+		this.transac = transac;
+	}
+
 	@PostConstruct
 	public void init() {
 		newCuenta = new Cuenta();
@@ -246,7 +261,18 @@ public class PolizaBean implements Serializable {
 		newParametrizar = new Parametrizar();
 		estadoPoliza = new String();
 		listaPara = new ArrayList<Parametrizar>();
-		// listarPoliza();
+		transac = new ArrayList<Poliza>();
+		transac2 = new ArrayList<Transaccion>();
+		listarPoliza();
+		listarTrans();
+		try {
+			Thread.sleep(400);
+			listarTransS();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 
 	}
 
@@ -258,6 +284,7 @@ public class PolizaBean implements Serializable {
 			System.out.println("rangos" + rangoMinimo + rangoMaximo + maximoTiempo);
 			if (maximoTiempo <= rangoMaximo && maximoTiempo >= rangoMinimo) {
 				nuevoRango = rangoMaximo;
+
 			}
 		}
 
@@ -300,19 +327,27 @@ public class PolizaBean implements Serializable {
 	 *         cuenta con el numero ingresado
 	 */
 	public boolean validarSaldo() {
+		System.out.println("ingresa a validar Saldo");
+		System.out.println("cuenta" + newCuenta);
 		boolean bandera = true;
 		if (newCuenta == null) {
 			System.out.println("No hay datos");
 			bandera = false;
 
-		} else if (newCuenta.getSaldo() < newPoliza.getMontoP()) {
-			System.out.println("EL MONTO ES MAYOR AL SALDO DE LA CUENTA");
+		} else if (newCuenta.getSaldo() < montoPolizaInvertir) {
+			System.out.println("SALOD ACTUAL " + newCuenta.getSaldo());
+			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Message",
+					"SALDO INGRESADO ES MAYOR AL DE LA CUENTA");
 
-		} else if (newPoliza.getMontoP() < 500.00) {
-			FacesContext.getCurrentInstance().addMessage(null,
-					new FacesMessage(FacesMessage.SEVERITY_WARN, "Warning", "EL SALDO MINIMO ES $500"));
+			PrimeFaces.current().dialog().showMessageDynamic(message);
+		} else if (montoPolizaInvertir < 500.00) {
+			System.out.println("VALOR MENOR");
+			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_WARN, "Message",
+					"El VALOR MINIMO PARA UNA POLIZA ES DE $500 ");
+
+			PrimeFaces.current().dialog().showMessageDynamic(message);
 		}
-
+		System.out.println("ESTO BANDERA SAL" + bandera);
 		return bandera;
 	}
 
@@ -348,12 +383,17 @@ public class PolizaBean implements Serializable {
 
 	public boolean validarDatosCompletos() {
 		boolean bandera = true;
+		System.out.println("ENTRAS A DATOS COMPLETO");
 		if (newPoliza.getArchivoCedula() == null & newPoliza.getArchivoPlanillaServicios() == null
-				& newPoliza.getMontoP() == 0.0 & newPoliza.getTiempoPlazo() == 0
-				& newPoliza.getCuentaClientePoliza() == null) {
-			FacesContext.getCurrentInstance().addMessage(null,
-					new FacesMessage(FacesMessage.SEVERITY_FATAL, "Info ", "Ingrese todos los valores "));
+				& montoPolizaInvertir == 0.0 & maximoTiempo == 0 & newPoliza.getCuentaClientePoliza().isEmpty()) {
+			System.out.println("ENTRAS A DATOS COMPLETOS?");
+			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_FATAL, "Message",
+					"Póliza creada correctamente");
+
+			PrimeFaces.current().dialog().showMessageDynamic(message);
 			bandera = false;
+		} else {
+			bandera = true;
 		}
 		return bandera;
 	}
@@ -365,43 +405,47 @@ public class PolizaBean implements Serializable {
 		verificarCuenta();
 		obtenerInteres();
 		obtenerClientePoliza();
-
-		Calendar calendar = Calendar.getInstance();
-		// calendar.add(Calendar.DATE, maximoTiempo); //
-		calendar.add(Calendar.DAY_OF_MONTH, maximoTiempo);
-		System.out.println("fecha aniadidad" + calendar);
+		validarDatosCompletos();
+		validarSaldo();
 		String mensaje = new String();
 		try {
 			System.out.println("INGRESA A CREAR POLIZA");
-
+			Calendar calendar = Calendar.getInstance();
+			// calendar.add(Calendar.DATE, maximoTiempo); //
+			calendar.add(Calendar.DAY_OF_MONTH, maximoTiempo);
+			System.out.println("fecha aniadidad" + calendar);
+			Date fechaV = calendar.getTime();
+			System.out.println(fechaV);
+			newParametrizar = on.obtenerParametrosporDia(nuevoRango);
+			tasaInteres = newParametrizar.getTasaInteres();
 			newPoliza.setInteres(tasaInteres);
 			newPoliza.setFechaEmision(fechaActu);
 			newPoliza.setTiempoPlazo(maximoTiempo);
+			newPoliza.setFechaVencimiento(fechaV);
+			newPoliza.setMontoP(montoPolizaInvertir);
 			// newPoliza.setEmpleadoCaptacion(empleadoB.getEmpleado());
 			try {
 				if (ceduCliente == null & planiCliente == null) {
-					System.err.println("ERROR, ARCHIVOS NULL");
+					FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_FATAL, "Message",
+							"SUBA LOS ARCHIVOS PERTINENTES");
+
+					PrimeFaces.current().dialog().showMessageDynamic(message);
+				
 				} else {
 					newPoliza.setArchivoCedula(on.convertirArchivos(ceduCliente));
 					newPoliza.setArchivoPlanillaServicios(on.convertirArchivos(planiCliente));
 					newPoliza.setCliente(clienteP);
 					try {
-						if (validarDatosCompletos() != true) {
 
-						} else if (validarSaldo() != true) {
-							FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
-									FacesMessage.SEVERITY_INFO, "Info", "El saldo a invertir debe ser mayor a $500"));
+						on.insertarPoliza(newPoliza);
+						saldoNuevo = newCuenta.getSaldo() - montoPolizaInvertir;
+						System.out.println("saldo nuevo de la cuenta por poliza" + " " + saldoNuevo);
+						on.actaulizarCuentaCliente(newPoliza.getCuentaClientePoliza(), saldoNuevo);
+						FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_WARN, "Message",
+								"Póliza creada correctamente");
 
-						} else {
-							on.insertarPoliza(newPoliza);
-							saldoNuevo = newCuenta.getSaldo() - newPoliza.getMontoP();
-							System.out.println("saldo nuevo de la cuenta por poliza" + " " + saldoNuevo);
-							on.actaulizarCuentaCliente(newPoliza.getCuentaClientePoliza(), saldoNuevo);
-							FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_WARN, "Message",
-									"Póliza creada correctamente");
+						PrimeFaces.current().dialog().showMessageDynamic(message);
 
-							PrimeFaces.current().dialog().showMessageDynamic(message);
-						}
 					} catch (Exception e) {
 						FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Message",
 								"ERROR DATOS INCOMPLETOS");
@@ -512,23 +556,6 @@ public class PolizaBean implements Serializable {
 	 */
 	public void actualizarEstadoPoliza() throws Exception {
 		System.out.println("Ingresa a actualizar");
-		if (estadoPoliza.equalsIgnoreCase("Pendiente")) {
-			FacesMessage msg = new FacesMessage("Cambie ");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-		} else {
-			try {
-
-				if (estadoPoliza == null) {
-					System.err.println("Estado Poliza vacio");
-				} else {
-					on.actualizarPoliza(estadoPoliza);
-					System.out.println("que estado tiene la poliza" + " " + estadoPoliza);
-				}
-			} catch (Exception e) {
-				throw new Exception(
-						"Se ha producido un error al momento de actualizar la poliza" + " " + e.getMessage());
-			}
-		}
 
 	}
 
@@ -546,10 +573,46 @@ public class PolizaBean implements Serializable {
 		System.out.println("EVENTO POLIZA" + event);
 		Object oldValue = event.getOldValue();
 		Object newValue = event.getNewValue();
+		Object numeroC = event.getRowIndex();
+		System.out.println("INDEX" + numeroC + "key" + event.getRowKey());
+
 		if (newValue != null && !newValue.equals(oldValue)) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Cell Changed",
-					"Old: " + oldValue + ", New:" + newValue);
-			FacesContext.getCurrentInstance().addMessage(null, msg);
+			try {
+
+				if (estadoPoliza.equalsIgnoreCase("Pendiente")) {
+					FacesMessage msg = new FacesMessage("Cambie ");
+					FacesContext.getCurrentInstance().addMessage(null, msg);
+				} else {
+					try {
+
+						if (estadoPoliza == null) {
+							System.err.println("Estado Poliza vacio");
+						} else {
+							System.out.println("estado Poliza " + estadoPoliza
+									+ listarPoliza().get(event.getRowIndex()).getCodigo());
+
+							on.actualizarPoliza(listarPoliza().get(event.getRowIndex()).getCodigo(), estadoPoliza);
+
+							ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
+							ec.redirect(((HttpServletRequest) ec.getRequest()).getRequestURI());
+							System.out.println("que estado tiene la poliza" + " " + estadoPoliza);
+
+						}
+					} catch (Exception e) {
+						throw new Exception(
+								"Se ha producido un error al momento de actualizar la poliza" + " " + e.getMessage());
+					}
+
+				}
+
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Cell Changed",
+						"Old: " + oldValue + ", New:" + newValue);
+				FacesContext.getCurrentInstance().addMessage(null, msg);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
 		}
 	}
 
@@ -583,4 +646,18 @@ public class PolizaBean implements Serializable {
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		}
 	}
+	public void listarTransS() throws InterruptedException {
+		if(clientB.getCliente().getCedula() == null) {
+			Thread.sleep(4000);
+		}else {
+		transac = on.obtenerPolizasCEDULA(clientB.getCliente().getCedula());
+		System.out.println(transac);
+		}
+	}
+	public void listarTrans() {
+		System.out.println("INGRESA A LISTAR TRANSACCIONES");
+		transac2 = on.obtenerTransaccion();
+		System.out.println(transac);
+	}
+	
 }

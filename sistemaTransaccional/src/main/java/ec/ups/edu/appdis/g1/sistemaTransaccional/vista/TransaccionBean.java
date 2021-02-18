@@ -2,24 +2,33 @@ package ec.ups.edu.appdis.g1.sistemaTransaccional.vista;
 
 import java.io.Serializable;
 import java.text.DateFormat;
+import java.text.Format;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.text.spi.DateFormatProvider;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.servlet.http.HttpServletRequest;
+
+import org.primefaces.PrimeFaces;
 
 import ec.ups.edu.appdis.g1.sistemaTransaccional.datos.ClienteDao;
 import ec.ups.edu.appdis.g1.sistemaTransaccional.datos.CuentaDao;
 import ec.ups.edu.appdis.g1.sistemaTransaccional.modelo.Cliente;
 import ec.ups.edu.appdis.g1.sistemaTransaccional.modelo.Cuenta;
 import ec.ups.edu.appdis.g1.sistemaTransaccional.modelo.Empleado;
+import ec.ups.edu.appdis.g1.sistemaTransaccional.modelo.Poliza;
 import ec.ups.edu.appdis.g1.sistemaTransaccional.modelo.Transaccion;
 import ec.ups.edu.appdis.g1.sistemaTransaccional.negocio.GestionSistemLocal;
 
@@ -41,6 +50,8 @@ public class TransaccionBean implements Serializable {
 	private CuentaBean cuentB;
 	@Inject
 	private ClienteBean clienteB;
+	@Inject
+	private LoginBean loginB;
 
 	private Transaccion newTransaccion;
 
@@ -59,7 +70,7 @@ public class TransaccionBean implements Serializable {
 	private String cuentaObt;
 	double montoNuevo;
 	private List<Transaccion> lstTransacciones;
-
+	private List<Transaccion> transac;
 	private Date fechaInicio;
 	private Date fechaFinal;
 
@@ -213,14 +224,24 @@ public class TransaccionBean implements Serializable {
 		this.lstTransacciones = lstTransacciones;
 	}
 
+	public List<Transaccion> getTransac() {
+		return transac;
+	}
+
+	public void setTransac(List<Transaccion> transac) {
+		this.transac = transac;
+	}
+
 	@PostConstruct
 	public void init() {
 		// newCuenta = new Cuenta();
 		cliente = new Cliente();
 		newTransaccion = new Transaccion();
 		listaTransaccion = new ArrayList<Transaccion>();
+		transac = new ArrayList<Transaccion>();
 		cuentaObt = new String();
 		obtenerItem();
+		// listarTrans();
 
 	}
 
@@ -366,11 +387,11 @@ public class TransaccionBean implements Serializable {
 				try {
 					System.out.println("DENTRO DEL BUSCAR CLIENTE BEAN TRANSACC");
 					newTransaccion.setFechaHora(new Date());
-					//newTransaccion.setTransaccion_fk(cliente.getCedula());
+					// newTransaccion.setTransaccion_fk(cliente.getCedula());
 					// newTransaccion.setTransaccion_fk(clienteB.getNewCliente().getCedula());
 					// System.out.println(listaTransaccion.get(0));
-					System.out.println("Clave fk cuenta"+clienteB.getCedu());
-					System.out.println("Clave fk cuenta2"+cliente.getCedula());
+					System.out.println("Clave fk cuenta" + clienteB.getCedu());
+					System.out.println("Clave fk cuenta2" + cliente.getCedula());
 					if (newTransaccion.getMonto() == 0.0 & newTransaccion.getTipoTransaccion() == null) {
 						System.out.println("cuenta en blanco ingrese valor del monto y seleccione el tipo");
 					} else {
@@ -384,12 +405,13 @@ public class TransaccionBean implements Serializable {
 						System.out.println("QUE TIENE CUENTA" + cuentaB);
 						newTransaccion.setCuenta(cuentaB);
 						newTransaccion.setSucursal(cliente.getCiudad());
-						
+
 						on.insertarTransaccion(newTransaccion);
+
 						FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
 								"Info", "Transacción Realizada correctamente"));
-						
-						//cliente.setTransaccionCliente(Set<Transaccion>newTransaccion);
+
+						// cliente.setTransaccionCliente(Set<Transaccion>newTransaccion);
 						on.enviarCorreo(cliente.getCorreo(), " RETIRO DE DINERO ", " BANCO INTERNACIONAL\n"
 								+ "------------------------------------------------------------------------------\n"
 								+ "              Estimado(a): " + cliente.getNombres().toUpperCase() + " "
@@ -405,6 +427,8 @@ public class TransaccionBean implements Serializable {
 						System.out.println("correo enviado");
 						on.actaulizarCuentaCliente(cuentaObt, saldoNuevo);
 						System.out.println("cuenta a actualizar " + " " + cuentaObt + "SALDO ACTUALIZADO" + saldoNuevo);
+						ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
+						ec.redirect(((HttpServletRequest) ec.getRequest()).getRequestURI());
 
 					}
 				} catch (Exception e) {
@@ -438,12 +462,15 @@ public class TransaccionBean implements Serializable {
 						System.out.println("numero a buscqr" + cuentaObt);
 
 						on.insertarTransaccion(newTransaccion);
-						FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
-								"Info", "Transacción realizada  correctamente"));
+						FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_WARN, "Message",
+								"Transaccion creada correctamente");
 
+						PrimeFaces.current().dialog().showMessageDynamic(message);
 						on.actaulizarCuentaCliente(cuentaObt, saldoNuevo);
 						System.out.println("TRANSACCION CREADA  ---> " + " " + listaTransaccion);
 						System.out.println("cuenta a actualizar " + " " + cuentaObt + "SALDO ACTUALIZADO" + saldoNuevo);
+						ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
+						ec.redirect(((HttpServletRequest) ec.getRequest()).getRequestURI());
 
 					}
 
@@ -461,26 +488,50 @@ public class TransaccionBean implements Serializable {
 		}
 		return null;
 	}
-	
-	
-	
+
 	/**
 	 * Metodo que permite obtener una lista de transacciones entre una fecha de
 	 * inicio y una fecha final
+	 * 
+	 * @throws ParseException
 	 */
-	public void ultimosDias() {
+	public void ultimosDias() throws ParseException {
+		Cuenta cuentab2;
+		cuentab2 = new Cuenta();
+		System.out.println("numeros cuenta" + loginB.getCliente().getCedula());
+		cuentab2 = on.getCuentaCedulaCliente(loginB.getCliente().getCedula());
 		Calendar c = Calendar.getInstance();
 		fechaFinal = c.getTime();
 		c.add(Calendar.DATE, -30);
 		fechaInicio = c.getTime();
+		new SimpleDateFormat("yyyy-MM-dd").format(fechaInicio);
+		new SimpleDateFormat("yyyy-MM-dd").format(fechaFinal);
+		System.out.println("FECHAS BEAN" + fechaInicio + fechaFinal);
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		DateFormat hourdateFormat = new SimpleDateFormat("yyyy-MM-dd");
-		String inicioF = hourdateFormat.format(fechaInicio);
-		String finalF = hourdateFormat.format(fechaFinal);
-		List<Transaccion> listaTrans = on.obtenerTransaccionesFechaHora(newTransaccion.getTransaccion_fk(), inicioF,
-				finalF);
-		lstTransacciones = listaTrans;
+
+		String dateString = hourdateFormat.format(fechaInicio);
+		Date dateI = format.parse(dateString);
+		String dateString2 = hourdateFormat.format(fechaFinal);
+		Date dateF = format.parse(dateString);
+		System.out.println("FECHA F de string" + dateF + dateI);
+		System.out.println(" FCHAES " + hourdateFormat.format(fechaInicio) + hourdateFormat.format(fechaFinal));
+		/*
+		 * String inicioF = hourdateFormat.format(fechaInicio); String finalF =
+		 * hourdateFormat.format(fechaFinal); System.out.println("FECHA DEL BEAN " +" "+
+		 * inicioF+finalF);
+		 */
+		// List<Transaccion> listaTrans =
+		// on.obtenerTransaccionesFechaHora(newTransaccion.getTransaccion_fk(),
+		// inicioF,finalF);
+		lstTransacciones = on.obtenerTransaccionesFechaHora(cuentab2.getNumeroCuenta(), fechaInicio, fechaFinal);
 		System.out.println(lstTransacciones.size());
 		System.out.println(newTransaccion.getTransaccion_fk());
 	}
+	
+	public void listaRTodo() {
+	//	transac = on.obtenerTransaccionXEDUL(clienteB)
+	}
+	
 
 }

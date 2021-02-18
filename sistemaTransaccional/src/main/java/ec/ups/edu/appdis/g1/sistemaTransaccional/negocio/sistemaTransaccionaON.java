@@ -1121,12 +1121,12 @@ public class sistemaTransaccionaON implements GestionSistemLocal {
 
 	}
 
-	public String actualizarPoliza(String numeroCuenta) {
-		System.out.println("Entra al on act poli" + " " + numeroCuenta);
-		if (numeroCuenta == null) {
+	public String actualizarPoliza(int numeroCuenta, String estado) {
+		System.out.println("Entra al on act poli" + " " + numeroCuenta+ estado);
+		if (numeroCuenta == 0) {
 			System.out.println("NUMERO VACIO");
 		} else {
-			daoPoliza.actualizarPoliza(numeroCuenta);
+			daoPoliza.actualizarPoliza(numeroCuenta, estado );
 		}
 		return null;
 	}
@@ -1168,15 +1168,24 @@ public class sistemaTransaccionaON implements GestionSistemLocal {
 	 *         fechas indicadas.
 	 * @throws Exception Excepción por si el cliente no tiene transacciones.
 	 */
-	public List<Transaccion> obtenerTransaccionesFechaHora(String cedula, String fechaI, String fechaF) {
-		String fechaInicio = fechaI + " 00:00:00.000000";
-		String fechaFinal = fechaF + " 23:59:59.000000";
+	public List<Transaccion> obtenerTransaccionesFechaHora(String cedula, Date fechaI, Date fechaF) {
+		//String fechaInicio = fechaI.setTime(00:00:00.000000);" 00:00:00.000000";
+		//String fechaFinal = fechaF + " 23:59:59.000000";
+		 
 		try {
-			return daoTransaccion.getListaTransaccionesFechas(cedula, fechaInicio, fechaFinal);
+			return daoTransaccion.getListaTransaccionesFechas(cedula, fechaI, fechaI);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	public List<Poliza> obtenerPolizasCEDULA(String cedula){
+		return daoPoliza.obtenerPolizasCEDULA(cedula);
+	}
+	
+	public List<Transaccion> obtenerTransaccionXEDUL(String cedula){
+		return daoTransaccion.obtenerTransaccionXEDUL(cedula);
 	}
 }

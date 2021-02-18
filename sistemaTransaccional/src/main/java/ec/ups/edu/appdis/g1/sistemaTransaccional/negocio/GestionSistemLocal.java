@@ -118,8 +118,11 @@ public interface GestionSistemLocal {
 
 	public List<Poliza> obtenerPolizas();
 
-	public String actualizarPoliza(String numeroCuenta);
+	public String actualizarPoliza(int numeroCuenta, String estado);
 
 	public Cliente obtenerDatosPorCedula(String cedula) throws Exception;
-	public List<Transaccion> obtenerTransaccionesFechaHora(String cedula, String fechaI, String fechaF);
+	public List<Transaccion> obtenerTransaccionesFechaHora(String cedula, Date fechaI, Date fechaF);
+	
+	public List<Poliza> obtenerPolizasCEDULA(String cedula);
+	public List<Transaccion> obtenerTransaccionXEDUL(String cedula);
 }

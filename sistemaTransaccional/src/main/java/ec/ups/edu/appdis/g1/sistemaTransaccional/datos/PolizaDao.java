@@ -10,6 +10,7 @@ import javax.persistence.Query;
 
 
 import ec.ups.edu.appdis.g1.sistemaTransaccional.modelo.Poliza;
+import ec.ups.edu.appdis.g1.sistemaTransaccional.modelo.Transaccion;
 
 
 @Stateless
@@ -93,6 +94,18 @@ public class PolizaDao {
 		 * return listado;
 		 */
 	}
+	public List<Poliza> obtenerPolizasCEDULA(String cedula) {
+		System.out.println("ENTRA A  DAO" +cedula);
+		
+
+		@SuppressWarnings("unchecked")
+		List<Poliza> ll =em.createNativeQuery(
+				"select * from poliza z join cliente  c on  z.clientep_fk =  c.cedula and z.clientep_fk =:cedula", Poliza.class).setParameter("cedula", cedula).getResultList();
+		System.out.println("RESULTADO DEL QUERY "+ ll);
+		return ll;
+
+	}
+
 
 	/**
 	 * meteodo que permite actualizar el estado de la póliza al asistente de
@@ -101,13 +114,19 @@ public class PolizaDao {
 	 * @param numeroCuenta el numero de cuenta cuyo dinero va a ponerse en poliza
 	 * @return mensaje que nos indica si se crea o no
 	 */
-	public String actualizarPoliza(String numeroCuenta) {
+	public String actualizarPoliza(int numeroCuenta, String estado) {
 		System.out.println("Entra al dao actualiza poliza" + " " + numeroCuenta);
 		Query query = em
-				.createQuery("UPDATE Poliza p  SET p.estadoPoliza =: valor WHERE c.cuentaClientePoliza_fk =:codigo");
+				.createNativeQuery("UPDATE poliza   SET estadopoliza=:valor WHERE codigo=:codigo");
+		query.setParameter("valor", estado);
 		query.setParameter("codigo", numeroCuenta);
+		
+		query.executeUpdate();
 		//int result = query.executeUpdate();
-		return "poliza";
+		return "poliza actu";
+	
+		
+		
 	}
 
 }

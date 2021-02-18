@@ -8,10 +8,12 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.view.facelets.FaceletContext;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.servlet.http.HttpServletRequest;
 
 import org.primefaces.PrimeFaces;
 
@@ -298,6 +300,8 @@ public class CuentaBean implements Serializable {
 								"Cuenta creada correctamente");
 
 						PrimeFaces.current().dialog().showMessageDynamic(message);
+						ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
+						ec.redirect(((HttpServletRequest) ec.getRequest()).getRequestURI());
 					}
 
 				} catch (Exception e) {

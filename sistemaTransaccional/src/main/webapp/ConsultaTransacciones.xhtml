@@ -50,7 +50,7 @@
 				<div>
 					<h:panelGrid id="grid" columns="1" cellpadding="1">
 						<h:selectOneMenu id="combobox"
-							value="#{clientesBean.tipoTransaccion}">
+							value="#{transaccionBean.tipoCuenta}">
 							<f:selectItem itemValue="Todos" itemLabel="Todos" />
 							<f:selectItem itemValue="Depositos" itemLabel="Depositos" />
 							<f:selectItem itemValue="Retiros" itemLabel="Retiros" />
@@ -60,18 +60,18 @@
 							closable="true" />
 
 						<p:outputLabel for="fechaInicio" value="Fecha Inicio" />
-						<p:calendar id="fechaInicio" value="#{clienteBean.fechaInicio}"
+						<p:calendar id="fechaInicio" value="#{transaccionBean.fechaInicio}"
 							showOn="button" pattern="yyyy-MM-dd" locale="es" navigator="true" />
 
 						<p:outputLabel for="fechaFin" value="Fecha Fin" />
-						<p:calendar id="fechaFin" value="#{clienteBean.fechaFinal}"
+						<p:calendar id="fechaFin" value="#{transaccionBean.fechaFinal}"
 							showOn="button" pattern="yyyy-MM-dd">
 						</p:calendar>
 						<h:outputText id="valueError"
 							value="#{clientesBean.fechasInvalidas}" style="color: red" />
 						<br></br>
 						<h:commandButton value="Buscar"
-							action="#{clientesBean.validarFechas2()}">
+							action="#{transaccionBean.ultimosDias()}">
 							<f:ajax render="Trans valueError"
 								execute="fechaInicio fechaFin combobox" />
 						</h:commandButton>
@@ -83,11 +83,11 @@
 				<h:form id="tels">
 					<h1>LISTADO DE TRANSACCIONES</h1>
 					<h:dataTable id="tblTransacciones"
-						value="#{clientesBean.lstTransacciones}" var="transaccion"
+						value="#{transaccionBean.lstTransacciones}" var="transaccion"
 						class="table table-bordered table-hover table-striped">
 						<h:column>
 							<f:facet name="header">FECHA</f:facet>
-						#{transaccion.fecha}
+						#{transaccion.fechaHora}
 						</h:column>
 						<h:column>
 							<f:facet name="header">MONTO</f:facet>
@@ -95,11 +95,11 @@
 						</h:column>
 						<h:column>
 							<f:facet name="header">TIPO</f:facet>
-						#{transaccion.tipo}
+						#{transaccion.tipoTransaccion}
 						</h:column>
 						<h:column>
 							<f:facet name="header">SALDO CUENTA</f:facet>
-						#{transaccion.saldoCuenta}
+						#{transaccion.cuenta.saldo}
 						</h:column>
 					</h:dataTable>
 				</h:form>

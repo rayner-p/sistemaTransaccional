@@ -1,0 +1,58 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:h="http://java.sun.com/jsf/html">
+
+
+<h:head>Solicitudes</h:head>
+<body>
+	<ui:composition template="template/templateCliente.xhtml">
+		<ui:define name="title">Listado Solicitudes de Póliza</ui:define>
+		<ui:param name="nombre" value="#{loginBean.cliente.nombres}" />
+		<ui:define name="content">
+
+			<h:form>
+				<div class="panel-body">
+
+					<p:growl id="message" showDetail="true" class="ui-growl"
+						life="4000" />
+					<h:dataTable value="#{dtEditView.transac}" var="cuentaP"
+						class="table" editable="false">
+
+						<h:column headerText="Numero Póliza">
+							<h:outputText value="#{cuentaP.codigo}" />
+						</h:column>
+
+						<h:column headerText="Fecha tramite">
+							<h:outputText value="#{cuentaP.fechaEmision}" />
+						</h:column>
+						<h:column headerText="Fecha Vencimiento">
+							<h:outputText value="#{cuentaP.fechaVencimiento}" />
+						</h:column>
+						<h:column headerText="Estado">
+							<h:outputText value="#{cuentaP.estadoPoliza}" />
+						</h:column>
+						<h:column headerText="Monto inversión">
+							<h:outputText value="#{cuentaP.montoP}" />
+						</h:column>
+						<h:column headerText="Tiempo">
+							<h:outputText value="#{cuentaP.tiempoPlazo}" />
+						</h:column>
+						<h:column headerText="Tipo">
+							<h:outputText value="#{cuentaP.tipoPoliza}" />
+						</h:column>
+
+					</h:dataTable>
+				</div>
+
+				<br />
+				<br />
+			</h:form>
+
+
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
