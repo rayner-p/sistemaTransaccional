@@ -81,6 +81,12 @@ public class SesionClienteDAO {
 		}
 		
 	}
+	/** 
+	 * Metodo que permite obtener las sesiones de un empleado registrado en la base de datos
+	 * @param cedulaEmpleado Cedula del empleado que debe tener las sesiones registradas en la base
+	 * @return lista de sesiones de un empleado en especifico
+	 * @throws Exception Control de errores a la hora de realizar la consulta
+	 */
 	public List<SesionCliente> obtenerSesionEmpleado(String cedulaEmpleado) throws Exception { 
 		try {
 			String jpql = "SELECT s FROM SesionCliente s WHERE s.empleado.cedula = :cedulaCliente order by s.fechaSesion desc";
